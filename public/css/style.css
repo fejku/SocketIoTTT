@@ -1,6 +1,6 @@
 #board {
     height: 300px;
-    display: flex;
+    display: none;
     flex-direction: column;
 }
 

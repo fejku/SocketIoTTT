@@ -4,29 +4,29 @@ $(function () {
     //save user id in localStorage, prevent changing id after refresh
     let storage = sessionStorage;
 
-    let userId = storage.getItem('userId');
-    socket.emit('userId', userId);
-
-    socket.on('socketId', function(id) {
-        storage.setItem('userId', id);
+    socket.on('connect', () => {
+        let userId = storage.getItem('userId');
+        socket.emit('userId', userId);
     });
 
-    
+    socket.on('userId', function(userId) {
+        storage.setItem('userId', userId);
+    });
 
     function setAllFieldDisabled() {
         $('.field').attr('disabled', true);
     };
 
-    function findFieldById(id, fields) {          
-        for(let field of fields) {                 
-            if (field.id === id) {    
+    function findFieldById(id, fields) {
+        for (let field of fields) {
+            if (field.id === id) {
                 return field.actual;
             }
         }
     }
 
     function setAllFields(fields) {
-        $('.field').each(function(index) {                
+        $('.field').each(function (index) {
             if (findFieldById(index, fields) === 0) {
                 $(this).css("background-color", "red");
             } else if (findFieldById(index, fields) === 1) {
@@ -40,11 +40,16 @@ $(function () {
     setAllFieldDisabled();
 
     $('#f1').submit(function () {
+        $('#f1').hide();
+        $('#board').css('display', 'flex');
+
         let userName = $('#name').val();
         let userId = storage.getItem('userId');
-        let user = {'id': userId, 'name': userName};
-        // sessionStorage.setItem('user', JSON.stringify(user));
-        socket.emit('name', user);
+        let user = {
+            id: userId,
+            name: userName
+        };
+        socket.emit('userName', user);
         return false;
     });
 
@@ -53,7 +58,7 @@ $(function () {
         return false;
     })
 
-    socket.on('name', function() {
+    socket.on('name', function () {
         $('#f1').css('visible', 'false');
     });
 

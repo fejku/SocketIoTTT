@@ -5,11 +5,13 @@ var express = require('express'),
 
 var Players = require('./Players').Players;
 var Board = require('./Board').Board;
-var WaitingRoom = require('./WaitingRoom').WaitingRoom;
+// var WaitingRoom = require('./WaitingRoom').WaitingRoom;
+var SocketManager = require('./SocketManager').SocketManager;
 
 var players;
 var board = new Board();
-var waitingRoom = new WaitingRoom();
+// var waitingRoom = new WaitingRoom();
+var socketManager = new SocketManager();
 
 let ServerSideIds = [];
 let id = 0;
@@ -39,19 +41,19 @@ io.on('connection', function (socket) {
     //save user id in localStorage, prevent changing id after refresh
     socket.on('userId', function(userId) {
         if (userId === null) {
-            ServerSideIds[id] = {socketId: socket.id, room: 'waitingRoom'};
-            io.sockets.sockets[socket.id].emit('socketId', id++);
-            //join waitingRoom
-            socket.join('waitingRoom');          
+            let userId = socketManager.addUser(socket.id);
+            socket.join('waitingRoom');  
+            io.in(socket.id).emit('userId', userId);                  
         } else {
-            ServerSideIds[userId].socketId = socket.id;
-            socket.join(ServerSideIds[userId].room)
+            socketManager.updateUser(userId, socket.id);
+            //socket.join(ServerSideIds[userId].room)
         }             
     });
 
-    socket.on('name', function (user) {
-        ServerSideIds[user.id].name = user.name;
-        io.sockets.sockets[ServerSideIds[user.id].id].emit('name')
+    socket.on('userName', function (user) {      
+        socketManager.setUserName(user.id, user.name);
+        //ServerSideIds[user.id].name = user.name;
+        //io.sockets.sockets[ServerSideIds[user.id].id].emit('name')
         // let room = waitingRoom.addUserToRoom(socket.id);
         // socket.join(room.id);
 
