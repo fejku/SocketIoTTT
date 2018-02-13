@@ -28,7 +28,7 @@ function checkWinCondition(fields) {
     if (((fields[0].actual) !== -1) && (fields[0].actual === fields[4].actual) && (fields[4].actual === fields[8].actual))
         return true;
     if (((fields[2].actual) !== -1) && (fields[2].actual === fields[4].actual) && (fields[4].actual === fields[6].actual))
-        return true;            
+        return true;
     return false;
 };
 
@@ -50,15 +50,15 @@ io.on('connection', function (socket) {
     socket.on('userId', function(userId) {
         if (userId === null) {
             let userId = socketManager.addUser(socket.id);
-            socket.join('waitingRoom');  
-            io.in(socket.id).emit('userId', userId);                  
+            socket.join('waitingRoom');
+            io.in(socket.id).emit('userId', userId);
         } else {
             socketManager.updateUser(userId, socket.id);
             //socket.join(ServerSideIds[userId].room)
-        }             
+        }
     });
 
-    socket.on('userName', function (user) {      
+    socket.on('userName', function (user) {
         socketManager.setUserName(user.id, user.name);
         //ServerSideIds[user.id].name = user.name;
         //io.sockets.sockets[ServerSideIds[user.id].id].emit('name')
@@ -68,7 +68,7 @@ io.on('connection', function (socket) {
         // io.in(room.id).clients((err, clients) => {
         //     console.log(room.id + ' ' + clients);
         //   });        
-                
+
         //czy podłączono dwóch graczy, TODO zrobić im pokój
         // if (Object.keys(io.sockets.sockets).length === 2) {
         //     players = new Players(Object.keys(io.sockets.sockets));
@@ -83,6 +83,36 @@ io.on('connection', function (socket) {
         // }
     });
 
+    socket.on('kik start', function () {
+        let room = socketManager.addUserToRoom(socketManager.getUserBySocketId(socket.id));
+        socket.join(room.id);
+
+        io.in(room.id).clients((err, clients) => {
+            console.log(room.id + ' ' + clients);
+        });
+
+        if (socketManager.isRoomFull(room)) {
+            if (Math.floor(Math.random() * 2) == 0) {
+                let player = room.usersId[0];
+                room.usersId[0] = room.usersId[1];
+                room.usersId[1] = player;
+            }
+            players = new Players(room.usersId);
+
+            io.in(socketManager.getSocketByUserId(players.getActivePlayer())).emit('message', {
+                status: 'turn',
+                board: board
+            });
+
+            io.in(socketManager.getSocketByUserId(players.getUnactivePlayer())).emit('message', {
+                status: 'wait',
+                board: board
+            });
+        } else {
+            io.in(room.id).emit('waiting for player');
+        }
+    });
+
     socket.on('turn', function (move) {
         if ((move >= 0) && (move < 9)) {
             if (board.fields[move].actual === -1) {
@@ -90,22 +120,22 @@ io.on('connection', function (socket) {
                 console.log(board);
 
                 if (checkWinCondition(board.fields)) {
-                    io.sockets.sockets[players.getActivePlayer()].emit('message', {
+                    io.in(socketManager.getSocketByUserId(players.getActivePlayer())).emit('message', {
                         status: 'winner',
                         board: board
                     });
-                    io.sockets.sockets[players.getUnactivePlayer()].emit('message', {
+                    io.in(socketManager.getSocketByUserId(players.getUnactivePlayer())).emit('message', {
                         status: 'loser',
                         board: board
                     });
                 } else {
                     players.changePlayer();
 
-                    io.sockets.sockets[players.getActivePlayer()].emit('message', {
+                    io.in(socketManager.getSocketByUserId(players.getActivePlayer())).emit('message', {
                         status: 'turn',
                         board: board
                     });
-                    io.sockets.sockets[players.getUnactivePlayer()].emit('message', {
+                    io.in(socketManager.getSocketByUserId(players.getUnactivePlayer())).emit('message', {
                         status: 'wait',
                         board: board
                     });

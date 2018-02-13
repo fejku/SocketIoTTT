@@ -4,9 +4,14 @@ $(function () {
     //save user id in localStorage, prevent changing id after refresh
     let storage = sessionStorage;
 
-    if (storage.getItem('userId') === null) {
-        window.location.href = '/';
-    }
+    socket.on('connect', () => {
+        let userId = storage.getItem('userId');
+        if (userId === null)
+            window.location.href = '/';
+        else 
+            socket.emit('userId', userId);
+        socket.emit('kik start');            
+    });
 
     function setAllFieldDisabled() {
         $('.field').attr('disabled', true);
@@ -39,10 +44,19 @@ $(function () {
         return false;
     })
 
+    socket.on('connect', function() {
+        console.log('test' + socket.id);
+
+    });
+
+    socket.on('waiting for player', function() {
+        $('#status').append($('<li>').text('Waiting for player...'));
+    });
+
     socket.on('message', function (obj) {
         setAllFields(obj.board.fields);
         if (obj.status === 'turn') {
-            $('#messages').append($('<li>').text('Moja tura'));
+            $('#status').append($('<li>').text('Moja tura'));
             $('.field').each(function () {
                 if (findFieldById(parseInt($(this).val()), obj.board.fields) === 0) {
                     $(this).css("background-color", "red");
@@ -54,13 +68,13 @@ $(function () {
                 }
             });
         } else if (obj.status === 'wait') {
-            $('#messages').append($('<li>').text('Czekam'));
+            $('#status').append($('<li>').text('Czekam'));
             setAllFieldDisabled();
         } else if (obj.status === 'winner') {
-            $('#messages').append($('<li>').text('Wygrałeś'));
+            $('#status').append($('<li>').text('Wygrałeś'));
             setAllFieldDisabled();
         } else if (obj.status === 'loser') {
-            $('#messages').append($('<li>').text('Przegrałeś'));
+            $('#status').append($('<li>').text('Przegrałeś'));
             setAllFieldDisabled();
         }
     });
