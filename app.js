@@ -5,16 +5,11 @@ var express = require('express'),
 
 var Players = require('./Players').Players;
 var Board = require('./Board').Board;
-// var WaitingRoom = require('./WaitingRoom').WaitingRoom;
 var SocketManager = require('./SocketManager').SocketManager;
 
 var players;
 var board = new Board();
-// var waitingRoom = new WaitingRoom();
 var socketManager = new SocketManager();
-
-let ServerSideIds = [];
-let id = 0;
 
 app.use(express.static('public'))
 
@@ -44,6 +39,10 @@ app.get('/kik', function(req, res) {
     res.sendFile(__dirname + '/kik.html');
 });
 
+app.get('/ghost_storries', function(req, res) {
+    res.sendFile(__dirname + '/ghost_storries.html');
+});
+
 io.on('connection', function (socket) {
 
     //save user id in localStorage, prevent changing id after refresh
@@ -54,33 +53,11 @@ io.on('connection', function (socket) {
             io.in(socket.id).emit('userId', userId);
         } else {
             socketManager.updateUser(userId, socket.id);
-            //socket.join(ServerSideIds[userId].room)
         }
     });
 
     socket.on('userName', function (user) {
         socketManager.setUserName(user.id, user.name);
-        //ServerSideIds[user.id].name = user.name;
-        //io.sockets.sockets[ServerSideIds[user.id].id].emit('name')
-        // let room = waitingRoom.addUserToRoom(socket.id);
-        // socket.join(room.id);
-
-        // io.in(room.id).clients((err, clients) => {
-        //     console.log(room.id + ' ' + clients);
-        //   });        
-
-        //czy podłączono dwóch graczy, TODO zrobić im pokój
-        // if (Object.keys(io.sockets.sockets).length === 2) {
-        //     players = new Players(Object.keys(io.sockets.sockets));
-        //     io.sockets.sockets[players.getActivePlayer()].emit('message', {
-        //         status: 'turn',
-        //         board: board
-        //     });
-        //     io.sockets.sockets[players.getUnactivePlayer()].emit('message', {
-        //         status: 'wait',
-        //         board: board
-        //     });
-        // }
     });
 
     socket.on('kik start', function () {
