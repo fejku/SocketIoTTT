@@ -4,14 +4,9 @@ $(function () {
     //save user id in localStorage, prevent changing id after refresh
     let storage = sessionStorage;
 
-    socket.on('connect', () => {
-        let userId = storage.getItem('userId');
-        socket.emit('userId', userId);
-    });
-
-    socket.on('userId', function(userId) {
-        storage.setItem('userId', userId);
-    });
+    if (storage.getItem('userId') === null) {
+        window.location.href = '/';
+    }
 
     function setAllFieldDisabled() {
         $('.field').attr('disabled', true);
@@ -39,28 +34,10 @@ $(function () {
 
     setAllFieldDisabled();
 
-    $('#f1').submit(function () {
-        $('#f1').hide();
-        $('#board').css('display', 'flex');
-
-        let userName = $('#name').val();
-        let userId = storage.getItem('userId');
-        let user = {
-            id: userId,
-            name: userName
-        };
-        socket.emit('userName', user);
-        return false;
-    });
-
     $('.field').on('click', function () {
         socket.emit('turn', $(this).val());
         return false;
     })
-
-    socket.on('name', function () {
-        $('#f1').css('visible', 'false');
-    });
 
     socket.on('message', function (obj) {
         setAllFields(obj.board.fields);

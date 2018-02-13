@@ -32,9 +32,17 @@ function checkWinCondition(fields) {
     return false;
 };
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 })
+
+app.get('/waiting_room', (req, res) => {
+    res.sendFile(__dirname + '/waiting_room.html');
+});
+
+app.get('/kik', function(req, res) {
+    res.sendFile(__dirname + '/kik.html');
+});
 
 io.on('connection', function (socket) {
 
