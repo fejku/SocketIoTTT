@@ -11,6 +11,18 @@ var players;
 var board = new Board();
 var socketManager = new SocketManager();
 
+//test
+let Color = require('./ghost_storries/enums/color-enum');
+let Thaoist = require('./ghost_storries/Thaoist').Thaoist;
+let test = new Thaoist(Color.ZOLTY);
+// let test = require('./ghost_storries/enums/color-enum');
+// test.enums.forEach(function(enumItem) {
+//     console.log(enumItem.key);
+//   });
+// console.log(test.ZOLTY.key);
+// console.log(test.get('ZOLTY'));
+//test
+
 app.use(express.static('public'))
 
 function checkWinCondition(fields) {
