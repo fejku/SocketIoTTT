@@ -3,18 +3,28 @@ var express = require('express'),
     http = require('http').Server(app),
     io = require('socket.io')(http);
 
-var Players = require('./Players').Players;
-var Board = require('./Board').Board;
 var SocketManager = require('./SocketManager').SocketManager;
-
-var players;
-var board = new Board();
 var socketManager = new SocketManager();
+
+//KiK
+var Players = require('./Players').Players;
+var players;
+var Board = require('./Board').Board;
+var board = new Board();
+
+//Ghost stories
+let game = require('./ghost_storries/game');
+
 
 //test
 let Color = require('./ghost_storries/enums/color-enum');
 let Thaoist = require('./ghost_storries/Thaoist').Thaoist;
-let test = new Thaoist(Color.ZOLTY);
+let cementary = require('./ghost_storries/villagers/cementary');
+let taoistAltar = require('./ghost_storries/villagers/taoist_altar');
+
+let test = [cementary, taoistAltar];
+console.log(test);
+//let test = new Thaoist(Color.ZOLTY);
 // let test = require('./ghost_storries/enums/color-enum');
 // test.enums.forEach(function(enumItem) {
 //     console.log(enumItem.key);
@@ -52,6 +62,7 @@ app.get('/kik', function(req, res) {
 });
 
 app.get('/ghost_storries', function(req, res) {
+    game.start();
     res.sendFile(__dirname + '/ghost_storries.html');
 });
 
