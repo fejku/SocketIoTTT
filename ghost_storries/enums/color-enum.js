@@ -1,3 +1,3 @@
 let Enum = require('enum');
 
-module.exports = new Enum(['ZOLTY', 'ZIELONY', 'NIEBIESKI', 'CZERWONY']);
+module.exports = new Enum(['YELLOW', 'GREEN', 'BLUE', 'RED']);

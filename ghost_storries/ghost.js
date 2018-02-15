@@ -1,5 +1,6 @@
 class Ghost {
-    constructor() {
+    constructor(name, color, resistance) {
+        this.name;
         this.color;
         this.resistance;
         //- zdolności na lewym kamieniu należy stosować gdy duch wchodzi do rozgrywki
@@ -10,3 +11,5 @@ class Ghost {
         this.reward;
     }
 }
+
+module.exports = Ghost;

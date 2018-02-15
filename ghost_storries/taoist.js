@@ -1,6 +1,6 @@
 let Colors = require('./enums/color-enum');
 
-class Thaoist {
+class Taoist {
     constructor(color) {
         this.color = color;
         this.chi_markers = this._initChiMarkers;       
@@ -20,4 +20,4 @@ class Thaoist {
 
 }
 
-exports.Thaoist = Thaoist;
+module.exports = Taoist;

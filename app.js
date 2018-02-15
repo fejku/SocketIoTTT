@@ -14,16 +14,24 @@ var board = new Board();
 
 //Ghost stories
 let game = require('./ghost_storries/game');
+game.start();
+console.log(game.board);
+console.log(game.players);
 
 
 //test
-let Color = require('./ghost_storries/enums/color-enum');
-let Thaoist = require('./ghost_storries/Thaoist').Thaoist;
-let cementary = require('./ghost_storries/villagers/cementary');
-let taoistAltar = require('./ghost_storries/villagers/taoist_altar');
+// let Color = require('./ghost_storries/enums/color-enum');
+// let Thaoist = require('./ghost_storries/Thaoist');
+// let ghostBoard = require('./ghost_storries/board');
 
-let test = [cementary, taoistAltar];
-console.log(test);
+// let thaoist = new Thaoist(Color);
+
+// ghostBoard.initBoard();
+
+// console.log(ghostBoard.villagers);
+// console.log(ghostBoard.playersBoards);
+//console.log(GhostBoard);
+//console.log(test);
 //let test = new Thaoist(Color.ZOLTY);
 // let test = require('./ghost_storries/enums/color-enum');
 // test.enums.forEach(function(enumItem) {

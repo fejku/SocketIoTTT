@@ -1,9 +1,9 @@
 let Villager = require('./villager');
 
-class TaoistAltar extends Villager {
+class CircleOfPrayer extends Villager {
     constructor() {
         super();
     }
 }
 
-module.exports = TaoistAltar;
+module.exports = CircleOfPrayer;
