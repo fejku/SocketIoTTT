@@ -19,14 +19,14 @@ class Game {
         this.init();
         //draw ghost card
         let card = this.board.drawCard();
-        console.log(card);
         //lay ghost on player board
+        if(this.board.isAllBoardsFull()) {
+            this.players.taoists[this.actualPlayer].loseQi();
+        }
         let actualPlayerColor = this.players.taoists[this.actualPlayer].color.key;
         for(let pb of this.board.playersBoards) {
             if (pb.color.key == actualPlayerColor) {
-                console.log(actualPlayerColor);
                 pb.cards[0] = card;
-                console.log(pb);
             }
         }
     }

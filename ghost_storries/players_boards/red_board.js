@@ -1,4 +1,4 @@
-let Colors = require('../enums/color-enum');
+let Colors = require('../enums/color-enum').FourColors;
 let PlayerBoard = require('./player_board');
 
 class RedBoard extends PlayerBoard {

@@ -1,5 +1,5 @@
 let arrayShuffle = require('array-shuffle');
-let Colors = require('./enums/color-enum');
+let Colors = require('./enums/color-enum').FiveColors;
 
 class Board {
     constructor() {
@@ -55,6 +55,14 @@ class Board {
 
     drawCard() {
         return this.ghostCards.pop();
+    }
+
+    isAllBoardsFull() {
+        for(let board of this.playersBoards) {
+            if(!board.isBoardFull())
+                return false;
+        }
+        return true;
     }
 }
 

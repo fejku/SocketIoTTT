@@ -6,7 +6,7 @@ class Players {
     }
 
     _initTaoist() {
-        let Colors = require('./enums/color-enum');
+        let Colors = require('./enums/color-enum').FourColors;
         let Taoist = require('./taoist');
         return arrayShuffle([new Taoist(Colors.GREEN),
             new Taoist(Colors.YELLOW),

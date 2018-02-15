@@ -1,23 +1,28 @@
-let Colors = require('./enums/color-enum');
+let Colors = require('./enums/color-enum').FourColors;
 
 class Taoist {
     constructor(color) {
         this.color = color;
-        this.chi_markers = this._initChiMarkers;       
+        this.qiMarkers = 4;
+        this.jinJangMarker = 1;
+        this.taoMarkers = this._initTaoMarkers();
     }
     
-    _initChiMarkers() {
-        let chi_markers = {};
+    _initTaoMarkers() {
+        let taoMarkers = {};
         for (let colorItem of Colors.enums) {
             if (colorItem.key == this.color.key)
-                chi_markers[colorItem.key] = 4;
+                taoMarkers[colorItem.key] = 1;
             else
-                chi_markers[colorItem.key] = 0;
+                taoMarkers[colorItem.key] = 0;
         }
-        return chi_markers;
+        return taoMarkers;
     }
 
+    loseQi() {
+        this.qiMarkers--;
 
+    }
 }
 
 module.exports = Taoist;
