@@ -1,11 +1,22 @@
 class PlayerBoard {
     constructor() {
         this.color;
-        this.cards = [];
+        this.cards = [null, null, null];
     }
 
     isBoardFull() {
-        return this.cards.length == 3;
+        for(let card of this.cards)
+            if(card === null)
+                return false;
+        return true;
+    }
+
+    getEmptyPlaces() {
+        let result =  {color: this.color.key, places: []};
+        for(let i = 0; i < this.cards.length; i++)
+            if(this.cards[i] === null)
+                result.places.push(i);
+        return result;
     }
 }
 

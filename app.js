@@ -14,9 +14,9 @@ var board = new Board();
 
 //Ghost stories
 let game = require('./ghost_storries/game');
-game.start();
-console.log(game.board);
-console.log(game.players);
+// game.start();
+// console.log(game.board);
+// console.log(game.players);
 
 
 //test
@@ -70,11 +70,16 @@ app.get('/kik', function(req, res) {
 });
 
 app.get('/ghost_storries', function(req, res) {
-    game.start();
+    game.start(io);
     res.sendFile(__dirname + '/ghost_storries.html');
 });
 
 io.on('connection', function (socket) {
+
+socket.on('test', function(test) {
+    console.log('test');
+    console.log(test);
+})
 
     //save user id in localStorage, prevent changing id after refresh
     socket.on('userId', function(userId) {
