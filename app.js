@@ -70,15 +70,13 @@ app.get('/kik', function(req, res) {
 });
 
 app.get('/ghost_storries', function(req, res) {
-    game.start(io);
     res.sendFile(__dirname + '/ghost_storries.html');
 });
 
 io.on('connection', function (socket) {
 
-socket.on('test', function(test) {
-    console.log('test');
-    console.log(test);
+socket.on('ghost start', function() {
+    game.start(io, socket);
 })
 
     //save user id in localStorage, prevent changing id after refresh

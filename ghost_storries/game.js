@@ -18,8 +18,9 @@ class Game {
         this.bank.initBank();
     }
 
-    start(io) {
-        this.init();
+    start(io, socket) {
+        this.init(socket);
+socket.emit('ghost init board', this.board.playersBoards);
         //draw ghost card
         let card = this.board.drawCard();
         //lay ghost on player board
@@ -37,8 +38,7 @@ class Game {
         } else {
             //pick place on player board
             let emptyPlaces = this.board.playersBoards[this.actualPlayer].getEmptyPlaces();           
-            //io.sockets.emit('test', emptyPlaces);
-            io.of('/').emit('test', emptyPlaces);
+socket.emit('ghost pick field', emptyPlaces);
         }
         let actualPlayerColor = this.players.taoists[this.actualPlayer].color.key;
         for(let pb of this.board.playersBoards) {
