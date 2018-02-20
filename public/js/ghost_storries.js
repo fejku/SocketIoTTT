@@ -1,8 +1,3 @@
-// let ColorEnum = require()
-// let Thaoist = require('/ghost_storries/Thaoist').Thaoist;
-
-// let thaoist = new Thaoist();
-
 $(function () {
     var socket = io();
 
@@ -18,13 +13,15 @@ $(function () {
         }
     });
 
-    socket.on('ghost pick field', (emptyPlaces, fn) => {
-        console.log('ghost pick field', emptyPlaces);
-        $('.field')
-            .filter((i,e) => JSON.parse(e.value).color === emptyPlaces.color)
-            .on('click', (e) => {
-                console.log(e.currentTarget.value)
-                fn(JSON.parse(e.currentTarget.value))
-            })
+    socket.on('ghost pick field', (emptyFields, fn) => {
+        console.log('ghost pick field', emptyFields);
+        for(let playerEmptyFields of emptyFields)
+            $('.field')
+                .filter((i,e) => JSON.parse(e.value).color === playerEmptyFields.color)
+                .css('color', 'white')
+                .on('click', (e) => {
+                    console.log(e.currentTarget.value)
+                    fn(JSON.parse(e.currentTarget.value))
+                })
     });
 });

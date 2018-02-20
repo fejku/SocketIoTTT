@@ -1,21 +1,21 @@
 class PlayerBoard {
     constructor() {
         this.color;
-        this.cards = [null, null, null];
+        this.fields = [null, null, null];
     }
 
     isBoardFull() {
-        for(let card of this.cards)
+        for(let card of this.fields)
             if(card === null)
                 return false;
         return true;
     }
 
-    getEmptyPlaces() {
-        let result =  {color: this.color.key, places: []};
-        for(let i = 0; i < this.cards.length; i++)
-            if(this.cards[i] === null)
-                result.places.push(i);
+    getEmptyFields() {
+        let result =  {color: this.color.key, fields: []};
+        for(let i = 0; i < this.fields.length; i++)
+            if(this.fields[i] === null)
+                result.fields.push(i);
         return result;
     }
 }

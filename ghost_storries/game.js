@@ -25,61 +25,50 @@ class Game {
         socket.emit('ghost init board', this.board.playersBoards);
         //draw ghost card
         let card = this.board.drawCard();
+        console.log(card)
         //lay ghost on player board
         //all fields on all boards are full
-        if(this.board.isAllBoardsFull()) {
+        if (this.board.isAllBoardsFull()) {
             this.players.taoists[this.actualPlayer].loseQi();
             this.bank.updateMarkers(this.players.taoists);
         } else {
-            
-            if(card.color.key === FiveColors.BLACK) {
-                if(this.board.playersBoards[this.actualPlayer].isBoardFull()) {
-                    let emptyPlaces = [];
-                    for(let playerBoard of this.board.playersBoards)
-                        if(!playerBoard.isBoardFull())
-                            emptyPlaces.push(playerBoard.getEmptyPlaces());
-                } else {
-                    let emptyPlaces = this.board.playersBoards[this.actualPlayer].getEmptyPlaces();           
-                    socket.emit('ghost pick field', emptyPlaces, (pickedField) => {
-                        if((emptyPlaces.color === pickedField.color) && (emptyPlaces.places.indexOf(pickedField.field) !== -1)) {
-                            this.board.getPlayerBoard(pickedField.color).cards[pickedField.field] = card;
-                            card.leftStoneAction();
-                        }
-        console.log(this.board.getPlayerBoard(pickedField.color));
-                    });
-                }
+            //Black card on active player board
+            // if (card.color.key === FiveColors.BLACK) {
+            //Active player board full
+            if (this.board.playersBoards[this.actualPlayer].isBoardFull()) {
+                let emptyFields = [];
+                for (let playerBoard of this.board.playersBoards)
+                    if (!playerBoard.isBoardFull())
+                        emptyFields.push(playerBoard.getEmptyFields());
+                this.pickFieldForCard(socket, emptyFields, this.board, card)
+                //There is place on active player board
             } else {
-
+                let emptyFields = [this.board.playersBoards[this.actualPlayer].getEmptyFields()];
+                this.pickFieldForCard(socket, emptyFields, this.board, card);
             }
-            if(this.board.getPlayerBoardByColor(card.color.key).isBoardFull())
-            console.log(card.color.key);
+            // } else {
+
+            // }
+            if (this.board.getPlayerBoardByColor(card.color.key).isBoardFull())
+                console.log(card.color.key);
         }
-        
-//         else if(this.board.playersBoards[this.actualPlayer].isBoardFull()) {
-//             //pick place on any board
-//             let emptyPlaces = [];
-//             for(let playerBoard of this.board.playersBoards) {
-//                 if(!playerBoard.isBoardFull()) {
-//                     emptyPlaces.push(playerBoard.getEmptyPlaces());
-//                 }                
-//             }
-//         } else {
-//             //pick place on player board
-//             let emptyPlaces = this.board.playersBoards[this.actualPlayer].getEmptyPlaces();           
-//             socket.emit('ghost pick field', emptyPlaces, (pickedField) => {
-//                 if((emptyPlaces.color === pickedField.color) && (emptyPlaces.places.indexOf(pickedField.field) !== -1)) {
-//                     this.board.getPlayerBoard(pickedField.color).cards[pickedField.field] = card;
-//                     card.
-//                 }
-// console.log(this.board.getPlayerBoard(pickedField.color));
-//             });
-//         }
-//         let actualPlayerColor = this.players.taoists[this.actualPlayer].color.key;
-//         for(let pb of this.board.playersBoards) {
-//             if (pb.color.key == actualPlayerColor) {
-//                 pb.cards[0] = card;
-//             }
-//         }
+    }
+
+    pickFieldForCard(socket, emptyFields, board, card) {
+        socket.emit('ghost pick field', emptyFields, (pickedField) => {
+            if (this.walidatePickedField(emptyFields, pickedField)) {
+                board.getPlayerBoardByColor(pickedField.color).cards[pickedField.field] = card;
+                card.leftStoneAction();
+            }
+            console.log(board.getPlayerBoardByColor(pickedField.color));
+        });
+    }
+
+    walidatePickedField(emptyFields, pickedField) {     
+        for (let emptyField of emptyFields)
+            if ((emptyField.color === pickedField.color) && (emptyField.fields.indexOf(pickedField.field) !== -1))
+                return true;
+        return false;
     }
 }
 module.exports = new Game();
