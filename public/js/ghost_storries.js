@@ -11,21 +11,20 @@ $(function () {
     socket.on('ghost init board', (playersBoards) => {
         console.log('ghost players board', playersBoards);
         for(let i = 0; i < playersBoards.length; i++) {
-            let test = JSON.stringify({color: playersBoards[i].color, field: i});
-            $('.player' + (i + 1)).val(test);    
+            for(let j = 0; j < 3; j++) {
+                let fieldValue = JSON.stringify({color: playersBoards[i].color, field: j});
+                $('.player' + i + '.field' + j).val(fieldValue);
+            }
         }
-        // for(let i = 0; i < playersBoards.length; i++)
-        //     $('.field' + (i + 1)).append(' '+ i);
     });
 
-    socket.on('ghost pick field', (emptyPlaces) => {
+    socket.on('ghost pick field', (emptyPlaces, fn) => {
         console.log('ghost pick field', emptyPlaces);
-        $('.field').each(() => {console.log($(this).val())});
-        //$('.field').css('color', 'green').filter(() => {return JSON.parse(this.value).color === emptyPlaces.color}).css('color', 'red');
-        // $('.field[value="' + emptyPlaces.color + '"]').on('click', () => {
-        //     alert('1');
-        //     // let test = $(this).val();
-        //     // console.log('test', test);
-        // });
+        $('.field')
+            .filter((i,e) => JSON.parse(e.value).color === emptyPlaces.color)
+            .on('click', (e) => {
+                console.log(e.currentTarget.value)
+                fn(JSON.parse(e.currentTarget.value))
+            })
     });
 });

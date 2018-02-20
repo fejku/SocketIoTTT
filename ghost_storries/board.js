@@ -64,6 +64,13 @@ class Board {
         }
         return true;
     }
+
+    getPlayerBoardByColor(color) {
+        for(let playerBoard of this.playersBoards){
+            if(playerBoard.color.key === color)
+                return playerBoard;
+        }
+    }
 }
 
 module.exports = Board;
