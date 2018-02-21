@@ -1,5 +1,5 @@
 let Ghost = require('./ghost');
-let FiveColors = require('../enums/color-enum').FiveColors;
+let FiveColors = require('../enums/color').FiveColors;
 
 class Ghoul extends Ghost {
     constructor () {

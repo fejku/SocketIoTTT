@@ -1,4 +1,4 @@
-let Colors = require('./enums/color-enum').FiveColors;
+let Colors = require('./enums/color').FiveColors;
 
 class Taoist {
     constructor(color) {

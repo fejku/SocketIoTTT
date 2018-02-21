@@ -1,5 +1,5 @@
-let FourColors = require('./enums/color-enum').FourColors;
-let FiveColors = require('./enums/color-enum').FiveColors;
+let FourColors = require('./enums/color').FourColors;
+let FiveColors = require('./enums/color').FiveColors;
 
 const QI_MARKERS_AMOUNT = 20;
 const TAO_MARKERS_AMOUNT = 4;
