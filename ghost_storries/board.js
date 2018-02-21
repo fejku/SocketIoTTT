@@ -1,5 +1,5 @@
 let arrayShuffle = require('array-shuffle');
-let Colors = require('./enums/color-enum').FiveColors;
+let Colors = require('./enums/color').FiveColors;
 
 class Board {
     constructor() {
@@ -40,10 +40,11 @@ class Board {
     }
 
     _initGhostCards() {
-        let Ghost = require('./ghost');
+        let Ghoul = require('./ghosts/ghoul');
+        let WalkingCorpse = require('./ghosts/walking_corpse');
 
-        return arrayShuffle([new Ghost('G1', Colors.RED, 2),
-            new Ghost('G2', Colors.BLUE, 3)
+        return arrayShuffle([new Ghoul(),
+            new WalkingCorpse()
         ]);
     }
 
@@ -70,6 +71,40 @@ class Board {
             if(playerBoard.color.key === color)
                 return playerBoard;
         }
+    }
+
+    getPlayerBoardById(id) {
+        return this.playersBoards[id];
+    }
+
+    getEmptyFields(boards, playerBoard) {
+        let emptyFields = [];
+        if (playerBoard.isBoardFull()) {                   
+            for (let board of boards)
+                if (!board.isBoardFull())
+                    emptyFields.push(board.getEmptyFields());
+            return emptyFields;
+        } else {
+            emptyFields.push(playerBoard.getEmptyFields());
+            return emptyFields;
+        }
+    }
+
+    pickFieldForCard(socket, emptyFields, board, card) {
+        socket.emit('ghost pick field', emptyFields, (pickedField) => {
+            if (this._walidatePickedField(emptyFields, pickedField)) {
+                board.getPlayerBoardByColor(pickedField.color).fields[pickedField.field] = card;
+                card.immediateEffect();
+            }
+            console.log(board.getPlayerBoardByColor(pickedField.color));
+        });
+    }
+
+    _walidatePickedField(emptyFields, pickedField) {
+        for (let emptyField of emptyFields)
+            if ((emptyField.color === pickedField.color) && (emptyField.fields.indexOf(pickedField.field) !== -1))
+                return true;
+        return false;
     }
 }
 

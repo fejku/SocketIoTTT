@@ -18,7 +18,7 @@ $(function () {
         for(let playerEmptyFields of emptyFields)
             $('.field')
                 .filter((i,e) => JSON.parse(e.value).color === playerEmptyFields.color)
-                .css('color', 'white')
+                .css('color', 'red')
                 .on('click', (e) => {
                     console.log(e.currentTarget.value)
                     fn(JSON.parse(e.currentTarget.value))

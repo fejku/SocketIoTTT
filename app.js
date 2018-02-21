@@ -14,32 +14,6 @@ var board = new Board();
 
 //Ghost stories
 let game = require('./ghost_storries/game');
-// game.start();
-// console.log(game.board);
-// console.log(game.players);
-
-
-//test
-// let Color = require('./ghost_storries/enums/color-enum');
-// let Thaoist = require('./ghost_storries/Thaoist');
-// let ghostBoard = require('./ghost_storries/board');
-
-// let thaoist = new Thaoist(Color);
-
-// ghostBoard.initBoard();
-
-// console.log(ghostBoard.villagers);
-// console.log(ghostBoard.playersBoards);
-//console.log(GhostBoard);
-//console.log(test);
-//let test = new Thaoist(Color.ZOLTY);
-// let test = require('./ghost_storries/enums/color-enum');
-// test.enums.forEach(function(enumItem) {
-//     console.log(enumItem.key);
-//   });
-// console.log(test.ZOLTY.key);
-// console.log(test.get('ZOLTY'));
-//test
 
 app.use(express.static('public'))
 
@@ -75,9 +49,9 @@ app.get('/ghost_storries', function(req, res) {
 
 io.on('connection', function (socket) {
 
-socket.on('ghost start', function() {
-    game.start(io, socket);
-})
+    socket.on('ghost start', function() {
+        game.start(io, socket);
+    })
 
     //save user id in localStorage, prevent changing id after refresh
     socket.on('userId', function(userId) {
