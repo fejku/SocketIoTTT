@@ -47,6 +47,14 @@ class Players {
     pickMove(socket, availableMoves) {
         return playersUtils.pickMove(socket, availableMoves);
     }
+
+    makeDecision(socket) {
+        return new Promise((resolve, reject) => {
+            socket.emit('ghost player decision', decision => {
+                resolve(decision);
+            })
+        });
+    }
 }
 
 module.exports = Players;

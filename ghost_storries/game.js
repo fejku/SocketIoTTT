@@ -3,6 +3,7 @@ let Players = require('./players/players');
 let Bank = require('./bank')
 
 let FiveColors = require('./enums/color').FiveColors;
+let Decision = require('./enums/decision');
 
 class Game {
     constructor() {
@@ -35,12 +36,12 @@ class Game {
             //Black card on active player board
             if (card.color.key === FiveColors.BLACK) {
                 //Get empty fields from actual player
-                emptyFields = this.board.getEmptyFields(this.board.playersBoards, 
+                emptyFields = this.board.getEmptyFields(this.board.playersBoards,
                     this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()));
-            //Other than black color
+                //Other than black color
             } else {
                 //Get empty fields from player whose color is same as card color
-                emptyFields = this.board.getEmptyFields(this.board.playersBoards, 
+                emptyFields = this.board.getEmptyFields(this.board.playersBoards,
                     this.board.getPlayerBoardByColor(card.color.key));
             }
             //Pick field for card
@@ -50,21 +51,27 @@ class Game {
             console.log(this.board.getPlayerBoardByColor(pickedField.color));
             card.immediateEffect();
         }
-        
+
         //Player phase
         //Player move
         let availableMoves = this.players.getAvailableMoves(this.players.getActualPlayer().getPosition());
         let pickedMove = await this.players.pickMove(socket, availableMoves);
-        this.players.getActualPlayer().move(pickedMove);
-        //Step 2
-        //let villagerHelpDecision = await this.players.
-        //Help from villager
-
-        //Attempt an exorcism
-        //Step 3
-
         console.log(availableMoves);
         console.log(pickedMove);
+        this.players.getActualPlayer().move(pickedMove);
+        //Step 2
+        let decision = await this.players.makeDecision(socket);
+        console.log(decision);
+        switch (decision) {
+            //Help from villager
+            case Decision.VILLAGER_HELP.key:
+                this.board.villagers[this.players.getActualPlayer().getPosition()].action();
+                break;
+                //Attempt an exorcism    
+            case Decision.EXORCISM.key:
+                break;
+        }
+        //Step 3
     }
 }
 module.exports = new Game();
