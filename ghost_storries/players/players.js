@@ -1,4 +1,8 @@
 let arrayShuffle = require('array-shuffle');
+let playersUtils = require('./players_utils');
+
+let Colors = require('../enums/color').FourColors;
+let Taoist = require('./taoist');
 
 class Players {
     constructor() {
@@ -7,8 +11,6 @@ class Players {
     }
 
     _initTaoist() {
-        let Colors = require('./enums/color').FourColors;
-        let Taoist = require('./taoist');
         return arrayShuffle([new Taoist(Colors.GREEN),
             new Taoist(Colors.YELLOW),
             new Taoist(Colors.RED),
@@ -36,6 +38,14 @@ class Players {
         for(let player of this.taoists)
             if(player.color === color)
                 return player;
+    }
+
+    getAvailableMoves(actualField) {
+        return playersUtils.getAvailableMoves(actualField);
+    }
+
+    pickMove(socket, availableMoves) {
+        return playersUtils.pickMove(socket, availableMoves);
     }
 }
 

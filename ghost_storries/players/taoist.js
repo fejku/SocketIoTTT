@@ -1,4 +1,4 @@
-let Colors = require('./enums/color').FiveColors;
+let Colors = require('../enums/color').FiveColors;
 
 class Taoist {
     constructor(color) {
@@ -6,6 +6,7 @@ class Taoist {
         this.qiMarkers = 4;
         this.jinJangMarker = 1;
         this.taoMarkers = this._initTaoMarkers();
+        this.position = 4;
     }
     
     _initTaoMarkers() {
@@ -21,7 +22,14 @@ class Taoist {
 
     loseQi() {
         this.qiMarkers--;
+    }
 
+    getPosition() {
+        return this.position;
+    }
+
+    move(pickedMove) {
+        this.position = pickedMove;
     }
 }
 

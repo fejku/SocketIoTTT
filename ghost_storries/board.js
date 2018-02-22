@@ -90,19 +90,18 @@ class Board {
         }
     }
 
-    pickFieldForCard(socket, emptyFields, board, card) {
+    pickFieldForCard(socket, emptyFields) {
         return new Promise((resolve, reject) => {
-            socket.emit('ghost pick field', emptyFields, (pickedField) => {
-                if (this._walidatePickedField(emptyFields, pickedField)) {
-                    board.getPlayerBoardByColor(pickedField.color).fields[pickedField.field] = card;
-                }
-                console.log(board.getPlayerBoardByColor(pickedField.color));
-                resolve();
+            socket.emit('ghost pick field', emptyFields, pickedField => {
+                if (this._validatePickedField(emptyFields, pickedField))
+                    resolve(pickedField);
+                else
+                    reject();
             });
         });
     }
 
-    _walidatePickedField(emptyFields, pickedField) {
+    _validatePickedField(emptyFields, pickedField) {
         for (let emptyField of emptyFields)
             if ((emptyField.color === pickedField.color) && (emptyField.fields.indexOf(pickedField.field) !== -1))
                 return true;
