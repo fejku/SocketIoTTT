@@ -19,7 +19,7 @@ class Game {
         this.bank.initBank();
     }
 
-    start(io, socket) {
+    async start(io, socket) {
         this.init(socket);
         socket.emit('ghost init board', this.board.playersBoards);
         //draw ghost card
@@ -40,7 +40,10 @@ class Game {
                 emptyFields = this.board.getEmptyFields(this.board.playersBoards, 
                     this.board.getPlayerBoardByColor(card.color.key));
             }
-            this.board.pickFieldForCard(socket, emptyFields, this.board, card);
+            await this.board.pickFieldForCard(socket, emptyFields, this.board, card, this.testcb);
+            card.immediateEffect();
+            //test
+            console.log('after callback??');
         }
     }
 }

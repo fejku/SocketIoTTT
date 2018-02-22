@@ -18,8 +18,8 @@ class Board {
         let SorcererHut = require('./villagers/sorcerer_hut');
         let CircleOfPryer = require('./villagers/circle_of_prayer');
 
-        return arrayShuffle([new Cemetery(), 
-            new TaoistAltar(), 
+        return arrayShuffle([new Cemetery(),
+            new TaoistAltar(),
             new HerbalistShop(),
             new SorcererHut(),
             new CircleOfPryer()
@@ -59,16 +59,16 @@ class Board {
     }
 
     isAllBoardsFull() {
-        for(let board of this.playersBoards) {
-            if(!board.isBoardFull())
+        for (let board of this.playersBoards) {
+            if (!board.isBoardFull())
                 return false;
         }
         return true;
     }
 
     getPlayerBoardByColor(color) {
-        for(let playerBoard of this.playersBoards){
-            if(playerBoard.color.key === color)
+        for (let playerBoard of this.playersBoards) {
+            if (playerBoard.color.key === color)
                 return playerBoard;
         }
     }
@@ -79,7 +79,7 @@ class Board {
 
     getEmptyFields(boards, playerBoard) {
         let emptyFields = [];
-        if (playerBoard.isBoardFull()) {                   
+        if (playerBoard.isBoardFull()) {
             for (let board of boards)
                 if (!board.isBoardFull())
                     emptyFields.push(board.getEmptyFields());
@@ -91,12 +91,14 @@ class Board {
     }
 
     pickFieldForCard(socket, emptyFields, board, card) {
-        socket.emit('ghost pick field', emptyFields, (pickedField) => {
-            if (this._walidatePickedField(emptyFields, pickedField)) {
-                board.getPlayerBoardByColor(pickedField.color).fields[pickedField.field] = card;
-                card.immediateEffect();
-            }
-            console.log(board.getPlayerBoardByColor(pickedField.color));
+        return new Promise((resolve, reject) => {
+            socket.emit('ghost pick field', emptyFields, (pickedField) => {
+                if (this._walidatePickedField(emptyFields, pickedField)) {
+                    board.getPlayerBoardByColor(pickedField.color).fields[pickedField.field] = card;
+                }
+                console.log(board.getPlayerBoardByColor(pickedField.color));
+                resolve();
+            });
         });
     }
 
