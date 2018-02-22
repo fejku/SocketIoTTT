@@ -20,16 +20,6 @@
     border: 1px black solid;
 }
 
-/* .board-row:nth-of-type(2n+1) .field:nth-of-type(2) {
-    border-left: 1px black solid;
-    border-right: 1px black solid;
+.decision {
+    display: none;
 }
-
-.board-row:nth-of-type(2) .field:nth-of-type(2n+1) {
-    border-top: 1px black solid;
-    border-bottom: 1px black solid;
-}
-
-.board-row:nth-of-type(2) .field:nth-of-type(2) {
-    border: 1px black solid;
-} */

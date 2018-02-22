@@ -25,11 +25,13 @@ class Game {
         socket.emit('ghost init board', this.board.playersBoards);
 
         //Ghost phase
-        //All fields on all boards are full
-        if (this.board.isAllBoardsFull()) {
+        //Step 1 - Ghosts’ actions
+        //Step 2 - Check board overrun
+        if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
             this.players.getActualPlayer().loseQi();
             this.bank.updateMarkers(this.players.taoists);
         } else {
+            //Step 3 - Ghost arrival
             //Draw ghost card
             let card = this.board.drawCard();
             let emptyFields = [];
@@ -53,13 +55,15 @@ class Game {
         }
 
         //Player phase
-        //Player move
+        //Step 1 - Player move
         let availableMoves = this.players.getAvailableMoves(this.players.getActualPlayer().getPosition());
         let pickedMove = await this.players.pickMove(socket, availableMoves);
         console.log(availableMoves);
         console.log(pickedMove);
         this.players.getActualPlayer().move(pickedMove);
-        //Step 2
+        //Step 2 - Help from villager or exorcism
+        //Check if villager help is possible
+        //Check if exorcism id possible
         let decision = await this.players.makeDecision(socket);
         console.log(decision);
         switch (decision) {

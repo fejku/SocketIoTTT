@@ -42,9 +42,11 @@ $(function () {
 
     socket.on('ghost player decision', fn => {
         console.log('ghost player decision');
-        $('.decision').on('click', e => {
-            console.log(e.currentTarget.value);
-            fn(e.currentTarget.value);
+        $('.decision')
+            .show()
+            .on('click', e => {
+                console.log(e.currentTarget.value);
+                fn(e.currentTarget.value);
         })
     })
 });

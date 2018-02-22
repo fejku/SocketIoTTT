@@ -19,10 +19,10 @@ class Board {
         let CircleOfPryer = require('./villagers/circle_of_prayer');
 
         return arrayShuffle([new Cemetery(),
-            new TaoistAltar(),
-            new HerbalistShop(),
-            new SorcererHut(),
-            new CircleOfPryer()
+            // new TaoistAltar(),
+            // new HerbalistShop(),
+            // new SorcererHut(),
+            // new CircleOfPryer()
         ]);
     }
 
