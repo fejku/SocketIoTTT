@@ -62,8 +62,13 @@ class Game {
         console.log(pickedMove);
         this.players.getActualPlayer().move(pickedMove);
         //Step 2 - Help from villager or exorcism
+        let availableDecisions = [];
         //Check if villager help is possible
+        if (this.board.villagers[this.players.getActualPlayer().getPosition()].validateHelp(this.board, this.players, this.bank))
+            availableDecisions.push(Decision.VILLAGER_HELP.key)
         //Check if exorcism id possible
+        if (this.players.getActualPlayer().validateExorcism(this.board))
+            availableDecisions.push(Decision.EXORCISM.key)
         let decision = await this.players.makeDecision(socket);
         console.log(decision);
         switch (decision) {

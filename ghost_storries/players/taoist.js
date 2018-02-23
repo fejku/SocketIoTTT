@@ -8,7 +8,7 @@ class Taoist {
         this.taoMarkers = this._initTaoMarkers();
         this.position = 4;
     }
-    
+
     _initTaoMarkers() {
         let taoMarkers = {};
         for (let colorItem of Colors.enums) {
@@ -30,6 +30,26 @@ class Taoist {
 
     move(pickedMove) {
         this.position = pickedMove;
+    }
+
+    isAlive() {
+        return this.qiMarkers > 0;
+    }
+
+    validateExorcism(board) {
+        switch (this.position) {
+            case 0:
+                if ((board.playersBoards[0].fields[0] !== null) ||
+                    ((board.playersBoards[0].fields[1] !== null)) ||
+                    (board.playersBoards[3].fields[0] !== null) ||
+                    (board.playersBoards[3].fields[1] !== null))
+                    return true
+                return false;
+            case 1:
+                //if ()
+            default:
+                return false;
+        }
     }
 }
 
