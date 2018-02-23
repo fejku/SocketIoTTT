@@ -1,4 +1,5 @@
 let Colors = require('../enums/color').FiveColors;
+let playersUtils = require('./players_utils');
 
 class Taoist {
     constructor(color) {
@@ -20,6 +21,10 @@ class Taoist {
         return taoMarkers;
     }
 
+    gainQi(amount) {
+        this.qiMarkers += amount;
+    }
+
     loseQi() {
         this.qiMarkers--;
     }
@@ -36,20 +41,8 @@ class Taoist {
         return this.qiMarkers > 0;
     }
 
-    validateExorcism(board) {
-        switch (this.position) {
-            case 0:
-                if ((board.playersBoards[0].fields[0] !== null) ||
-                    ((board.playersBoards[0].fields[1] !== null)) ||
-                    (board.playersBoards[3].fields[0] !== null) ||
-                    (board.playersBoards[3].fields[1] !== null))
-                    return true
-                return false;
-            case 1:
-                //if ()
-            default:
-                return false;
-        }
+    validateExorcism(playersBoards) {
+        return playersUtils.isGhostInRange(playersBoards, this.position);
     }
 }
 

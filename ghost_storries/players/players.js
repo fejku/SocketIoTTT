@@ -48,9 +48,9 @@ class Players {
         return playersUtils.pickMove(socket, availableMoves);
     }
 
-    makeDecision(socket) {
+    makeDecision(socket, availableDecisions) {
         return new Promise((resolve, reject) => {
-            socket.emit('ghost player decision', decision => {
+            socket.emit('ghost player decision', availableDecisions, decision => {
                 resolve(decision);
             })
         });

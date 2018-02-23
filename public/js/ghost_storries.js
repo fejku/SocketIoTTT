@@ -20,9 +20,14 @@ $(function () {
         console.log('ghost pick field', emptyFields);
         for (let playerEmptyFields of emptyFields)
             $('.field')
-            .filter((i, e) => JSON.parse(e.value).color === playerEmptyFields.color)
+            .filter((i, e) => ((JSON.parse(e.value).color === playerEmptyFields.color) &&
+                (playerEmptyFields.fields.indexOf(JSON.parse(e.value).field) !== -1)))
             .css('color', 'red') //test
             .on('click', e => {
+                //Remove all click handlers
+                $('.field')
+                    .off('click')
+                    .css('color', 'black'); //test
                 console.log(e.currentTarget.value);
                 fn(JSON.parse(e.currentTarget.value));
             });
@@ -34,19 +39,28 @@ $(function () {
             .filter((i, e) => availableMoves.indexOf(parseInt(e.value)) !== -1)
             .css('color', 'green')
             .on('click', e => {
+                //Remove all click handlers
+                $('.villager')
+                    .off('click')
+                    .css('color', 'black'); //test
                 console.log(e.currentTarget.value);
                 fn(parseInt(e.currentTarget.value));
             });
 
     });
 
-    socket.on('ghost player decision', fn => {
-        console.log('ghost player decision');
+    socket.on('ghost player decision', (availableDecisions, fn) => {
+        console.log('ghost player decision', availableDecisions);
         $('.decision')
+            .filter((i, e) => availableDecisions.indexOf(e.value) !== -1)
             .show()
             .on('click', e => {
+                //Remove all click handlers
+                $('.decision')
+                .off('click')
+                .hide(); //test
                 console.log(e.currentTarget.value);
                 fn(e.currentTarget.value);
-        })
+            })
     })
 });

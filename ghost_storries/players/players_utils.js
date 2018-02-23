@@ -32,3 +32,62 @@ module.exports.pickMove = (socket, availableMoves) => {
         });
     });
 };
+
+module.exports.isGhostInRange = (playersBoards, position) => {
+    switch (position) {
+        case 0:
+            if ((playersBoards[0].fields[0] !== null) ||
+                ((playersBoards[0].fields[1] !== null)) ||
+                (playersBoards[3].fields[0] !== null) ||
+                (playersBoards[3].fields[1] !== null))
+                return true
+            return false;
+        case 1:
+            if ((playersBoards[0].fields[0] !== null) ||
+                ((playersBoards[0].fields[1] !== null)) ||
+                (playersBoards[0].fields[2] !== null))
+                return true
+            return false;
+        case 2:
+            if ((playersBoards[0].fields[1] !== null) ||
+                ((playersBoards[0].fields[2] !== null)) ||
+                (playersBoards[1].fields[0] !== null) ||
+                (playersBoards[1].fields[1] !== null))
+                return true
+            return false;
+        case 3:
+            if ((playersBoards[3].fields[0] !== null) ||
+                ((playersBoards[3].fields[1] !== null)) ||
+                (playersBoards[3].fields[2] !== null))
+                return true
+            return false;
+        case 5:
+            if ((playersBoards[1].fields[0] !== null) ||
+                ((playersBoards[1].fields[1] !== null)) ||
+                (playersBoards[1].fields[2] !== null))
+                return true
+            return false;
+        case 6:
+            if ((playersBoards[3].fields[1] !== null) ||
+                ((playersBoards[3].fields[2] !== null)) ||
+                (playersBoards[2].fields[0] !== null) ||
+                (playersBoards[2].fields[1] !== null))
+                return true
+            return false;
+        case 7:
+            if ((playersBoards[2].fields[0] !== null) ||
+                ((playersBoards[2].fields[1] !== null)) ||
+                (playersBoards[2].fields[2] !== null))
+                return true
+            return false;
+        case 8:
+            if ((playersBoards[1].fields[1] !== null) ||
+                ((playersBoards[3].fields[2] !== null)) ||
+                (playersBoards[2].fields[1] !== null) ||
+                (playersBoards[2].fields[2] !== null))
+                return true
+            return false;
+        default:
+            return false;
+    }
+}

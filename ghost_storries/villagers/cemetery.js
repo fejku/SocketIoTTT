@@ -11,8 +11,16 @@ class Cemetery extends Villager {
     validateHelp(board, players, bank) {
         for (let taoist of players.taoists)
             if (!taoist.isAlive())
-                return false;
-        return true;        
+                return true;
+        return false;        
+    }
+
+    action(socket, board, players, bank) {
+        let player; //TODO: pick player who you want to revivew
+        //If there are two Qi markers in bank
+        player.gainQi(2);
+        bank.updateMarkers();
+        players.getActualPlayer()
     }
 }
 

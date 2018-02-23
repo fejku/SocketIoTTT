@@ -58,29 +58,33 @@ class Game {
         //Step 1 - Player move
         let availableMoves = this.players.getAvailableMoves(this.players.getActualPlayer().getPosition());
         let pickedMove = await this.players.pickMove(socket, availableMoves);
-        console.log(availableMoves);
-        console.log(pickedMove);
+        console.log('availableMoves', availableMoves);
+        console.log('pickedMove', pickedMove);
         this.players.getActualPlayer().move(pickedMove);
         //Step 2 - Help from villager or exorcism
         let availableDecisions = [];
         //Check if villager help is possible
         if (this.board.villagers[this.players.getActualPlayer().getPosition()].validateHelp(this.board, this.players, this.bank))
             availableDecisions.push(Decision.VILLAGER_HELP.key)
-        //Check if exorcism id possible
-        if (this.players.getActualPlayer().validateExorcism(this.board))
+        //Check if exorcism is possible
+        if (this.players.getActualPlayer().validateExorcism(this.board.playersBoards))
             availableDecisions.push(Decision.EXORCISM.key)
-        let decision = await this.players.makeDecision(socket);
-        console.log(decision);
-        switch (decision) {
-            //Help from villager
-            case Decision.VILLAGER_HELP.key:
-                this.board.villagers[this.players.getActualPlayer().getPosition()].action();
-                break;
-                //Attempt an exorcism    
-            case Decision.EXORCISM.key:
-                break;
+
+        if (availableDecisions.length > 0) {
+            let decision = await this.players.makeDecision(socket, availableDecisions);
+            console.log('decision', decision);
+            switch (decision) {
+                //Help from villager
+                case Decision.VILLAGER_HELP.key:
+                    this.board.villagers[this.players.getActualPlayer().getPosition()].action(
+                        socket, this.board, this.players, this.bank);
+                    break;
+                    //Attempt an exorcism    
+                case Decision.EXORCISM.key:
+                    break;
+            }
         }
-        //Step 3
     }
+    //Step 3
 }
 module.exports = new Game();
