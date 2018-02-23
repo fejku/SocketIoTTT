@@ -29,6 +29,11 @@ class Taoist {
         this.qiMarkers--;
     }
 
+    loseAllTaoMarkers() {
+        for (let colorItem of Colors.enums)
+            this.taoMarkers[colorItem.key] = 0;
+    }
+
     getPosition() {
         return this.position;
     }

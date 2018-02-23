@@ -1,6 +1,6 @@
 class Villager {
     constructor() {
-
+        this.haunter = false;
     }   
 }
 
