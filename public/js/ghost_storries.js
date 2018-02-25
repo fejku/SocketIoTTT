@@ -3,7 +3,7 @@ $(function () {
 
     socket.emit('ghost start');
 
-    socket.on('ghost init board', (playersBoards) => {
+    socket.on('ghost init board', (playersBoards, villagers) => {
         console.log('ghost players board', playersBoards);
         for (let i = 0; i < playersBoards.length; i++) {
             for (let j = 0; j < 3; j++) {
@@ -12,8 +12,13 @@ $(function () {
                     field: j
                 });
                 $('.player' + i + '.field' + j).val(fieldValue);
-            }
+            };
+        };
+        console.log(villagers);
+        for(let i = 0; i < villagers.length; i++) {
+            $('.villager').filter((i, e) => e.value == i).text(villagers[i].name);
         }
+        init();
     });
 
     socket.on('ghost pick field', (emptyFields, fn) => {
@@ -57,10 +62,30 @@ $(function () {
             .on('click', e => {
                 //Remove all click handlers
                 $('.decision')
-                .off('click')
-                .hide(); //test
+                    .off('click')
+                    .hide(); //test
                 console.log(e.currentTarget.value);
                 fn(e.currentTarget.value);
-            })
-    })
+            });
+    });
+
+    socket.on('ghost pick tile to haunt', (availableTilesToHaunt, fn) => {
+        console.log('ghost pick tile to haunt', availableTilesToHaunt);
+        $('.villager')
+            .filter((i, e) => availableTilesToHaunt.indexOf(e.value) !== -1)
+            .css('color', 'red')
+            .on('click', e => {
+                //Remove all click handlers
+                $('.villager')
+                    .off()
+                    .css('color', 'black');
+                console.log(e.currentTarget.value);
+                fn(e.currentTarget.value);
+            });
+    });
+
+    function init() {
+        $('button[class*="player"]').each((i, e) => $(e).css('background-color', JSON.parse(e.value).color));
+        // $('')
+    }
 });

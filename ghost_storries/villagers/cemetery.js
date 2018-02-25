@@ -23,7 +23,7 @@ class Cemetery extends Villager {
         //If there are two Qi markers in bank
         player.gainQi(2);
         bank.updateMarkers();
-        dice.throwCurseDice(socket, players.getActualPlayer(), bank);
+        dice.throwCurseDiceCemetry(socket, players.getActualPlayer(), bank);
     }
 }
 

@@ -22,7 +22,7 @@ class Game {
 
     async start(io, socket) {
         this.init(socket);
-        socket.emit('ghost init board', this.board.playersBoards);
+        socket.emit('ghost init board', this.board.playersBoards, this.board.villagers);
 
         //Ghost phase
         //Step 1 - Ghosts’ actions
