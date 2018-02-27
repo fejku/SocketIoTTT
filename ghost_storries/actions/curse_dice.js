@@ -51,8 +51,8 @@ async function hauntTile(socket, position, isCemeteryCall) {
     }
 }
 
-function throwCurseDice(socket, activePlayer, bank, isCemeteryCall) {
-    let throwResult = Math.floor(Math.random() * 6);
+function throwCurseDice(socket, players, bank, isCemeteryCall) {
+    let throwResult = 4;//Math.floor(Math.random() * 6);
     switch (throwResult) {
         //(0-1) No effect.
         //The first active village tile in front of the ghost becomes haunted.
@@ -74,6 +74,6 @@ function throwCurseDice(socket, activePlayer, bank, isCemeteryCall) {
     }
 }
 
-module.exports.throwCurseDice = (activePlayer, bank) => throwCurseDice(null, activePlayer, bank, false);
+module.exports.throwCurseDice = (activePlayer, bank) => throwCurseDice(null, players, bank, false);
 
-module.exports.throwCurseDiceCemetry = (socket, activePlayer, bank) => throwCurseDice(socket, activePlayer, bank, true);
+module.exports.throwCurseDiceCemetry = (socket, activePlayer, bank) => throwCurseDice(socket, players, bank, true);

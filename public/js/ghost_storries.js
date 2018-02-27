@@ -85,7 +85,7 @@ $(function () {
     });
 
     socket.on('ghost pick player to review', (deadPlayers, fn) => {
-        for (let deadPlayer of deadPlayers)
+        for (let deadPlayer of deadPlayers) {
             console.log(deadPlayer);
             $('#decisions')
             .append('<button class="dead_player" value="' + deadPlayer.color + '">' + deadPlayer.color + "</button>")
@@ -94,6 +94,7 @@ $(function () {
                 console.log(e.currentTarget.value);
                 fn(e.currentTarget.value);
             });
+        };
     });
 
     function init() {

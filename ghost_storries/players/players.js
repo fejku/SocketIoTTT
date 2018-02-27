@@ -35,8 +35,8 @@ class Players {
     }
 
     getPlayerByColor(color) {
-        for(let player of this.taoists)
-            if(player.color === color)
+        for (let player of this.taoists)
+            if (player.color.key === color)
                 return player;
     }
 
