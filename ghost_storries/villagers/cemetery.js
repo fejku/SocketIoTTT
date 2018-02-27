@@ -1,5 +1,4 @@
 let Villager = require('./villager');
-
 let dice = require('../actions/curse_dice');
 
 //Pośród porosłych chwastami nagrobków grabarz strzeże drzwi pomiędzy królestwami.
@@ -15,11 +14,23 @@ class Cemetery extends Villager {
         for (let taoist of players.taoists)
             if (!taoist.isAlive())
                 return true;
-        return false;        
+        return false;
     }
 
-    action(socket, board, players, bank) {
-        let player; //TODO: pick player who you want to revivew
+    async _pickPlayerToReview(socket, players) {
+        return new Promise((resolve, reject) => {
+            let deadPlayers = players.getDeadPlayers();
+            socket.emit('ghost pick player to review', deadPlayers, pickedPlayerColor => {
+                console.log('BEFORE');
+                let player = players.getPlayerByColor(pickedPlayerColor);
+                resolve(player);
+            });
+        });
+    }
+
+    async action(socket, board, players, bank) {
+        let player = await this._pickPlayerToReview(socket, players);
+        console.log('AFTER');
         //If there are two Qi markers in bank
         player.gainQi(2);
         bank.updateMarkers();

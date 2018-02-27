@@ -55,6 +55,14 @@ class Players {
             })
         });
     }
+
+    getDeadPlayers() {
+        let deadPlayers = [];
+        for (let player of this.taoists)
+            if (!player.isAlive())
+                deadPlayers.push(player);
+        return deadPlayers;
+    }
 }
 
 module.exports = Players;

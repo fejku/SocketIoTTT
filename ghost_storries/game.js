@@ -64,7 +64,7 @@ class Game {
         //Step 2 - Help from villager or exorcism
         let availableDecisions = [];
         //Check if villager help is possible
-        if (this.board.villagers[this.players.getActualPlayer().getPosition()].validateHelp(this.board, this.players, this.bank))
+        //if (this.board.villagers[this.players.getActualPlayer().getPosition()].validateHelp(this.board, this.players, this.bank))
             availableDecisions.push(Decision.VILLAGER_HELP.key)
         //Check if exorcism is possible
         if (this.players.getActualPlayer().validateExorcism(this.board.playersBoards))
@@ -76,6 +76,9 @@ class Game {
             switch (decision) {
                 //Help from villager
                 case Decision.VILLAGER_HELP.key:
+//test
+this.players.taoists[1].qiMarkers = 0;
+this.players.taoists[2].qiMarkers = 0;
                     this.board.villagers[this.players.getActualPlayer().getPosition()].action(
                         socket, this.board, this.players, this.bank);
                     break;

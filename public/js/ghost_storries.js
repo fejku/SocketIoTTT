@@ -15,8 +15,8 @@ $(function () {
             };
         };
         console.log(villagers);
-        for(let i = 0; i < villagers.length; i++) {
-            $('.villager').filter((i, e) => e.value == i).text(villagers[i].name);
+        for (let i = 0; i < villagers.length; i++) {
+            $('.villager').filter((index, e) => e.value == i).text(villagers[i].name);
         }
         init();
     });
@@ -79,6 +79,18 @@ $(function () {
                 $('.villager')
                     .off()
                     .css('color', 'black');
+                console.log(e.currentTarget.value);
+                fn(e.currentTarget.value);
+            });
+    });
+
+    socket.on('ghost pick player to review', (deadPlayers, fn) => {
+        for (let deadPlayer of deadPlayers)
+            console.log(deadPlayer);
+            $('#decisions')
+            .append('<button class="dead_player" value="' + deadPlayer.color + '">' + deadPlayer.color + "</button>")
+            .on('click', '.dead_player', e => {
+                $('.dead_player').remove();
                 console.log(e.currentTarget.value);
                 fn(e.currentTarget.value);
             });
