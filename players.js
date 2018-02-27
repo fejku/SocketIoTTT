@@ -1,68 +1,25 @@
-let arrayShuffle = require('array-shuffle');
-let playersUtils = require('./players_utils');
+function Players(playersList) {
+    //rand active player
+    this.activePlayer = 0;
+    this.playersList = playersList;
+};
 
-let Colors = require('../enums/color').FourColors;
-let Taoist = require('./taoist');
+Players.prototype.getActivePlayer = function() {
+    return this.playersList[this.activePlayer];
+};
 
-class Players {
-    constructor() {
-        this.actualPlayer = 0;
-        this.taoists;
-    }
+Players.prototype.getUnactivePlayer = function() {
+    if (this.activePlayer == 0)
+        return this.playersList[1];
+    else
+        return this.playersList[0];
+};
 
-    _initTaoist() {
-        return arrayShuffle([new Taoist(Colors.GREEN),
-            new Taoist(Colors.YELLOW),
-            new Taoist(Colors.RED),
-            new Taoist(Colors.BLUE)
-        ]);
-    }
-
-    initPlayers() {
-        this.taoists = this._initTaoist();
-    }
-
-    getActualPlayerId() {
-        return this.actualPlayer;
-    }
-
-    getActualPlayerColor() {
-        return this.taoists[this.actualPlayer].color.key;
-    }
-
-    getActualPlayer() {
-        return this.taoists[this.actualPlayer];
-    }
-
-    getPlayerByColor(color) {
-        for(let player of this.taoists)
-            if(player.color === color)
-                return player;
-    }
-
-    getAvailableMoves(actualField) {
-        return playersUtils.getAvailableMoves(actualField);
-    }
-
-    pickMove(socket, availableMoves) {
-        return playersUtils.pickMove(socket, availableMoves);
-    }
-
-    makeDecision(socket, availableDecisions) {
-        return new Promise((resolve, reject) => {
-            socket.emit('ghost player decision', availableDecisions, decision => {
-                resolve(decision);
-            })
-        });
-    }
-
-    getDeadPlayers() {
-        let deadPlayers = [];
-        for (let player of this.taoists)
-            if (!player.isAlive())
-                deadPlayers.push(player);
-        return deadPlayers;
-    }
+Players.prototype.changePlayer = function() {
+    if (this.activePlayer == 0)
+        this.activePlayer = 1;
+    else
+        this.activePlayer = 0;
 }
 
-module.exports = Players;
+exports.Players = Players;
