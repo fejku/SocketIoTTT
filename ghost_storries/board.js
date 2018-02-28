@@ -70,6 +70,14 @@ class Board {
         this.ghostCards = this._initGhostCards();
     }
 
+    getVillagers() {
+        return this.villagers;
+    }
+
+    getVillager(index) {
+        return this.villagers[index];
+    }
+
     drawCard() {
         return this.ghostCards.pop();
     }

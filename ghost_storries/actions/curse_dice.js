@@ -10,61 +10,64 @@ function loseAllTaoTokens(players, bank) {
     bank.updateMarkers(players.getTaoists());
 }
 
-function getAvailableTilesToHaunt(position) {
-    switch (position) {
-        case 0:
-            return [1, 3];
-        case 1:
-            return [0, 2, 4];
-        case 2:
-            return [1, 5];
-        case 3:
-            return [0, 4, 6];
-        case 4:
-            return [1, 3, 5, 7];
-        case 5:
-            return [2, 4, 8];
-        case 6:
-            return [3, 7];
-        case 7:
-            return [4, 6, 8];
-        case 8:
-            return [5, 7];
-    }
-}
+// function getAvailableTilesToHaunt(position) {
+//     switch (position) {
+//         case 0:
+//             return [1, 3];
+//         case 1:
+//             return [0, 2, 4];
+//         case 2:
+//             return [1, 5];
+//         case 3:
+//             return [0, 4, 6];
+//         case 4:
+//             return [1, 3, 5, 7];
+//         case 5:
+//             return [2, 4, 8];
+//         case 6:
+//             return [3, 7];
+//         case 7:
+//             return [4, 6, 8];
+//         case 8:
+//             return [5, 7];
+//     }
+// }
 
-function validatePickedTile(availableTilesToHaunt, pickedTile) {
-    return availableTilesToHaunt.indexOf(pickedTile) !== -1;
-}
+// function validatePickedTile(availableTilesToHaunt, pickedTile) {
+//     return availableTilesToHaunt.indexOf(pickedTile) !== -1;
+// }
 
-function pickTileToHaunt(socket, availableTilesToHaunt) {
-    return new Promise((resolve, reject) => {
-        socket.emit('ghost pick tile to haunt', availableTilesToHaunt, pickedTile => {
-            if (validatePickedTile(availableTilesToHaunt, pickedTile))
-                resolve(pickedTile);
-            else
-                reject();
-        });
-    });
-}
+// function pickTileToHaunt(socket, availableTilesToHaunt) {
+//     return new Promise((resolve, reject) => {
+//         socket.emit('ghost pick tile to haunt', availableTilesToHaunt, pickedTile => {
+//             if (validatePickedTile(availableTilesToHaunt, pickedTile))
+//                 resolve(pickedTile);
+//             else
+//                 reject();
+//         });
+//     });
+// }
 
-async function hauntTile(socket, position, isCemeteryCall) {
+function hauntTile(position, villagers, isCemeteryCall) {
     if (isCemeteryCall) {
-        let availableTilesToHaunt = getAvailableTilesToHaunt(position);
-        let pickedTile = await pickTileToHaunt(socket, availableTilesToHaunt);
-        console.log('pickedTile: ', pickedTile);
+        // let availableTilesToHaunt = getAvailableTilesToHaunt(position);
+        // let pickedTile = await pickTileToHaunt(socket, availableTilesToHaunt);
+        // console.log('pickedTile: ', pickedTile);
+        villagers[position].setHaunted(true);
     } else {
-
+        let q = getTileToHaunt(); //TODO
     }
 }
 
-function throwCurseDice(socket, players, bank, isCemeteryCall) {
+function throwCurseDice(players, villagers, bank, isCemeteryCall) {
     let throwResult = 2;//Math.floor(Math.random() * 6);
     switch (throwResult) {
         //(0-1) No effect.
         //The first active village tile in front of the ghost becomes haunted.
+        //Q : When I use the Cemetery, if “Haunt Tile” is rolled on the Curse Die, which tile becomes haunted?
+        //A : The Cemetery itself.
         case 2:
-            hauntTile(socket, players.getActualPlayer().getPosition(), isCemeteryCall);
+            hauntTile(players.getActualPlayer().getPosition(), villagers, isCemeteryCall);
             break;
             //The player must bring a ghost into play according to the placement rules.
         case 3:
@@ -81,6 +84,6 @@ function throwCurseDice(socket, players, bank, isCemeteryCall) {
     }
 }
 
-module.exports.throwCurseDice = (players, bank) => throwCurseDice(null, players, bank, false);
+module.exports.throwCurseDice = (players, villagers, bank) => throwCurseDice(players, villagers, bank, false);
 
-module.exports.throwCurseDiceCemetry = (socket, players, bank) => throwCurseDice(socket, players, bank, true);
+module.exports.throwCurseDiceCemetry = (players, villagers, bank) => throwCurseDice(players, villagers, bank, true);

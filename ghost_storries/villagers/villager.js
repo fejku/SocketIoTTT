@@ -1,7 +1,15 @@
 class Villager {
     constructor() {
-        this.haunter = false;
+        this.haunted = false;
     }   
+
+    getHaunted() {
+        return this.haunted;
+    }
+
+    setHaunted(haunted) {
+        this.haunted = haunted;
+    }
 }
 
 module.exports = Villager;
