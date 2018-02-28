@@ -1,11 +1,11 @@
-function loseQi(activePlayer, bank) {
-    activePlayer.loseQi();
-    bank.updateMarkers();
+function loseQi(players, bank) {
+    players.getActualPlayer().loseQi();
+    bank.updateMarkers(players.getTaoists());
 }
 
-function loseAllTaoTokens(activePlayer, bank) {
-    activePlayer.loseAllTaoMarkers();
-    bank.updateMarkers();
+function loseAllTaoTokens(players, bank) {
+    players.getActualPlayer().loseAllTaoMarkers();
+    bank.updateMarkers(players.getTaoists());
 }
 
 function getAvailableTilesToHaunt(position) {
@@ -44,7 +44,7 @@ function pickTileToHaunt(socket, availableTilesToHaunt) {
 
 async function hauntTile(socket, position, isCemeteryCall) {
     if (isCemeteryCall) {
-        let availableTilesToHaunt = getAvailableTilesToHaunt();
+        let availableTilesToHaunt = getAvailableTilesToHaunt(position);
         let pickedTile = await pickTileToHaunt(socket, availableTilesToHaunt);
     } else {
 
@@ -52,12 +52,12 @@ async function hauntTile(socket, position, isCemeteryCall) {
 }
 
 function throwCurseDice(socket, players, bank, isCemeteryCall) {
-    let throwResult = 4;//Math.floor(Math.random() * 6);
+    let throwResult = 2;//Math.floor(Math.random() * 6);
     switch (throwResult) {
         //(0-1) No effect.
         //The first active village tile in front of the ghost becomes haunted.
         case 2:
-            hauntTile(socket, activePlayer.getPosition(), isCemeteryCall);
+            hauntTile(socket, players.getActualPlayer().getPosition(), isCemeteryCall);
             break;
             //The player must bring a ghost into play according to the placement rules.
         case 3:
@@ -65,15 +65,15 @@ function throwCurseDice(socket, players, bank, isCemeteryCall) {
             break;
             //The player must discard all his Tao tokens.            
         case 4:
-            loseAllTaoTokens(activePlayer, bank)
+            loseAllTaoTokens(players, bank)
             break;
             //The Taoist loses one Qi token.            
         case 5:
-            loseQi(activePlayer, bank)
+            loseQi(players, bank)
             break;
     }
 }
 
-module.exports.throwCurseDice = (activePlayer, bank) => throwCurseDice(null, players, bank, false);
+module.exports.throwCurseDice = (players, bank) => throwCurseDice(null, players, bank, false);
 
-module.exports.throwCurseDiceCemetry = (socket, activePlayer, bank) => throwCurseDice(socket, players, bank, true);
+module.exports.throwCurseDiceCemetry = (socket, players, bank) => throwCurseDice(socket, players, bank, true);

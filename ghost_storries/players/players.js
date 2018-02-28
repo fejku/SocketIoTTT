@@ -22,6 +22,14 @@ class Players {
         this.taoists = this._initTaoist();
     }
 
+    getTaoists() {
+        return this.taoists;
+    }
+
+    getTaoist(index) {
+        return this.taoists[index];
+    }
+
     getActualPlayerId() {
         return this.actualPlayer;
     }

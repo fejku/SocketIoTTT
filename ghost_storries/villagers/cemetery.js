@@ -11,7 +11,7 @@ class Cemetery extends Villager {
 
     //Check if there is any dead taoist
     validateHelp(board, players, bank) {
-        for (let taoist of players.taoists)
+        for (let taoist of players.getTaoists())
             if (!taoist.isAlive())
                 return true;
         return false;
@@ -33,7 +33,7 @@ class Cemetery extends Villager {
         console.log('AFTER');
         //If there are two Qi markers in bank
         player.gainQi(2);
-        bank.updateMarkers(players.taoists);
+        bank.updateMarkers(players.getTaoists());
         dice.throwCurseDiceCemetry(socket, players, bank);
     }
 }

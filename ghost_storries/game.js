@@ -12,10 +12,10 @@ class Game {
     }
 
     init() {
-        this.board = new Board();
-        this.board.initBoard();
         this.players = new Players();
-        this.players.initPlayers();
+        this.players.initPlayers();        
+        this.board = new Board();
+        this.board.initBoard(this.players);
         this.bank = new Bank();
         this.bank.initBank();
     }
@@ -29,7 +29,7 @@ class Game {
         //Step 2 - Check board overrun
         if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
             this.players.getActualPlayer().loseQi();
-            this.bank.updateMarkers(this.players.taoists);
+            this.bank.updateMarkers(this.players.getTaoists());
         } else {
             //Step 3 - Ghost arrival
             //Draw ghost card
@@ -77,8 +77,8 @@ class Game {
                 //Help from villager
                 case Decision.VILLAGER_HELP.key:
 //test
-this.players.taoists[1].qiMarkers = 0;
-this.players.taoists[2].qiMarkers = 0;
+this.players.getTaoists()[1].qiMarkers = 0;
+this.players.getTaoists()[2].qiMarkers = 0;
                     this.board.villagers[this.players.getActualPlayer().getPosition()].action(
                         socket, this.board, this.players, this.bank);
                     break;

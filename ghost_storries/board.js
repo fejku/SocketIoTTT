@@ -19,24 +19,40 @@ class Board {
         let CircleOfPryer = require('./villagers/circle_of_prayer');
 
         return arrayShuffle([new Cemetery(),
-            // new TaoistAltar(),
-            // new HerbalistShop(),
-            // new SorcererHut(),
-            // new CircleOfPryer()
+            new TaoistAltar(),
+            new HerbalistShop(),
+            new SorcererHut(),
+            new CircleOfPryer()
         ]);
     }
 
-    _initPlayersBoards() {
+    _initPlayersBoards(players) {
         let GreenBoard = require('./players_boards/green_board');
         let YellowBoard = require('./players_boards/yellow_board');
         let RedBoard = require('./players_boards/red_board');
         let BlueBoard = require('./players_boards/blue_board');
 
-        return arrayShuffle([new GreenBoard(),
+        let boards = [new GreenBoard(),
             new YellowBoard(),
             new RedBoard(),
             new BlueBoard()
-        ]);
+        ];
+
+        return this._setBoardsInPlayersOrder(players, boards);
+    }
+
+    _setBoardsInPlayersOrder(players, boards) {
+        let resultBoards = [];
+        for (let i = 0; i < players.getTaoists().length; i++) {
+            resultBoards[i] = this.getBoardByColor(boards, players.getTaoist(i).getColor());
+        }
+        return resultBoards;
+    }
+
+    getBoardByColor(boards, color) {
+        for (let board of boards)
+            if (board.getColor() === color)
+                return board;
     }
 
     _initGhostCards() {
@@ -48,9 +64,9 @@ class Board {
         ]);
     }
 
-    initBoard() {
+    initBoard(players) {
         this.villagers = this._initVillagers();
-        this.playersBoards = this._initPlayersBoards();
+        this.playersBoards = this._initPlayersBoards(players);
         this.ghostCards = this._initGhostCards();
     }
 

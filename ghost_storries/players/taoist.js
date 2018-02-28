@@ -21,6 +21,10 @@ class Taoist {
         return taoMarkers;
     }
 
+    getColor() {
+        return this.color;
+    }
+
     gainQi(amount) {
         this.qiMarkers += amount;
     }

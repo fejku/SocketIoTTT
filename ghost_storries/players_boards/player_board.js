@@ -18,6 +18,10 @@ class PlayerBoard {
                 result.fields.push(i);
         return result;
     }
+
+    getColor() {
+        return this.color;
+    }
 }
 
 module.exports = PlayerBoard;
