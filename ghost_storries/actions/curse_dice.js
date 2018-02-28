@@ -1,3 +1,5 @@
+"use strict"
+
 function loseQi(players, bank) {
     players.getActualPlayer().loseQi();
     bank.updateMarkers(players.getTaoists());
@@ -31,10 +33,14 @@ function getAvailableTilesToHaunt(position) {
     }
 }
 
+function validatePickedTile(availableTilesToHaunt, pickedTile) {
+    return availableTilesToHaunt.indexOf(pickedTile) !== -1;
+}
+
 function pickTileToHaunt(socket, availableTilesToHaunt) {
     return new Promise((resolve, reject) => {
         socket.emit('ghost pick tile to haunt', availableTilesToHaunt, pickedTile => {
-            if (this.validatePickedTile(availableTilesToHaunt, pickedTile))
+            if (validatePickedTile(availableTilesToHaunt, pickedTile))
                 resolve(pickedTile);
             else
                 reject();
@@ -46,6 +52,7 @@ async function hauntTile(socket, position, isCemeteryCall) {
     if (isCemeteryCall) {
         let availableTilesToHaunt = getAvailableTilesToHaunt(position);
         let pickedTile = await pickTileToHaunt(socket, availableTilesToHaunt);
+        console.log('pickedTile: ', pickedTile);
     } else {
 
     }

@@ -32,7 +32,7 @@ $(function () {
                 //Remove all click handlers
                 $('.field')
                     .off('click')
-                    .css('color', 'black'); //test
+                    .css('color', ''); //test
                 console.log(e.currentTarget.value);
                 fn(JSON.parse(e.currentTarget.value));
             });
@@ -41,15 +41,15 @@ $(function () {
     socket.on('ghost player move', (availableMoves, fn) => {
         console.log('ghost player move', availableMoves);
         $('.villager')
-            .filter((i, e) => availableMoves.indexOf(parseInt(e.value)) !== -1)
+            .filter((i, e) => availableMoves.indexOf(Number(e.value)) !== -1)
             .css('color', 'green')
             .on('click', e => {
                 //Remove all click handlers
                 $('.villager')
                     .off('click')
-                    .css('color', 'black'); //test
+                    .css('color', ''); //test
                 console.log(e.currentTarget.value);
-                fn(parseInt(e.currentTarget.value));
+                fn(Number(e.currentTarget.value));
             });
 
     });
@@ -72,15 +72,15 @@ $(function () {
     socket.on('ghost pick tile to haunt', (availableTilesToHaunt, fn) => {
         console.log('ghost pick tile to haunt', availableTilesToHaunt);
         $('.villager')
-            .filter((i, e) => availableTilesToHaunt.indexOf(e.value) !== -1)
+            .filter((i, e) => availableTilesToHaunt.indexOf(Number(e.value)) !== -1)
             .css('color', 'red')
             .on('click', e => {
                 //Remove all click handlers
                 $('.villager')
                     .off()
-                    .css('color', 'black');
+                    .css('color', '');
                 console.log(e.currentTarget.value);
-                fn(e.currentTarget.value);
+                fn(Number(e.currentTarget.value));
             });
     });
 
