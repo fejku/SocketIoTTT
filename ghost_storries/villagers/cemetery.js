@@ -9,8 +9,13 @@ class Cemetery extends Villager {
         this.name = 'Cemetery'
     }
 
-    //Check if there is any dead taoist
+    
     validateHelp(board, players, bank) {
+        //Check if there are enough Qi markers in bank
+        if (bank.getQiMarkers() < 2)
+            return false;
+
+        //Check if there is any dead taoist
         for (let taoist of players.getTaoists())
             if (!taoist.isAlive())
                 return true;
@@ -21,7 +26,6 @@ class Cemetery extends Villager {
         return new Promise((resolve, reject) => {
             let deadPlayers = players.getDeadPlayers();
             socket.emit('ghost pick player to review', deadPlayers, pickedPlayerColor => {
-                console.log('BEFORE');
                 let player = players.getPlayerByColor(pickedPlayerColor);
                 resolve(player);
             });
@@ -30,8 +34,6 @@ class Cemetery extends Villager {
 
     async action(socket, board, players, bank) {
         let player = await this._pickPlayerToReview(socket, players);
-        console.log('AFTER');
-        //If there are two Qi markers in bank
         player.gainQi(2);
         bank.updateMarkers(players.getTaoists());
         dice.throwCurseDiceCemetry(socket, board, players, bank);

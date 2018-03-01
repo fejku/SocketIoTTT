@@ -16,7 +16,7 @@ module.exports.getAvailableMoves = position => {
             return [3, 4, 6, 7];
         case 7:
             return [3, 4, 5, 6, 7, 8];
-        case 8: 
+        case 8:
             return [4, 5, 7, 8];
     }
 };
@@ -33,61 +33,75 @@ module.exports.pickMove = (socket, availableMoves) => {
     });
 };
 
-module.exports.isGhostInRange = (playersBoards, position) => {
+function getGhostsForCoordinates(playersBoards, coordinates) {
+    const ghostsInRange = [];
+
+    for (let coordinate of coordinates)
+        if (playersBoards[coordinate.playerBoardIndex].fields[coordinate.fieldIndex] !== null)
+            ghostsInRange.push(coordinate);
+
+    return ghostsInRange;
+}
+
+function getGhostsInRange(playersBoards, position) {
     switch (position) {
         case 0:
-            if ((playersBoards[0].fields[0] !== null) ||
-                ((playersBoards[0].fields[1] !== null)) ||
-                (playersBoards[3].fields[0] !== null) ||
-                (playersBoards[3].fields[1] !== null))
-                return true
-            return false;
+            return getGhostsForCoordinates(playersBoards, [{
+                playerBoardIndex: 0,
+                fieldIndex: 0
+            }, {
+                playerBoardIndex: 3,
+                fieldIndex: 0
+            }]);
         case 1:
-            if ((playersBoards[0].fields[0] !== null) ||
-                ((playersBoards[0].fields[1] !== null)) ||
-                (playersBoards[0].fields[2] !== null))
-                return true
-            return false;
+            return getGhostsForCoordinates(playersBoards, [{
+                playerBoardIndex: 0,
+                fieldIndex: 1
+            }]);
         case 2:
-            if ((playersBoards[0].fields[1] !== null) ||
-                ((playersBoards[0].fields[2] !== null)) ||
-                (playersBoards[1].fields[0] !== null) ||
-                (playersBoards[1].fields[1] !== null))
-                return true
-            return false;
+            return getGhostsForCoordinates(playersBoards, [{
+                playerBoardIndex: 0,
+                fieldIndex: 2
+            }, {
+                playerBoardIndex: 1,
+                fieldIndex: 0
+            }]);
         case 3:
-            if ((playersBoards[3].fields[0] !== null) ||
-                ((playersBoards[3].fields[1] !== null)) ||
-                (playersBoards[3].fields[2] !== null))
-                return true
-            return false;
+            return getGhostsForCoordinates(playersBoards, [{
+                playerBoardIndex: 3,
+                fieldIndex: 1
+            }]);
+        case 4:
+            return [];
         case 5:
-            if ((playersBoards[1].fields[0] !== null) ||
-                ((playersBoards[1].fields[1] !== null)) ||
-                (playersBoards[1].fields[2] !== null))
-                return true
-            return false;
+            return getGhostsForCoordinates(playersBoards, [{
+                playerBoardIndex: 1,
+                fieldIndex: 1
+            }]);
         case 6:
-            if ((playersBoards[3].fields[1] !== null) ||
-                ((playersBoards[3].fields[2] !== null)) ||
-                (playersBoards[2].fields[0] !== null) ||
-                (playersBoards[2].fields[1] !== null))
-                return true
-            return false;
+            return getGhostsForCoordinates(playersBoards, [{
+                playerBoardIndex: 3,
+                fieldIndex: 2
+            }, {
+                playerBoardIndex: 2,
+                fieldIndex: 0
+            }]);
         case 7:
-            if ((playersBoards[2].fields[0] !== null) ||
-                ((playersBoards[2].fields[1] !== null)) ||
-                (playersBoards[2].fields[2] !== null))
-                return true
-            return false;
+            return getGhostsForCoordinates(playersBoards, [{
+                playerBoardIndex: 2,
+                fieldIndex: 1
+            }]);
         case 8:
-            if ((playersBoards[1].fields[1] !== null) ||
-                ((playersBoards[3].fields[2] !== null)) ||
-                (playersBoards[2].fields[1] !== null) ||
-                (playersBoards[2].fields[2] !== null))
-                return true
-            return false;
-        default:
-            return false;
+            return getGhostsForCoordinates(playersBoards, [{
+                playerBoardIndex: 1,
+                fieldIndex: 2
+            }, {
+                playerBoardIndex: 2,
+                fieldIndex: 2
+            }]);
     }
 }
+
+module.exports.getGhostsInRange = getGhostsInRange;
+
+module.exports.isGhostInRange = (playersBoards, position) => getGhostsInRange(playersBoards, position).length > 0;

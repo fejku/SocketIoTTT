@@ -11,34 +11,6 @@ class Bank {
         this.taoMarkers = [];
     }
 
-    _getQiMarkers(taoists) {
-        let qiMarkers = QI_MARKERS_AMOUNT;
-        for(let taoist of taoists)
-            qiMarkers -= taoist.qiMarkers;
-        return qiMarkers;
-    }
-
-    _getTaoMarkers(taoists) {
-        let taoMarkers = [];
-        for(let color of FiveColors.enums) 
-            taoMarkers[color] = TAO_MARKERS_AMOUNT;
-        for(let color of FiveColors.enums)
-            for(let taoist of taoists)
-                taoMarkers[color] -= taoist.taoMarkers[color];
-
-        return taoMarkers;
-    }
-
-    _getJinJangMarkers(taoists) {
-        let jinJangMarkers = [];
-        for(let taoist of taoists)
-            if(taoist.jinJangMarker === 0)
-                jinJangMarkers[taoist.color] = 1;
-            else
-                jinJangMarkers[taoist.color] = 0;
-        return jinJangMarkers;
-    }
-
     initBank() {
         this.qiMarkers = 4;
         for(let color of FiveColors.enums)
@@ -51,10 +23,38 @@ class Bank {
             this.jinJangMarker[color] = 0;
     }
 
+    getQiMarkers(taoists) {
+        let qiMarkers = QI_MARKERS_AMOUNT;
+        for(let taoist of taoists)
+            qiMarkers -= taoist.qiMarkers;
+        return qiMarkers;
+    }
+
+    getTaoMarkers(taoists) {
+        let taoMarkers = [];
+        for(let color of FiveColors.enums) 
+            taoMarkers[color] = TAO_MARKERS_AMOUNT;
+        for(let color of FiveColors.enums)
+            for(let taoist of taoists)
+                taoMarkers[color] -= taoist.taoMarkers[color];
+
+        return taoMarkers;
+    }
+
+    getJinJangMarkers(taoists) {
+        let jinJangMarkers = [];
+        for(let taoist of taoists)
+            if(taoist.jinJangMarker === 0)
+                jinJangMarkers[taoist.color] = 1;
+            else
+                jinJangMarkers[taoist.color] = 0;
+        return jinJangMarkers;
+    }
+
     updateMarkers(taoists) {
-        this.qiMarkers = this._getQiMarkers(taoists);
-        this.taoMarkers = this._getTaoMarkers(taoists);
-        this.jinJangMarker = this._getJinJangMarkers(taoists);
+        this.qiMarkers = this.getQiMarkers(taoists);
+        this.taoMarkers = this.getTaoMarkers(taoists);
+        this.jinJangMarker = this.getJinJangMarkers(taoists);
     }
 }
 

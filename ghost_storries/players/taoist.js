@@ -53,6 +53,10 @@ class Taoist {
     validateExorcism(playersBoards) {
         return playersUtils.isGhostInRange(playersBoards, this.position);
     }
+
+    getGhostsInRange(playersBoards) {
+        return playersUtils.getGhostsInRange(playersBoards, this.position);
+    }
 }
 
 module.exports = Taoist;

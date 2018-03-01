@@ -33,13 +33,13 @@ function hauntTile(playerPosition, ghostPosition, villagers, isCemeteryCall) {
     if (isCemeteryCall) {
         villagers[playerPosition].setHaunted(true);
     } else {
-        let tilePositionToHaunt = getTilePositionToHaunt(ghostPosition, villagers);
+        const tilePositionToHaunt = getTilePositionToHaunt(ghostPosition, villagers);
         villagers[tilePositionToHaunt].setHaunted(true);
     }
 }
 
 function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryCall) {
-    let throwResult = 2; //Math.floor(Math.random() * 6);
+    const throwResult = Math.floor(Math.random() * 6);
     switch (throwResult) {
         //(0-1) No effect.
         //The first active village tile in front of the ghost becomes haunted.

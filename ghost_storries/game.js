@@ -36,34 +36,34 @@ class Game {
 
         //Player phase
         //Step 1 - Player move
-        let availableMoves = this.players.getAvailableMoves(this.players.getActualPlayer().getPosition());
-        let pickedMove = await this.players.pickMove(socket, availableMoves);
+        const availableMoves = this.players.getAvailableMoves(this.players.getActualPlayer().getPosition());
+        const pickedMove = await this.players.pickMove(socket, availableMoves);
         console.log('availableMoves', availableMoves);
         console.log('pickedMove', pickedMove);
         this.players.getActualPlayer().move(pickedMove);
         //Step 2 - Help from villager or exorcism
-        let availableDecisions = [];
+        const availableDecisions = [];
         //Check if villager help is possible
-        //if (this.board.villagers[this.players.getActualPlayer().getPosition()].validateHelp(this.board, this.players, this.bank))
+        if (this.board.villagers[this.players.getActualPlayer().getPosition()].validateHelp(this.board, this.players, this.bank))
             availableDecisions.push(Decision.VILLAGER_HELP.key)
         //Check if exorcism is possible
         if (this.players.getActualPlayer().validateExorcism(this.board.playersBoards))
             availableDecisions.push(Decision.EXORCISM.key)
 
         if (availableDecisions.length > 0) {
-            let decision = await this.players.makeDecision(socket, availableDecisions);
+            const decision = await this.players.makeDecision(socket, availableDecisions);
             console.log('decision', decision);
             switch (decision) {
                 //Help from villager
                 case Decision.VILLAGER_HELP.key:
-//test
-this.players.getTaoists()[1].qiMarkers = 0;
-this.players.getTaoists()[2].qiMarkers = 0;
                     this.board.villagers[this.players.getActualPlayer().getPosition()].action(
                         socket, this.board, this.players, this.bank);
                     break;
-                    //Attempt an exorcism    
+                //Attempt an exorcism    
                 case Decision.EXORCISM.key:
+                    const ghostsInRange = this.players.getActualPlayer().getGhostsInRange(this.board.playersBoards);
+                    //throw dice
+                    //if player is on corner and result is big enough pick wich ghost to exorcism
                     break;
             }
         }
