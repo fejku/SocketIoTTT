@@ -1,4 +1,4 @@
-"use strict"
+'use strict'
 
 function loseQi(players, bank) {
     players.getActualPlayer().loseQi();
@@ -10,56 +10,37 @@ function loseAllTaoTokens(players, bank) {
     bank.updateMarkers(players.getTaoists());
 }
 
-// function getAvailableTilesToHaunt(position) {
-//     switch (position) {
-//         case 0:
-//             return [1, 3];
-//         case 1:
-//             return [0, 2, 4];
-//         case 2:
-//             return [1, 5];
-//         case 3:
-//             return [0, 4, 6];
-//         case 4:
-//             return [1, 3, 5, 7];
-//         case 5:
-//             return [2, 4, 8];
-//         case 6:
-//             return [3, 7];
-//         case 7:
-//             return [4, 6, 8];
-//         case 8:
-//             return [5, 7];
-//     }
-// }
+function getTilePositionToHaunt(ghostPosition, villagers, step = 0) {
+    switch(ghostPosition.boardIndex) {
+        case 0:
+            const tilePosition = ghostPosition.fieldIndex + 3 * step;
+            break;
+        case 1:
+            const tilePosition = 3 * ghostPosition.fieldIndex + 2 - step;
+            break;
+        case 2:
+            const tilePosition = 6 + ghostPosition.fieldIndex - 3 * step;
+            break;
+        case 3:
+            const tilePosition = 3 * ghostPosition.fieldIndex + step;
+            break;      
+    }
+    if (villagers[tilePosition].isHaunted())
+        getTilePositionToHaunt(ghostPosition, villagers, ++step)
+    else
+        return tilePosition;
+}
 
-// function validatePickedTile(availableTilesToHaunt, pickedTile) {
-//     return availableTilesToHaunt.indexOf(pickedTile) !== -1;
-// }
-
-// function pickTileToHaunt(socket, availableTilesToHaunt) {
-//     return new Promise((resolve, reject) => {
-//         socket.emit('ghost pick tile to haunt', availableTilesToHaunt, pickedTile => {
-//             if (validatePickedTile(availableTilesToHaunt, pickedTile))
-//                 resolve(pickedTile);
-//             else
-//                 reject();
-//         });
-//     });
-// }
-
-function hauntTile(position, villagers, isCemeteryCall) {
+function hauntTile(playerPosition, ghostPosition, villagers, isCemeteryCall) {
     if (isCemeteryCall) {
-        // let availableTilesToHaunt = getAvailableTilesToHaunt(position);
-        // let pickedTile = await pickTileToHaunt(socket, availableTilesToHaunt);
-        // console.log('pickedTile: ', pickedTile);
-        villagers[position].setHaunted(true);
+        villagers[playerPosition].setHaunted(true);
     } else {
-        let q = getTileToHaunt(); //TODO
+        let tilePositionToHaunt = getTilePositionToHaunt(ghostPosition, villagers);
+        villagers[tilePositionToHaunt].setHaunted(true);
     }
 }
 
-function throwCurseDice(players, villagers, bank, isCemeteryCall) {
+function throwCurseDice(players, ghostPosition, villagers, bank, isCemeteryCall) {
     let throwResult = 2;//Math.floor(Math.random() * 6);
     switch (throwResult) {
         //(0-1) No effect.
@@ -67,7 +48,7 @@ function throwCurseDice(players, villagers, bank, isCemeteryCall) {
         //Q : When I use the Cemetery, if “Haunt Tile” is rolled on the Curse Die, which tile becomes haunted?
         //A : The Cemetery itself.
         case 2:
-            hauntTile(players.getActualPlayer().getPosition(), villagers, isCemeteryCall);
+            hauntTile(players.getActualPlayer().getPosition(), ghostPosition, villagers, isCemeteryCall);
             break;
             //The player must bring a ghost into play according to the placement rules.
         case 3:
@@ -84,6 +65,6 @@ function throwCurseDice(players, villagers, bank, isCemeteryCall) {
     }
 }
 
-module.exports.throwCurseDice = (players, villagers, bank) => throwCurseDice(players, villagers, bank, false);
+module.exports.throwCurseDice = (ghostPosition, players, villagers, bank) => throwCurseDice(players, ghostPosition, villagers, bank, false);
 
-module.exports.throwCurseDiceCemetry = (players, villagers, bank) => throwCurseDice(players, villagers, bank, true);
+module.exports.throwCurseDiceCemetry = (players, villagers, bank) => throwCurseDice(players, null, villagers, bank, true);

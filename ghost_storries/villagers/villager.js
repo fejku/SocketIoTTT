@@ -3,7 +3,7 @@ class Villager {
         this.haunted = false;
     }   
 
-    getHaunted() {
+    isHaunted() {
         return this.haunted;
     }
 
