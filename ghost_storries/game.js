@@ -1,9 +1,9 @@
-let Board = require('./board');
-let Players = require('./players/players');
-let Bank = require('./bank')
+const Board = require('./board');
+const Players = require('./players/players');
+const Bank = require('./bank')
 
-let FiveColors = require('./enums/color').FiveColors;
-let Decision = require('./enums/decision');
+const FiveColors = require('./enums/color').FiveColors;
+const Decision = require('./enums/decision');
 
 class Game {
     constructor() {
@@ -30,29 +30,9 @@ class Game {
         if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
             this.players.getActualPlayer().loseQi();
             this.bank.updateMarkers(this.players.getTaoists());
-        } else {
+        } else
             //Step 3 - Ghost arrival
-            //Draw ghost card
-            let card = this.board.drawCard();
-            let emptyFields = [];
-            //Black card on active player board
-            if (card.color.key === FiveColors.BLACK) {
-                //Get empty fields from actual player
-                emptyFields = this.board.getEmptyFields(this.board.playersBoards,
-                    this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()));
-                //Other than black color
-            } else {
-                //Get empty fields from player whose color is same as card color
-                emptyFields = this.board.getEmptyFields(this.board.playersBoards,
-                    this.board.getPlayerBoardByColor(card.color.key));
-            }
-            //Pick field for card
-            let pickedField = await this.board.pickFieldForCard(socket, emptyFields);
-            //Lay card of picked field
-            this.board.getPlayerBoardByColor(pickedField.color).fields[pickedField.field] = card;
-            console.log(this.board.getPlayerBoardByColor(pickedField.color));
-            card.immediateEffect();
-        }
+            await this.board.ghostArrival(socket, this.players, this.bank);
 
         //Player phase
         //Step 1 - Player move
@@ -87,7 +67,7 @@ this.players.getTaoists()[2].qiMarkers = 0;
                     break;
             }
         }
+        //Step 3
     }
-    //Step 3
 }
 module.exports = new Game();

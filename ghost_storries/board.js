@@ -131,6 +131,34 @@ class Board {
                 return true;
         return false;
     }
+
+    async ghostArrival(socket, players, bank) {
+        if (this.isAllBoardsFull()) {
+            players.getActualPlayer().loseQi();
+            bank.updateMarkers(players.getTaoists());
+        } else {
+            //Draw ghost card
+            const card = this.drawCard();
+            let emptyFields = [];
+            //Black card on active player board
+            if (card.color.key === Colors.BLACK) {
+                //Get empty fields from actual player
+                emptyFields = this.getEmptyFields(this.playersBoards,
+                    this.getPlayerBoardByColor(players.getActualPlayerColor()));
+                //Other than black color
+            } else {
+                //Get empty fields from player whose color is same as card color
+                emptyFields = this.getEmptyFields(this.playersBoards,
+                    this.getPlayerBoardByColor(card.color.key));
+            }
+            //Pick field for card
+            const pickedField = await this.pickFieldForCard(socket, emptyFields);
+            //Lay card of picked field
+            this.getPlayerBoardByColor(pickedField.color).fields[pickedField.field] = card;
+            console.log(this.getPlayerBoardByColor(pickedField.color));
+            card.immediateEffect();
+        }
+    }
 }
 
 module.exports = Board;

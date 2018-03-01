@@ -1,5 +1,3 @@
-'use strict'
-
 function loseQi(players, bank) {
     players.getActualPlayer().loseQi();
     bank.updateMarkers(players.getTaoists());
@@ -11,7 +9,7 @@ function loseAllTaoTokens(players, bank) {
 }
 
 function getTilePositionToHaunt(ghostPosition, villagers, step = 0) {
-    switch(ghostPosition.boardIndex) {
+    switch (ghostPosition.boardIndex) {
         case 0:
             const tilePosition = ghostPosition.fieldIndex + 3 * step;
             break;
@@ -23,7 +21,7 @@ function getTilePositionToHaunt(ghostPosition, villagers, step = 0) {
             break;
         case 3:
             const tilePosition = 3 * ghostPosition.fieldIndex + step;
-            break;      
+            break;
     }
     if (villagers[tilePosition].isHaunted())
         getTilePositionToHaunt(ghostPosition, villagers, ++step)
@@ -40,31 +38,31 @@ function hauntTile(playerPosition, ghostPosition, villagers, isCemeteryCall) {
     }
 }
 
-function throwCurseDice(players, ghostPosition, villagers, bank, isCemeteryCall) {
-    let throwResult = 2;//Math.floor(Math.random() * 6);
+function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryCall) {
+    let throwResult = 2; //Math.floor(Math.random() * 6);
     switch (throwResult) {
         //(0-1) No effect.
         //The first active village tile in front of the ghost becomes haunted.
         //Q : When I use the Cemetery, if “Haunt Tile” is rolled on the Curse Die, which tile becomes haunted?
         //A : The Cemetery itself.
         case 2:
-            hauntTile(players.getActualPlayer().getPosition(), ghostPosition, villagers, isCemeteryCall);
+            hauntTile(players.getActualPlayer().getPosition(), ghostPosition, board.getVillagers(), isCemeteryCall);
             break;
-            //The player must bring a ghost into play according to the placement rules.
+        //The player must bring a ghost into play according to the placement rules.
         case 3:
-
+            board.ghostArrival(socket, players, bank)
             break;
-            //The player must discard all his Tao tokens.            
+        //The player must discard all his Tao tokens.            
         case 4:
             loseAllTaoTokens(players, bank)
             break;
-            //The Taoist loses one Qi token.            
+        //The Taoist loses one Qi token.            
         case 5:
             loseQi(players, bank)
             break;
     }
 }
 
-module.exports.throwCurseDice = (ghostPosition, players, villagers, bank) => throwCurseDice(players, ghostPosition, villagers, bank, false);
+module.exports.throwCurseDice = (socket, board, ghostPosition, players, bank) => throwCurseDice(socket, board, players, ghostPosition, bank, false);
 
-module.exports.throwCurseDiceCemetry = (players, villagers, bank) => throwCurseDice(players, null, villagers, bank, true);
+module.exports.throwCurseDiceCemetry = (socket, board, players, bank) => throwCurseDice(socket, board, players, null, bank, true);
