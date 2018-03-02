@@ -12,7 +12,7 @@ class Cemetery extends Villager {
     
     validateHelp(board, players, bank) {
         //Check if there are enough Qi markers in bank
-        if (bank.getQiMarkers() < 2)
+        if (bank.getQiMarkers(players.getTaoists()) < 2)
             return false;
 
         //Check if there is any dead taoist

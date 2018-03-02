@@ -13,7 +13,7 @@ class Game {
 
     init() {
         this.players = new Players();
-        this.players.initPlayers();        
+        this.players.initPlayers();
         this.board = new Board();
         this.board.initBoard(this.players);
         this.bank = new Bank();
@@ -21,53 +21,57 @@ class Game {
     }
 
     async start(io, socket) {
-        this.init(socket);
-        socket.emit('ghost init board', this.board.playersBoards, this.board.villagers);
+        try {
+            this.init(socket);
+            socket.emit('ghost init board', this.board.playersBoards, this.board.villagers);
 
-        //Ghost phase
-        //Step 1 - Ghosts’ actions
-        //Step 2 - Check board overrun
-        if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
-            this.players.getActualPlayer().loseQi();
-            this.bank.updateMarkers(this.players.getTaoists());
-        } else
-            //Step 3 - Ghost arrival
-            await this.board.ghostArrival(socket, this.players, this.bank);
+            //Ghost phase
+            //Step 1 - Ghosts’ actions
+            //Step 2 - Check board overrun
+            if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
+                this.players.getActualPlayer().loseQi();
+                this.bank.updateMarkers(this.players.getTaoists());
+            } else
+                //Step 3 - Ghost arrival
+                await this.board.ghostArrival(socket, this.players, this.bank);
 
-        //Player phase
-        //Step 1 - Player move
-        const availableMoves = this.players.getAvailableMoves(this.players.getActualPlayer().getPosition());
-        const pickedMove = await this.players.pickMove(socket, availableMoves);
-        console.log('availableMoves', availableMoves);
-        console.log('pickedMove', pickedMove);
-        this.players.getActualPlayer().move(pickedMove);
-        //Step 2 - Help from villager or exorcism
-        const availableDecisions = [];
-        //Check if villager help is possible
-        if (this.board.villagers[this.players.getActualPlayer().getPosition()].validateHelp(this.board, this.players, this.bank))
-            availableDecisions.push(Decision.VILLAGER_HELP.key)
-        //Check if exorcism is possible
-        if (this.players.getActualPlayer().validateExorcism(this.board.playersBoards))
-            availableDecisions.push(Decision.EXORCISM.key)
+            //Player phase
+            //Step 1 - Player move
+            const availableMoves = this.players.getAvailableMoves(this.players.getActualPlayer().getPosition());
+            const pickedMove = await this.players.pickMove(socket, availableMoves);
+            console.log('availableMoves', availableMoves);
+            console.log('pickedMove', pickedMove);
+            this.players.getActualPlayer().move(pickedMove);
+            //Step 2 - Help from villager or exorcism
+            const availableDecisions = [];
+            //Check if villager help is possible
+            if (this.board.villagers[this.players.getActualPlayer().getPosition()].validateHelp(this.board, this.players, this.bank))
+                availableDecisions.push(Decision.VILLAGER_HELP.key)
+            //Check if exorcism is possible
+            if (this.players.getActualPlayer().validateExorcism(this.board.playersBoards))
+                availableDecisions.push(Decision.EXORCISM.key)
 
-        if (availableDecisions.length > 0) {
-            const decision = await this.players.makeDecision(socket, availableDecisions);
-            console.log('decision', decision);
-            switch (decision) {
-                //Help from villager
-                case Decision.VILLAGER_HELP.key:
-                    this.board.villagers[this.players.getActualPlayer().getPosition()].action(
-                        socket, this.board, this.players, this.bank);
-                    break;
-                //Attempt an exorcism    
-                case Decision.EXORCISM.key:
-                    const ghostsInRange = this.players.getActualPlayer().getGhostsInRange(this.board.playersBoards);
-                    //throw dice
-                    //if player is on corner and result is big enough pick wich ghost to exorcism
-                    break;
+            if (availableDecisions.length > 0) {
+                const decision = await this.players.makeDecision(socket, availableDecisions);
+                console.log('decision', decision);
+                switch (decision) {
+                    //Help from villager
+                    case Decision.VILLAGER_HELP.key:
+                        this.board.villagers[this.players.getActualPlayer().getPosition()].action(
+                            socket, this.board, this.players, this.bank);
+                        break;
+                        //Attempt an exorcism    
+                    case Decision.EXORCISM.key:
+                        const ghostsInRange = this.players.getActualPlayer().getGhostsInRange(this.board.playersBoards);
+                        //throw dice
+                        //if player is on corner and result is big enough pick which ghost to exorcism
+                        break;
+                }
             }
+            //Step 3
+        } catch (err) {
+            console.log(err);
         }
-        //Step 3
     }
 }
 module.exports = new Game();
