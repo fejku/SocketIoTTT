@@ -1,6 +1,8 @@
 let arrayShuffle = require('array-shuffle');
 let Colors = require('./enums/color').FiveColors;
 
+let Villagers = require('./villagers/villagers');
+
 class Board {
     constructor() {
         //0 - top left, 1 - top middle, ...
@@ -9,21 +11,6 @@ class Board {
         this.playersBoards;
         this.ghostCards;
         this.name;
-    }
-
-    _initVillagers() {
-        let Cemetery = require('./villagers/cemetery');
-        let TaoistAltar = require('./villagers/taoist_altar');
-        let HerbalistShop = require('./villagers/herbalist_shop');
-        let SorcererHut = require('./villagers/sorcerer_hut');
-        let CircleOfPryer = require('./villagers/circle_of_prayer');
-
-        return arrayShuffle([new Cemetery(),
-            new TaoistAltar(),
-            new HerbalistShop(),
-            new SorcererHut(),
-            new CircleOfPryer()
-        ]);
     }
 
     _initPlayersBoards(players) {
@@ -65,7 +52,8 @@ class Board {
     }
 
     initBoard(players) {
-        this.villagers = this._initVillagers();
+        this.villagers = new Villagers();
+        this.villagers.initVillagers();
         this.playersBoards = this._initPlayersBoards(players);
         this.ghostCards = this._initGhostCards();
     }
@@ -74,8 +62,12 @@ class Board {
         return this.villagers;
     }
 
+    getAllVillagers() {
+        return this.villagers.getVillagers();
+    }
+
     getVillager(index) {
-        return this.villagers[index];
+        return this.villagers.getVillager(index);
     }
 
     drawCard() {

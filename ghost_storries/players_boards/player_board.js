@@ -22,6 +22,14 @@ class PlayerBoard {
     getColor() {
         return this.color;
     }
+
+    getField(index) {
+        return this.fields[index];
+    }
+
+    setField(index, value) {
+        this.fields[index] = value;
+    }
 }
 
 module.exports = PlayerBoard;

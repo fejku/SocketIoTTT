@@ -10,6 +10,10 @@ class Villager {
     setHaunted(haunted) {
         this.haunted = haunted;
     }
+
+    action(socket, board, players, bank) {
+        console.log('Abstract Villager action()');
+    }
 }
 
 module.exports = Villager;

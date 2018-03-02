@@ -3,6 +3,7 @@ const Players = require('./players/players');
 const Bank = require('./bank')
 
 const Decision = require('./enums/decision');
+const SixColors = require('./enums/color').SixColors;
 
 const colorDice = require('./actions/color_dice');
 
@@ -24,7 +25,7 @@ class Game {
     async start(io, socket) {
         try {
             this.init(socket);
-            socket.emit('ghost init board', this.board.playersBoards, this.board.villagers);
+            socket.emit('ghost init board', this.board.playersBoards, this.board.getAllVillagers());
 
             //Ghost phase
             //Step 1 - Ghosts’ actions
@@ -46,7 +47,7 @@ class Game {
             //Step 2 - Help from villager or exorcism
             const availableDecisions = [];
             //Check if villager help is possible
-            if (this.board.villagers[this.players.getActualPlayer().getPosition()].validateHelp(this.board, this.players, this.bank))
+            if (this.board.getVillager(this.players.getActualPlayer().getPosition()).validateHelp(this.board, this.players, this.bank))
                 availableDecisions.push(Decision.VILLAGER_HELP.key)
             //Check if exorcism is possible
             if (this.players.getActualPlayer().validateExorcism(this.board.playersBoards))
@@ -59,14 +60,34 @@ class Game {
                 switch (decision) {
                     //Help from villager
                     case Decision.VILLAGER_HELP.key:
-                        this.board.villagers[this.players.getActualPlayer().getPosition()].action(
+                        this.board.getVillager(this.players.getActualPlayer().getPosition()).action(
                             socket, this.board, this.players, this.bank);
                         break;
                         //Attempt an exorcism    
                     case Decision.EXORCISM.key:
                         const ghostsInRange = this.players.getActualPlayer().getGhostsInRange(this.board.playersBoards);
-                        //throw dice
+                        //Throw dices
                         const diceThrowResult = colorDice.throwDices(3);
+                        console.log('diceThrowResult', diceThrowResult);
+                        console.log('ghostsInRange', ghostsInRange);
+                        if (ghostsInRange.length === 1) {
+                            const ghost = this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex).getField(ghostsInRange[0].fieldIndex);
+                            console.log('ghost', ghost);
+                            //if result of throwed dices(taoist tao tokens, circle of prayers) is greater then ghost resistance
+                            const whiteDiceResult = diceThrowResult[SixColors.WHITE];
+                            const resultAfterModifications = diceThrowResult[ghost.getColor()]
+                                + whiteDiceResult;
+                                // + circleOfPrayer
+                                // + taoTokens;
+                            if (ghost.getResistance() <= resultAfterModifications) {
+                                console.log('Ghost defeated');
+                                //Ghost action after winning
+                                ghost.afterWinningEffect();
+                                //Remove ghost from field
+                                this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex).setField(ghostsInRange[0].fieldIndex, null);
+                                console.log('board: ', this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
+                            }
+                        }
                         //if player is on corner and result is big enough pick which ghost to exorcism
                         break;
                 }

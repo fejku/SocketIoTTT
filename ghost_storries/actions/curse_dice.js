@@ -23,7 +23,7 @@ function getTilePositionToHaunt(ghostPosition, villagers, step = 0) {
             const tilePosition = 3 * ghostPosition.fieldIndex + step;
             break;
     }
-    if (villagers[tilePosition].isHaunted())
+    if (villagers.getVillager(tilePosition).isHaunted())
         getTilePositionToHaunt(ghostPosition, villagers, ++step)
     else
         return tilePosition;
@@ -31,10 +31,10 @@ function getTilePositionToHaunt(ghostPosition, villagers, step = 0) {
 
 function hauntTile(playerPosition, ghostPosition, villagers, isCemeteryCall) {
     if (isCemeteryCall) {
-        villagers[playerPosition].setHaunted(true);
+        villagers.getVillager(playerPosition).setHaunted(true);
     } else {
         const tilePositionToHaunt = getTilePositionToHaunt(ghostPosition, villagers);
-        villagers[tilePositionToHaunt].setHaunted(true);
+        villagers.getVillager(tilePositionToHaunt).setHaunted(true);
     }
 }
 

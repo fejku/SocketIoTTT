@@ -19,6 +19,8 @@ class Ghost {
 
     afterWinningEffect() {
         //
+        console.log("afterWinningEffect abstract")
+        // throw new Error('afterWinningEffect is Abstract');
     }
 
     //Effects
@@ -28,6 +30,14 @@ class Ghost {
 
     taoDiceHaveNoEffect() {
         this.taoDiceHaveEffect = false;
+    }
+
+    getColor() {
+        return this.color.key;
+    }
+
+    getResistance() {
+        return this.color;
     }
 }
 
