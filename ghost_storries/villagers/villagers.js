@@ -1,4 +1,4 @@
-let arrayShuffle = require('array-shuffle');
+const arrayShuffle = require('array-shuffle');
 
 class Villagers {
     constructor() {
@@ -6,11 +6,11 @@ class Villagers {
     }
 
     _initVillagers() {
-        let Cemetery = require('./cemetery');
-        let TaoistAltar = require('./taoist_altar');
-        let HerbalistShop = require('.//herbalist_shop');
-        let SorcererHut = require('./sorcerer_hut');
-        let CircleOfPryer = require('./circle_of_prayer');
+        const Cemetery = require('./cemetery');
+        const TaoistAltar = require('./taoist_altar');
+        const HerbalistShop = require('.//herbalist_shop');
+        const SorcererHut = require('./sorcerer_hut');
+        const CircleOfPryer = require('./circle_of_prayer');
 
         return arrayShuffle([new Cemetery(),
             new TaoistAltar(),
@@ -30,6 +30,12 @@ class Villagers {
 
     getVillager(index) {
         return this.villagers[index];
+    }
+
+    getVillagerByClass(villagerClass) {
+        for (const villager of this.villagers)
+            if (villager instanceof villagerClass)
+                return villager;
     }
 }
 

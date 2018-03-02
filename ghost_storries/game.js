@@ -1,6 +1,7 @@
 const Board = require('./board');
 const Players = require('./players/players');
 const Bank = require('./bank')
+const CircleOfPrayer = require('./villagers/circle_of_prayer');
 
 const Decision = require('./enums/decision');
 const SixColors = require('./enums/color').SixColors;
@@ -32,7 +33,7 @@ class Game {
             //Step 2 - Check board overrun
             if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
                 this.players.getActualPlayer().loseQi();
-                this.bank.updateMarkers(this.players.getTaoists());
+                this.bank.updateMarkers(this.players.getTaoists(), this.board.getVillagerByClass(CircleOfPrayer));
             } else
                 //Step 3 - Ghost arrival
                 await this.board.ghostArrival(socket, this.players, this.bank);

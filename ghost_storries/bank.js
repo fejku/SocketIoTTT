@@ -30,13 +30,13 @@ class Bank {
         return qiMarkers;
     }
 
-    getTaoMarkers(taoists) {
+    getTaoMarkers(taoists, circleOfPrayer) {
         let taoMarkers = [];
         for(let color of FiveColors.enums) 
             taoMarkers[color] = TAO_MARKERS_AMOUNT;
         for(let color of FiveColors.enums)
             for(let taoist of taoists)
-                taoMarkers[color] -= taoist.taoMarkers[color];
+                taoMarkers[color] -= taoist.taoMarkers[color] + circleOfPrayer.taoMarkers[color];
 
         return taoMarkers;
     }
@@ -51,9 +51,9 @@ class Bank {
         return jinJangMarkers;
     }
 
-    updateMarkers(taoists) {
+    updateMarkers(taoists, circleOfPrayer) {
         this.qiMarkers = this.getQiMarkers(taoists);
-        this.taoMarkers = this.getTaoMarkers(taoists);
+        this.taoMarkers = this.getTaoMarkers(taoists, circleOfPrayer);
         this.jinJangMarker = this.getJinJangMarkers(taoists);
     }
 }

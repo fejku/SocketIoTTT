@@ -1,7 +1,7 @@
-let arrayShuffle = require('array-shuffle');
-let Colors = require('./enums/color').FiveColors;
+const arrayShuffle = require('array-shuffle');
+const Colors = require('./enums/color').FiveColors;
 
-let Villagers = require('./villagers/villagers');
+const Villagers = require('./villagers/villagers');
 
 class Board {
     constructor() {
@@ -14,12 +14,12 @@ class Board {
     }
 
     _initPlayersBoards(players) {
-        let GreenBoard = require('./players_boards/green_board');
-        let YellowBoard = require('./players_boards/yellow_board');
-        let RedBoard = require('./players_boards/red_board');
-        let BlueBoard = require('./players_boards/blue_board');
+        const GreenBoard = require('./players_boards/green_board');
+        const YellowBoard = require('./players_boards/yellow_board');
+        const RedBoard = require('./players_boards/red_board');
+        const BlueBoard = require('./players_boards/blue_board');
 
-        let boards = [new GreenBoard(),
+        const boards = [new GreenBoard(),
             new YellowBoard(),
             new RedBoard(),
             new BlueBoard()
@@ -37,14 +37,14 @@ class Board {
     }
 
     getBoardByColor(boards, color) {
-        for (let board of boards)
+        for (const board of boards)
             if (board.getColor() === color)
                 return board;
     }
 
     _initGhostCards() {
-        let Ghoul = require('./ghosts/ghoul');
-        let WalkingCorpse = require('./ghosts/walking_corpse');
+        const Ghoul = require('./ghosts/ghoul');
+        const WalkingCorpse = require('./ghosts/walking_corpse');
 
         return arrayShuffle([new Ghoul(),
             new WalkingCorpse()
@@ -70,12 +70,16 @@ class Board {
         return this.villagers.getVillager(index);
     }
 
+    getVillagerByClass(villagerClass) {
+        return this.villagers.getVillagerByClass(villagerClass);
+    }
+
     drawCard() {
         return this.ghostCards.pop();
     }
 
     isAllBoardsFull() {
-        for (let board of this.playersBoards) {
+        for (const board of this.playersBoards) {
             if (!board.isBoardFull())
                 return false;
         }
@@ -83,7 +87,7 @@ class Board {
     }
 
     getPlayerBoardByColor(color) {
-        for (let playerBoard of this.playersBoards) {
+        for (const playerBoard of this.playersBoards) {
             if (playerBoard.color.key === color)
                 return playerBoard;
         }
@@ -94,9 +98,9 @@ class Board {
     }
 
     getEmptyFields(boards, playerBoard) {
-        let emptyFields = [];
+        const emptyFields = [];
         if (playerBoard.isBoardFull()) {
-            for (let board of boards)
+            for (const board of boards)
                 if (!board.isBoardFull())
                     emptyFields.push(board.getEmptyFields());
             return emptyFields;
@@ -118,16 +122,16 @@ class Board {
     }
 
     _validatePickedField(emptyFields, pickedField) {
-        for (let emptyField of emptyFields)
+        for (const emptyField of emptyFields)
             if ((emptyField.color === pickedField.color) && (emptyField.fields.indexOf(pickedField.field) !== -1))
                 return true;
         return false;
     }
 
-    async ghostArrival(socket, players, bank) {
+    async ghostArrival(socket, players, bank, circleOfPrayer) {
         if (this.isAllBoardsFull()) {
             players.getActualPlayer().loseQi();
-            bank.updateMarkers(players.getTaoists());
+            bank.updateMarkers(players.getTaoists(), circleOfPrayer);
         } else {
             //Draw ghost card
             const card = this.drawCard();

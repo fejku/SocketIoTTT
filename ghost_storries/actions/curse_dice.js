@@ -1,11 +1,13 @@
-function loseQi(players, bank) {
+const CircleOfPrayer = require('../villagers/circle_of_prayer');
+
+function loseQi(players, bank, circleOfPrayer) {
     players.getActualPlayer().loseQi();
-    bank.updateMarkers(players.getTaoists());
+    bank.updateMarkers(players.getTaoists(), circleOfPrayer);
 }
 
-function loseAllTaoTokens(players, bank) {
+function loseAllTaoTokens(players, bank, circleOfPrayer) {
     players.getActualPlayer().loseAllTaoMarkers();
-    bank.updateMarkers(players.getTaoists());
+    bank.updateMarkers(players.getTaoists(), circleOfPrayer);
 }
 
 function getTilePositionToHaunt(ghostPosition, villagers, step = 0) {
@@ -54,11 +56,11 @@ function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryC
             break;
         //The player must discard all his Tao tokens.            
         case 4:
-            loseAllTaoTokens(players, bank)
+            loseAllTaoTokens(players, bank, board.getVillagerByClass(CircleOfPrayer))
             break;
         //The Taoist loses one Qi token.            
         case 5:
-            loseQi(players, bank)
+            loseQi(players, bank, board.getVillagerByClass(CircleOfPrayer));
             break;
     }
 }
