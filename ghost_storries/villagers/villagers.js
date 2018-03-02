@@ -1,42 +1,41 @@
 const arrayShuffle = require('array-shuffle');
 
+const Cemetery = require('./cemetery');
+const TaoistAltar = require('./taoist_altar');
+const HerbalistShop = require('.//herbalist_shop');
+const SorcererHut = require('./sorcerer_hut');
+const CircleOfPryer = require('./circle_of_prayer');
+
 class Villagers {
-    constructor() {
-        this.villagers;
-    }
+  constructor() {
+    this.villagers = this.initVillagers();
+  }
 
-    _initVillagers() {
-        const Cemetery = require('./cemetery');
-        const TaoistAltar = require('./taoist_altar');
-        const HerbalistShop = require('.//herbalist_shop');
-        const SorcererHut = require('./sorcerer_hut');
-        const CircleOfPryer = require('./circle_of_prayer');
+  initVillagers() {
+    return arrayShuffle([new Cemetery(),
+      new TaoistAltar(),
+      new HerbalistShop(),
+      new SorcererHut(),
+      new CircleOfPryer(),
+    ]);
+  }
 
-        return arrayShuffle([new Cemetery(),
-            new TaoistAltar(),
-            new HerbalistShop(),
-            new SorcererHut(),
-            new CircleOfPryer()
-        ]);
-    }
+  getVillagers() {
+    return this.villagers;
+  }
 
-    initVillagers() {
-        this.villagers = this._initVillagers();
-    }
+  getVillager(index) {
+    return this.villagers[index];
+  }
 
-    getVillagers() {
-        return this.villagers;
+  getVillagerByClass(villagerClass) {
+    for (const villager of this.villagers) {
+      if (villager instanceof villagerClass) {
+        return villager;
+      }
     }
-
-    getVillager(index) {
-        return this.villagers[index];
-    }
-
-    getVillagerByClass(villagerClass) {
-        for (const villager of this.villagers)
-            if (villager instanceof villagerClass)
-                return villager;
-    }
+    return null;
+  }
 }
 
 module.exports = Villagers;
