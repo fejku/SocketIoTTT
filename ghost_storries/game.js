@@ -2,8 +2,9 @@ const Board = require('./board');
 const Players = require('./players/players');
 const Bank = require('./bank')
 
-const FiveColors = require('./enums/color').FiveColors;
 const Decision = require('./enums/decision');
+
+const colorDice = require('./actions/color_dice');
 
 class Game {
     constructor() {
@@ -51,6 +52,7 @@ class Game {
             if (this.players.getActualPlayer().validateExorcism(this.board.playersBoards))
                 availableDecisions.push(Decision.EXORCISM.key)
 
+            console.log('availableDecisions', availableDecisions);
             if (availableDecisions.length > 0) {
                 const decision = await this.players.makeDecision(socket, availableDecisions);
                 console.log('decision', decision);
@@ -64,6 +66,7 @@ class Game {
                     case Decision.EXORCISM.key:
                         const ghostsInRange = this.players.getActualPlayer().getGhostsInRange(this.board.playersBoards);
                         //throw dice
+                        const diceThrowResult = colorDice.throwDices(3);
                         //if player is on corner and result is big enough pick which ghost to exorcism
                         break;
                 }

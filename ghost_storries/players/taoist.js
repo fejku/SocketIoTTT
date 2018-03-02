@@ -1,5 +1,5 @@
-let Colors = require('../enums/color').FiveColors;
-let playersUtils = require('./players_utils');
+const Colors = require('../enums/color').FiveColors;
+const playersUtils = require('./players_utils');
 
 class Taoist {
     constructor(color) {
@@ -11,8 +11,8 @@ class Taoist {
     }
 
     _initTaoMarkers() {
-        let taoMarkers = {};
-        for (let colorItem of Colors.enums) {
+        const taoMarkers = {};
+        for (const colorItem of Colors.enums) {
             if (colorItem.key == this.color.key)
                 taoMarkers[colorItem.key] = 1;
             else
@@ -34,7 +34,7 @@ class Taoist {
     }
 
     loseAllTaoMarkers() {
-        for (let colorItem of Colors.enums)
+        for (const colorItem of Colors.enums)
             this.taoMarkers[colorItem.key] = 0;
     }
 
