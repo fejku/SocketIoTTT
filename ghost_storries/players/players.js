@@ -1,76 +1,77 @@
-let arrayShuffle = require('array-shuffle');
-let playersUtils = require('./players_utils');
+const arrayShuffle = require('array-shuffle');
+const playersUtils = require('./players_utils');
 
-let Colors = require('../enums/color').FourColors;
-let Taoist = require('./taoist');
+const Colors = require('../enums/color').FourColors;
+const Taoist = require('./taoist');
 
 class Players {
-    constructor() {
-        this.actualPlayer = 0;
-        this.taoists;
-    }
+  constructor() {
+    this.actualPlayer = 0;
+    this.taoists = this.initTaoist();
+  }
 
-    _initTaoist() {
-        return arrayShuffle([new Taoist(Colors.GREEN),
-            new Taoist(Colors.YELLOW),
-            new Taoist(Colors.RED),
-            new Taoist(Colors.BLUE)
-        ]);
-    }
+  initTaoist() {
+    return arrayShuffle([new Taoist(Colors.GREEN),
+      new Taoist(Colors.YELLOW),
+      new Taoist(Colors.RED),
+      new Taoist(Colors.BLUE),
+    ]);
+  }
 
-    initPlayers() {
-        this.taoists = this._initTaoist();
-    }
+  getTaoists() {
+    return this.taoists;
+  }
 
-    getTaoists() {
-        return this.taoists;
-    }
+  getTaoist(index) {
+    return this.taoists[index];
+  }
 
-    getTaoist(index) {
-        return this.taoists[index];
-    }
+  getActualPlayerId() {
+    return this.actualPlayer;
+  }
 
-    getActualPlayerId() {
-        return this.actualPlayer;
-    }
+  getActualPlayerColor() {
+    return this.taoists[this.actualPlayer].color.key;
+  }
 
-    getActualPlayerColor() {
-        return this.taoists[this.actualPlayer].color.key;
-    }
+  getActualPlayer() {
+    return this.taoists[this.actualPlayer];
+  }
 
-    getActualPlayer() {
-        return this.taoists[this.actualPlayer];
+  getPlayerByColor(color) {
+    for (const player of this.taoists) {
+      if (player.color.key === color) {
+        return player;
+      }
     }
+    return null;
+  }
 
-    getPlayerByColor(color) {
-        for (let player of this.taoists)
-            if (player.color.key === color)
-                return player;
-    }
+  getAvailableMoves(actualField) {
+    return playersUtils.getAvailableMoves(actualField);
+  }
 
-    getAvailableMoves(actualField) {
-        return playersUtils.getAvailableMoves(actualField);
-    }
+  pickMove(socket, availableMoves) {
+    return playersUtils.pickMove(socket, availableMoves);
+  }
 
-    pickMove(socket, availableMoves) {
-        return playersUtils.pickMove(socket, availableMoves);
-    }
+  makeDecision(socket, availableDecisions) {
+    return new Promise((resolve) => {
+      socket.emit('ghost player decision', availableDecisions, (decision) => {
+        resolve(decision);
+      });
+    });
+  }
 
-    makeDecision(socket, availableDecisions) {
-        return new Promise((resolve, reject) => {
-            socket.emit('ghost player decision', availableDecisions, decision => {
-                resolve(decision);
-            })
-        });
+  getDeadPlayers() {
+    const deadPlayers = [];
+    for (const player of this.taoists) {
+      if (!player.isAlive()) {
+        deadPlayers.push(player);
+      }
     }
-
-    getDeadPlayers() {
-        let deadPlayers = [];
-        for (let player of this.taoists)
-            if (!player.isAlive())
-                deadPlayers.push(player);
-        return deadPlayers;
-    }
+    return deadPlayers;
+  }
 }
 
 module.exports = Players;

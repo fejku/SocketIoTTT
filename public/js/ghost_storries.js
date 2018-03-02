@@ -16,12 +16,12 @@ $(() => {
           color: playersBoards[i].color,
           field: j,
         });
-        $(`.player ${i}.field${j}`).val(fieldValue);
+        $(`.player${i}.field${j}`).val(fieldValue);
       }
     }
     console.log(villagers);
     for (let i = 0; i < villagers.length; i++) {
-      $('.villager').filter((index, e) => Number(e.value()) === i).text(villagers[i].name);
+      $('.villager').filter((index, e) => Number(e.value) === i).text(villagers[i].name);
     }
     init();
   });

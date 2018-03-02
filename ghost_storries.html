@@ -1,57 +1,60 @@
-<!doctype html>
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="css/style1.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Ghost stories</title>
+  <link rel="stylesheet" href="css/style1.css">
 </head>
 
 <body>
-    <ul id="status"></ul>
-    <div id="board">
-        <div class="board-row">
-            <button class="field corner" value="0"></button>
-            <button class="field player0 field0">P00</button>
-            <button class="field player0 field1">P01</button>
-            <button class="field player0 field2">P02</button>
-            <button class="field corner" value="4"></button>
-        </div>
-        <div class="board-row">
-            <button class="field player3 field0">P30</button>
-            <button class="field villager" value="0">V0</button>
-            <button class="field villager" value="1">V1</button>
-            <button class="field villager" value="2">V2</button>
-            <button class="field player1 field0">P10</button>
-        </div>
-        <div class="board-row">
-            <button class="field player3 field1" value="3">P31</button>
-            <button class="field villager" value="3">V3</button>
-            <button class="field villager" value="4">V4</button>
-            <button class="field villager" value="5">V5</button>
-            <button class="field player1 field1" value="5">P11</button>
-        </div>
-        <div class="board-row">
-            <button class="field player3 field2" value="3">P32</button>
-            <button class="field villager" value="6">V6</button>
-            <button class="field villager" value="7">V7</button>
-            <button class="field villager" value="8">V8</button>
-            <button class="field player1 field2" value="5">P12</button>
-        </div>
-        <div class="board-row">
-            <button class="field corner" value="0"></button>
-            <button class="field player2 field0" value="1">P20</button>
-            <button class="field player2 field1" value="2">P21</button>
-            <button class="field player2 field2" value="3">P22</button>
-            <button class="field corner" value="4"></button>
-        </div>
+  <ul id="status"></ul>
+  <div id="board">
+    <div class="board-row">
+      <button class="field corner" value="0"></button>
+      <button class="field player0 field0">P00</button>
+      <button class="field player0 field1">P01</button>
+      <button class="field player0 field2">P02</button>
+      <button class="field corner" value="4"></button>
     </div>
-    <button class="decision" value="VILLAGER_HELP">Villager help</button>
-    <button class="decision" value="EXORCISM">Exorcism</button>
-    <div id='decisions'></div>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <div class="board-row">
+      <button class="field player3 field0">P30</button>
+      <button class="field villager" value="0">V0</button>
+      <button class="field villager" value="1">V1</button>
+      <button class="field villager" value="2">V2</button>
+      <button class="field player1 field0">P10</button>
+    </div>
+    <div class="board-row">
+      <button class="field player3 field1" value="3">P31</button>
+      <button class="field villager" value="3">V3</button>
+      <button class="field villager" value="4">V4</button>
+      <button class="field villager" value="5">V5</button>
+      <button class="field player1 field1" value="5">P11</button>
+    </div>
+    <div class="board-row">
+      <button class="field player3 field2" value="3">P32</button>
+      <button class="field villager" value="6">V6</button>
+      <button class="field villager" value="7">V7</button>
+      <button class="field villager" value="8">V8</button>
+      <button class="field player1 field2" value="5">P12</button>
+    </div>
+    <div class="board-row">
+      <button class="field corner" value="0"></button>
+      <button class="field player2 field0" value="1">P20</button>
+      <button class="field player2 field1" value="2">P21</button>
+      <button class="field player2 field2" value="3">P22</button>
+      <button class="field corner" value="4"></button>
+    </div>
+  </div>
+  <button class="decision" value="VILLAGER_HELP">Villager help</button>
+  <button class="decision" value="EXORCISM">Exorcism</button>
+  <div id='decisions'></div>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
-    <script src="js/socket.io.js"></script>
-    <script src="js/jquery-3.3.1.js"></script>    
-    <script src="js/ghost_storries.js"></script>
+  <script src="js/socket.io.js"></script>
+  <script src="js/jquery-3.3.1.js"></script>
+  <script src="js/ghost_storries.js"></script>
 </body>
 
 </html>

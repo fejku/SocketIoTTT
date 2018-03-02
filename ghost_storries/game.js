@@ -16,7 +16,6 @@ class Game {
   }
 
   init() {
-    this.players.initPlayers();
     this.bank.initBank();
   }
 
