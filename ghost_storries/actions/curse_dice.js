@@ -52,7 +52,7 @@ function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryC
             break;
         //The player must bring a ghost into play according to the placement rules.
         case 3:
-            board.ghostArrival(socket, players, bank)
+            board.ghostArrival(socket, players, bank, board.getVillagerByClass(CircleOfPrayer))
             break;
         //The player must discard all his Tao tokens.            
         case 4:
