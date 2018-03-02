@@ -1,5 +1,11 @@
 {
+    "env": {
+        "jquery": true
+    },
     "extends": "airbnb-base",
+    "globals": {
+        "io": true
+    },
     "rules": {
         "no-console": "off",
         "no-plusplus": "off",
