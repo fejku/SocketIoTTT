@@ -1,14 +1,14 @@
-let Ghost = require('./ghost');
-let FiveColors = require('../enums/color').FiveColors;
+const Ghost = require('./ghost');
+const { FiveColors } = require('../enums/color');
 
 class Ghoul extends Ghost {
-    constructor () {
-        super('Ghoul', FiveColors.YELLOW, 1);
-    }
+  constructor() {
+    super('Ghoul', FiveColors.YELLOW, 1);
+  }
 
-    yinPhaseEffect() {
-        haunter();
-    }
+  yinPhaseEffect() {
+    super.haunter();
+  }
 }
 
 module.exports = Ghoul;

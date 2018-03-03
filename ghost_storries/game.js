@@ -4,7 +4,7 @@ const Bank = require('./bank');
 const CircleOfPrayer = require('./villagers/circle_of_prayer');
 
 const Decision = require('./enums/decision');
-const sixColors = require('./enums/color').SixColors;
+const { SixColors } = require('./enums/color');
 
 const colorDice = require('./actions/color_dice');
 
@@ -84,7 +84,7 @@ class Game {
                 console.log('ghost', ghost);
                 // If result of throwed dices(taoist tao tokens,
                 // circle of prayers) is greater then ghost resistance
-                const whiteDiceResult = diceThrowResult[sixColors.WHITE];
+                const whiteDiceResult = diceThrowResult[SixColors.WHITE];
                 const resultAfterModifications = diceThrowResult[ghost.getColor()] +
                   whiteDiceResult;
                 // + circleOfPrayer

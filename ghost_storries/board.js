@@ -1,5 +1,5 @@
 const arrayShuffle = require('array-shuffle');
-const Colors = require('./enums/color').FiveColors;
+const { FiveColors } = require('./enums/color');
 
 const Villagers = require('./villagers/villagers');
 
@@ -144,7 +144,7 @@ class Board {
       const card = this.drawCard();
       let emptyFields = [];
       // Black card on active player board
-      if (card.color.key === Colors.BLACK) {
+      if (card.color.key === FiveColors.BLACK) {
         // Get empty fields from actual player
         emptyFields = this.getEmptyFields(
           this.playersBoards,

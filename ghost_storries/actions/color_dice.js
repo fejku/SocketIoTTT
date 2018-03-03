@@ -1,23 +1,26 @@
-const SixColors = require('../enums/color').SixColors;
+const { SixColors } = require('../enums/color');
 
 function throwDice() {
-    const throwResult = Math.pow(2, Math.floor(Math.random() * 6));
+  const throwResult = 2 ** Math.floor(Math.random() * 6);
 
-    return SixColors.get(throwResult).key; 
+  return SixColors.get(throwResult).key;
 }
 
-module.exports.throwDices = function (diceNumber) {
-    const throwResults = [];
-    for (let i = 0; i < diceNumber; i++)
-        throwResults.push(throwDice());
+module.exports.throwDices = (diceNumber) => {
+  const throwResults = [];
+  for (let i = 0; i < diceNumber; i++) {
+    throwResults.push(throwDice());
+  }
 
-    result = {};
-    for (const color of SixColors.enums) {
-        result[color.key] = 0;
-        for (const diceColor of throwResults)
-            if (diceColor === color.key)
-                result[color.key]++;
+  const result = {};
+  for (const color of SixColors.enums) {
+    result[color.key] = 0;
+    for (const diceColor of throwResults) {
+      if (diceColor === color.key) {
+        result[color.key]++;
+      }
     }
+  }
 
-    return result;
-}
+  return result;
+};

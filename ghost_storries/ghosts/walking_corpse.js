@@ -1,22 +1,22 @@
-let Ghost = require('./ghost');
-let FiveColors = require('../enums/color').FiveColors;
+const Ghost = require('./ghost');
+const { FiveColors } = require('../enums/color');
 
 class WalkingCorpse extends Ghost {
-    constructor () {
-        super('Walking Corpse', FiveColors.YELLOW, 1);
-    }
+  constructor() {
+    super('Walking Corpse', FiveColors.YELLOW, 1);
+  }
 
-    immediateEffect() {
-        //
-    }
+  immediateEffect() {
+    //
+  }
 
-    yinPhaseEffect() {
-        haunter();
-    }
+  yinPhaseEffect() {
+    super.haunter();
+  }
 
-    afterWinningEffect() {
-        //
-    }
+  afterWinningEffect() {
+    //
+  }
 }
 
 module.exports = WalkingCorpse;
