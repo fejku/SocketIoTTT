@@ -1,62 +1,64 @@
-const Colors = require('../enums/color').FiveColors;
+const { FiveColors } = require('../enums/color');
 const playersUtils = require('./players_utils');
 
 class Taoist {
-    constructor(color) {
-        this.color = color;
-        this.qiMarkers = 4;
-        this.jinJangMarker = 1;
-        this.taoMarkers = this._initTaoMarkers();
-        this.position = 4;
-    }
+  constructor(color) {
+    this.color = color;
+    this.qiMarkers = 4;
+    this.jinJangMarker = 1;
+    this.taoMarkers = this.initTaoMarkers();
+    this.position = 4;
+  }
 
-    _initTaoMarkers() {
-        const taoMarkers = {};
-        for (const colorItem of Colors.enums) {
-            if (colorItem.key == this.color.key)
-                taoMarkers[colorItem.key] = 1;
-            else
-                taoMarkers[colorItem.key] = 0;
-        }
-        return taoMarkers;
+  initTaoMarkers() {
+    const taoMarkers = {};
+    for (const colorItem of FiveColors.enums) {
+      if (colorItem.key === this.color.key) {
+        taoMarkers[colorItem.key] = 1;
+      } else {
+        taoMarkers[colorItem.key] = 0;
+      }
     }
+    return taoMarkers;
+  }
 
-    getColor() {
-        return this.color;
-    }
+  getColor() {
+    return this.color;
+  }
 
-    gainQi(amount) {
-        this.qiMarkers += amount;
-    }
+  gainQi(amount) {
+    this.qiMarkers += amount;
+  }
 
-    loseQi() {
-        this.qiMarkers--;
-    }
+  loseQi() {
+    this.qiMarkers--;
+  }
 
-    loseAllTaoMarkers() {
-        for (const colorItem of Colors.enums)
-            this.taoMarkers[colorItem.key] = 0;
+  loseAllTaoMarkers() {
+    for (const colorItem of FiveColors.enums) {
+      this.taoMarkers[colorItem.key] = 0;
     }
+  }
 
-    getPosition() {
-        return this.position;
-    }
+  getPosition() {
+    return this.position;
+  }
 
-    move(pickedMove) {
-        this.position = pickedMove;
-    }
+  move(pickedMove) {
+    this.position = pickedMove;
+  }
 
-    isAlive() {
-        return this.qiMarkers > 0;
-    }
+  isAlive() {
+    return this.qiMarkers > 0;
+  }
 
-    validateExorcism(playersBoards) {
-        return playersUtils.isGhostInRange(playersBoards, this.position);
-    }
+  validateExorcism(playersBoards) {
+    return playersUtils.isGhostInRange(playersBoards, this.position);
+  }
 
-    getGhostsInRange(playersBoards) {
-        return playersUtils.getGhostsInRange(playersBoards, this.position);
-    }
+  getGhostsInRange(playersBoards) {
+    return playersUtils.getGhostsInRange(playersBoards, this.position);
+  }
 }
 
 module.exports = Taoist;

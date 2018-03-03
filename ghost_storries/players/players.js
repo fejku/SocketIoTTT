@@ -1,7 +1,7 @@
 const arrayShuffle = require('array-shuffle');
 const playersUtils = require('./players_utils');
 
-const Colors = require('../enums/color').FourColors;
+const { FourColors } = require('../enums/color');
 const Taoist = require('./taoist');
 
 class Players {
@@ -11,10 +11,10 @@ class Players {
   }
 
   initTaoist() {
-    return arrayShuffle([new Taoist(Colors.GREEN),
-      new Taoist(Colors.YELLOW),
-      new Taoist(Colors.RED),
-      new Taoist(Colors.BLUE),
+    return arrayShuffle([new Taoist(FourColors.GREEN),
+      new Taoist(FourColors.YELLOW),
+      new Taoist(FourColors.RED),
+      new Taoist(FourColors.BLUE),
     ]);
   }
 
