@@ -2,7 +2,6 @@ const Villager = require('./villager');
 const CircleOfPrayer = require('./circle_of_prayer');
 const dice = require('../actions/curse_dice');
 
-
 // Pośród porosłych chwastami nagrobków grabarz strzeże drzwi pomiędzy królestwami.
 // Przywróć zmarłego Taoistę do rozgrywki. Daj mu 2 Czi, następnie rzuć kością Klątwy.
 class Cemetery extends Villager {
@@ -10,7 +9,6 @@ class Cemetery extends Villager {
     super();
     this.name = 'Cemetery';
   }
-
 
   validateHelp(board, players, bank) {
     // Check if there are enough Qi markers in bank
