@@ -1,6 +1,7 @@
 {
     "env": {
-        "jquery": true
+        "jquery": true,
+        "mocha": true
     },
     "extends": "airbnb-base",
     "globals": {
