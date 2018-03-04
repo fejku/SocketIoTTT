@@ -12,6 +12,9 @@
         "no-plusplus": "off",
         "class-methods-use-this": "off",
         "no-restricted-syntax": "off",
-        "no-else-return": "off"
+        "no-else-return": "off",
+        "max-len": ["error", {
+            "code": 140
+        }]
     }
 }

@@ -15,13 +15,20 @@ class Game {
     this.bank = new Bank();
   }
 
-  init() {
-    this.bank.initBank();
+  validateGameEnd() {
+    return false;
   }
 
-  async start(io, socket) {
+  start(io, socket) {
+    // validate is player alive, are 3 villagers haunted
+    while (!this.validateGameEnd()) {
+      this.turn(io, socket);
+      this.players.nextPlayer();
+    }
+  }
+
+  async turn(io, socket) {
     try {
-      this.init(socket);
       socket.emit('ghost init board', this.board.playersBoards, this.board.getAllVillagers());
 
       // Ghost phase
@@ -69,7 +76,7 @@ class Game {
             this.board.getVillager(this.players.getActualPlayer().getPosition())
               .action(socket, this.board, this.players, this.bank);
             break;
-            // Attempt an exorcism
+          // Attempt an exorcism
           case Decision.EXORCISM.key:
             {
               const ghostsInRange = this.players.getActualPlayer()
@@ -97,9 +104,13 @@ class Game {
                   this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
                     .setField(ghostsInRange[0].fieldIndex, null);
                   console.log('board: ', this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
+                } else {
+                  this.players.getActualPlayer().loseQi();
+                  this.bank.updateMarkers(this.getTaoists(), this.getVillagerByClass(CircleOfPrayer));
                 }
+              } else {
+                // If player is on corner and result is big enough pick which ghost to exorcism
               }
-              // If player is on corner and result is big enough pick which ghost to exorcism
             }
             break;
           default:

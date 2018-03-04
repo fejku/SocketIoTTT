@@ -1,15 +1,22 @@
 const { SixColors } = require('../enums/color');
+const Dice = require('./dice');
 
-function throwDice() {
-  const throwResult = 2 ** Math.floor(Math.random() * 6);
+function getColorFromResult(throwResult) {
+  const colorValue = 2 ** throwResult;
 
-  return SixColors.get(throwResult).key;
+  const color = SixColors.get(colorValue);
+
+  if (typeof color === 'undefined' || color === null) {
+    return null;
+  } else {
+    return color.key;
+  }
 }
 
 module.exports.throwDices = (diceNumber) => {
   const throwResults = [];
   for (let i = 0; i < diceNumber; i++) {
-    throwResults.push(throwDice());
+    throwResults.push(getColorFromResult(Dice.getThrowResult()));
   }
 
   const result = {};
