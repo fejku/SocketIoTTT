@@ -34,6 +34,17 @@ class PlayerBoard {
   setField(index, value) {
     this.fields[index] = value;
   }
+
+  removeGhostFromField(socket, fieldIndex) {
+    // Send information to UI that ghost sohuld be removed from field
+    this.removeGhostFromFieldUI(socket, fieldIndex);
+    // Remove ghost from field
+    this.setField(fieldIndex, null);
+  }
+
+  removeGhostFromFieldUI(socket, fieldIndex) {
+    socket.emit('ghost remove ghost from field', this.getColor(), fieldIndex);
+  }
 }
 
 module.exports = PlayerBoard;

@@ -3,11 +3,6 @@ $(() => {
 
   socket.emit('ghost start');
 
-  function init() {
-    $('button[class*="player"]').each((i, e) => $(e).css('background-color', JSON.parse(e.value).color));
-    // $('')
-  }
-
   socket.on('ghost init board', (playersBoards, villagers) => {
     console.log('ghost players board', playersBoards);
     for (let i = 0; i < playersBoards.length; i++) {
@@ -23,25 +18,37 @@ $(() => {
     for (let i = 0; i < villagers.length; i++) {
       $('.villager').filter((index, e) => Number(e.value) === i).text(villagers[i].name);
     }
-    init();
+    // Set board colors
+    $('button[class*="player"]').each((i, e) => $(e).css('background-color', JSON.parse(e.value).color));
   });
 
-  socket.on('ghost pick field', (emptyFields, fn) => {
+  socket.on('ghost pick field', (emptyFields, card, fn) => {
     console.log('ghost pick field', emptyFields);
     for (const playerEmptyFields of emptyFields) {
       $('.field')
-        .filter((i, e) => ((JSON.parse(e.value).color === playerEmptyFields.color) &&
-          (playerEmptyFields.fields.indexOf(JSON.parse(e.value).field) !== -1)))
+        .filter((i, e) => ((JSON.parse(e.value).color === playerEmptyFields.color)
+          && (playerEmptyFields.fields.indexOf(JSON.parse(e.value).field) !== -1)))
         .css('color', 'red')
         .on('click', (e) => {
           // Remove all click handlers
           $('.field')
             .off('click')
             .css('color', '');
+          // Append ghost params to field
+          $(e.currentTarget).append(` <div>${card.name}</div> <div>(${card.color}: ${card.resistance})</div>`);
           console.log(e.currentTarget.value);
           fn(JSON.parse(e.currentTarget.value));
         });
     }
+  });
+
+  socket.on('ghost remove ghost from field', (color, fieldIndex) => {
+    console.log('ghost remove ghost from field', color, fieldIndex);
+    $('.field')
+      .filter((i, e) => ((JSON.parse(e.value).color === color)
+        && (JSON.parse(e.value).field === fieldIndex)))
+      .children('div')
+      .remove();
   });
 
   socket.on('ghost player move', (availableMoves, fn) => {

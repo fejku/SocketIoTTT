@@ -105,7 +105,7 @@ class Game {
                 ghost.afterWinningEffect();
                 // Remove ghost from field
                 this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
-                  .setField(ghostsInRange[0].fieldIndex, null);
+                  .removeGhostFromField(socket, ghostsInRange[0].fieldIndex);
                 console.log('board: ', this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
               } else {
                 this.players.getActualPlayer().loseQi();

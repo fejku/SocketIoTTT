@@ -121,9 +121,9 @@ class Board {
     return emptyFields;
   }
 
-  pickFieldForCard(socket, emptyFields) {
+  pickFieldForCard(socket, emptyFields, card) {
     return new Promise((resolve, reject) => {
-      socket.emit('ghost pick field', emptyFields, (pickedField) => {
+      socket.emit('ghost pick field', emptyFields, card, (pickedField) => {
         if (this.validatePickedField(emptyFields, pickedField)) {
           resolve(pickedField);
         } else {
@@ -167,7 +167,7 @@ class Board {
         );
       }
       // Pick field for card
-      const pickedField = await this.pickFieldForCard(socket, emptyFields);
+      const pickedField = await this.pickFieldForCard(socket, emptyFields, card);
       // Lay card of picked field
       this.getPlayerBoardByColor(pickedField.color).fields[pickedField.field] = card;
       console.log(this.getPlayerBoardByColor(pickedField.color));
