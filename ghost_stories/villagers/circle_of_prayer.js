@@ -17,6 +17,16 @@ class CircleOfPrayer extends Villager {
 
     return taoMarkers;
   }
+
+  validateHelp(board, players, bank) {
+    return true;
+  }
+
+  async action(socket, board, players, bank) {
+    // Remove Tao token from villager tile if exists
+    // Put Tao token on tile
+    // Update bank
+  }
 }
 
 module.exports = CircleOfPrayer;
