@@ -19,108 +19,108 @@ class Game {
     return false;
   }
 
-  start(io, socket) {
-    // validate is player alive, are 3 villagers haunted
-    while (!this.validateGameEnd()) {
-      this.turn(io, socket);
-      this.players.nextPlayer();
+  async start(io, socket) {
+    try {
+      // validate is player alive, are 3 villagers haunted, are still ghost cards in deck
+      while (!this.validateGameEnd()) {
+        await this.turn(io, socket); /* eslint-disable-line no-await-in-loop */
+        this.players.nextPlayer();
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 
   async turn(io, socket) {
-    try {
-      socket.emit('ghost init board', this.board.playersBoards, this.board.getAllVillagers());
+    socket.emit('ghost init board', this.board.playersBoards, this.board.getAllVillagers());
 
-      // Ghost phase
-      // Step 1 - Ghosts’ actions
-      // Step 2 - Check board overrun
-      if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
-        this.players.getActualPlayer().loseQi();
-        this.bank.updateMarkers(
-          this.players.getTaoists(),
-          this.board.getVillagerByClass(CircleOfPrayer),
-        );
-      } else {
-        // Step 3 - Ghost arrival
-        await this.board.ghostArrival(socket, this.players, this.bank);
-      }
+    // Ghost phase
+    // Step 1 - Ghosts’ actions
+    // Step 2 - Check board overrun
+    if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
+      this.players.getActualPlayer().loseQi();
+      this.bank.updateMarkers(
+        this.players.getTaoists(),
+        this.board.getVillagerByClass(CircleOfPrayer),
+      );
+    } else {
+      // Step 3 - Ghost arrival
+      await this.board.ghostArrival(socket, this.players, this.bank);
+    }
 
-      // Player phase
-      // Step 1 - Player move
-      const availableMoves = this.players
-        .getAvailableMoves(this.players.getActualPlayer().getPosition());
-      const pickedMove = await this.players.pickMove(socket, availableMoves);
-      console.log('availableMoves', availableMoves);
-      console.log('pickedMove', pickedMove);
-      this.players.getActualPlayer().move(pickedMove);
-      // Step 2 - Help from villager or exorcism
-      const availableDecisions = [];
-      // Check if villager help is possible
-      if (this.board
-        .getVillager(this.players.getActualPlayer().getPosition())
-        .validateHelp(this.board, this.players, this.bank)) {
-        availableDecisions.push(Decision.VILLAGER_HELP.key);
-      }
-      // Check if exorcism is possible
-      if (this.players.getActualPlayer().validateExorcism(this.board.playersBoards)) {
-        availableDecisions.push(Decision.EXORCISM.key);
-      }
+    // Player phase
+    // Step 1 - Player move
+    const availableMoves = this.players
+      .getAvailableMoves(this.players.getActualPlayer().getPosition());
+    const pickedMove = await this.players.pickMove(socket, availableMoves);
+    console.log('availableMoves', availableMoves);
+    console.log('pickedMove', pickedMove);
+    this.players.getActualPlayer().move(pickedMove);
+    // Step 2 - Help from villager or exorcism
+    const availableDecisions = [];
+    // Check if villager help is possible
+    if (this.board
+      .getVillager(this.players.getActualPlayer().getPosition())
+      .validateHelp(this.board, this.players, this.bank)) {
+      availableDecisions.push(Decision.VILLAGER_HELP.key);
+    }
+    // Check if exorcism is possible
+    if (this.players.getActualPlayer().validateExorcism(this.board.playersBoards)) {
+      availableDecisions.push(Decision.EXORCISM.key);
+    }
 
-      console.log('availableDecisions', availableDecisions);
-      if (availableDecisions.length > 0) {
-        const decision = await this.players.makeDecision(socket, availableDecisions);
-        console.log('decision', decision);
-        switch (decision) {
-          // Help from villager
-          case Decision.VILLAGER_HELP.key:
-            this.board.getVillager(this.players.getActualPlayer().getPosition())
-              .action(socket, this.board, this.players, this.bank);
-            break;
+    console.log('availableDecisions', availableDecisions);
+    if (availableDecisions.length > 0) {
+      const decision = await this.players.makeDecision(socket, availableDecisions);
+      console.log('decision', decision);
+      switch (decision) {
+        // Help from villager
+        case Decision.VILLAGER_HELP.key:
+          this.board.getVillager(this.players.getActualPlayer().getPosition())
+            .action(socket, this.board, this.players, this.bank);
+          break;
           // Attempt an exorcism
-          case Decision.EXORCISM.key:
-            {
-              const ghostsInRange = this.players.getActualPlayer()
-                .getGhostsInRange(this.board.playersBoards);
+        case Decision.EXORCISM.key:
+          {
+            const ghostsInRange = this.players.getActualPlayer()
+              .getGhostsInRange(this.board.playersBoards);
               // Throw dices
-              const diceThrowResult = colorDice.throwDices(3);
-              console.log('diceThrowResult', diceThrowResult);
-              console.log('ghostsInRange', ghostsInRange);
-              if (ghostsInRange.length === 1) {
-                const ghost = this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
-                  .getField(ghostsInRange[0].fieldIndex);
-                console.log('ghost', ghost);
-                // If result of throwed dices(taoist tao tokens,
-                // circle of prayers) is greater then ghost resistance
-                const whiteDiceResult = diceThrowResult[SixColors.WHITE];
-                const resultAfterModifications = diceThrowResult[ghost.getColor()] +
+            const diceThrowResult = colorDice.throwDices(3);
+            console.log('diceThrowResult', diceThrowResult);
+            console.log('ghostsInRange', ghostsInRange);
+            if (ghostsInRange.length === 1) {
+              const ghost = this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
+                .getField(ghostsInRange[0].fieldIndex);
+              console.log('ghost', ghost);
+              // If result of throwed dices(taoist tao tokens,
+              // circle of prayers) is greater then ghost resistance
+              const whiteDiceResult = diceThrowResult[SixColors.WHITE];
+              const resultAfterModifications = diceThrowResult[ghost.getColor()] +
                   whiteDiceResult;
                 // + circleOfPrayer
                 // + taoTokens;
-                if (ghost.getResistance() <= resultAfterModifications) {
-                  console.log('Ghost defeated');
-                  // Ghost action after winning
-                  ghost.afterWinningEffect();
-                  // Remove ghost from field
-                  this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
-                    .setField(ghostsInRange[0].fieldIndex, null);
-                  console.log('board: ', this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
-                } else {
-                  this.players.getActualPlayer().loseQi();
-                  this.bank.updateMarkers(this.getTaoists(), this.getVillagerByClass(CircleOfPrayer));
-                }
+              if (ghost.getResistance() <= resultAfterModifications) {
+                console.log('Ghost defeated');
+                // Ghost action after winning
+                ghost.afterWinningEffect();
+                // Remove ghost from field
+                this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
+                  .setField(ghostsInRange[0].fieldIndex, null);
+                console.log('board: ', this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
               } else {
-                // If player is on corner and result is big enough pick which ghost to exorcism
+                this.players.getActualPlayer().loseQi();
+                this.bank.updateMarkers(this.players.getTaoists(), this.board.getVillagerByClass(CircleOfPrayer));
               }
+            } else {
+              // If player is on corner and result is big enough pick which ghost to exorcism
             }
-            break;
-          default:
-            break;
-        }
+          }
+          break;
+        default:
+          break;
       }
-      // Step 3
-    } catch (err) {
-      console.log(err);
     }
+    // Step 3
   }
 }
 module.exports = new Game();

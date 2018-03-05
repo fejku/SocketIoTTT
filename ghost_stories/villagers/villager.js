@@ -14,6 +14,10 @@ class Villager {
   action(socket, board, players, bank) {
     console.log('Abstract Villager action()');
   }
+
+  validateHelp(board, players, bank) {
+    return false;
+  }
 }
 
 module.exports = Villager;

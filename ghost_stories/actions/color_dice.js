@@ -8,9 +8,9 @@ function getColorFromResult(throwResult) {
 
   if (typeof color === 'undefined' || color === null) {
     return null;
-  } else {
-    return color.key;
   }
+
+  return color.key;
 }
 
 module.exports.throwDices = (diceNumber) => {

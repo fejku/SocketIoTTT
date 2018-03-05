@@ -7,10 +7,10 @@ const Taoist = require('./taoist');
 class Players {
   constructor() {
     this.actualPlayer = 0;
-    this.taoists = this.initTaoist();
+    this.taoists = this.initTaoists();
   }
 
-  initTaoist() {
+  initTaoists() {
     return arrayShuffle([new Taoist(FourColors.GREEN),
       new Taoist(FourColors.YELLOW),
       new Taoist(FourColors.RED),
@@ -71,6 +71,15 @@ class Players {
       }
     }
     return deadPlayers;
+  }
+
+  nextPlayer() {
+    do {
+      this.actualPlayer++;
+      if (this.actualPlayer > 3) {
+        this.actualPlayer = 0;
+      }
+    } while (!this.getActualPlayer().isAlive());
   }
 }
 

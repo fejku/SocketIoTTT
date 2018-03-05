@@ -26,12 +26,12 @@ class Taoist {
     return this.color;
   }
 
-  gainQi(amount) {
+  gainQi(amount = 1) {
     this.qiMarkers += amount;
   }
 
-  loseQi() {
-    this.qiMarkers--;
+  loseQi(amount = 1) {
+    this.qiMarkers -= amount;
   }
 
   loseAllTaoMarkers() {

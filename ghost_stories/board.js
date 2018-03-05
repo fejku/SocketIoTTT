@@ -49,6 +49,15 @@ class Board {
 
   initGhostCards() {
     return arrayShuffle([new Ghoul(),
+      new Ghoul(),
+      new Ghoul(),
+      new Ghoul(),
+      new Ghoul(),
+      new Ghoul(),
+      new Ghoul(),
+      new Ghoul(),
+      new Ghoul(),
+      new Ghoul(),
       new WalkingCorpse(),
     ]);
   }
@@ -106,11 +115,10 @@ class Board {
       }
 
       return emptyFields;
-    } else {
-      emptyFields.push(playerBoard.getEmptyFields());
-
-      return emptyFields;
     }
+    emptyFields.push(playerBoard.getEmptyFields());
+
+    return emptyFields;
   }
 
   pickFieldForCard(socket, emptyFields) {
