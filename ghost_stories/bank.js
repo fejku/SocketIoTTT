@@ -70,7 +70,7 @@ class Bank {
   }
 
   updateUI(socket) {
-
+    socket.emit('ghost update bank', this);
   }
 
   updateTokens(socket, taoists, circleOfPrayer) {

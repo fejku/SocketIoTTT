@@ -39,6 +39,7 @@ class Game {
     if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
       this.players.getActualPlayer().loseQi();
       this.bank.updateTokens(
+        socket,
         this.players.getTaoists(),
         this.board.getVillagerByClass(CircleOfPrayer),
       );
@@ -108,7 +109,7 @@ class Game {
                 console.log('board: ', this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
               } else {
                 this.players.getActualPlayer().loseQi();
-                this.bank.updateTokens(this.players.getTaoists(), this.board.getVillagerByClass(CircleOfPrayer));
+                this.bank.updateTokens(socket, this.players.getTaoists(), this.board.getVillagerByClass(CircleOfPrayer));
               }
             } else {
               // If player is on corner and result is big enough pick which ghost to exorcism

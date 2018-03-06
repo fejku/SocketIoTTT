@@ -1,6 +1,24 @@
 $(() => {
   const socket = io();
 
+  // Bank
+  function updateBank(bank) {
+    // Qi tokens
+    $('#qi-tokens').empty().append(bank.qiTokens);
+    // Jin jang tokens
+    for (const jinJangColor in bank.jinJangTokens) {
+      if ({}.hasOwnProperty.call(bank.jinJangTokens, jinJangColor)) {
+        $(`#${jinJangColor.toLowerCase()}-jin-jang-token`).empty().append(bank.jinJangTokens[jinJangColor]);
+      }
+    }
+    // Tao tokens
+    for (const taoColor in bank.taoTokens) {
+      if ({}.hasOwnProperty.call(bank.taoTokens, taoColor)) {
+        $(`#${taoColor.toLowerCase()}-tao-token`).empty().append(bank.taoTokens[taoColor]);
+      }
+    }
+  }
+
   socket.emit('ghost start');
 
   socket.on('ghost init board', (playersBoards, villagers, bank) => {
@@ -26,21 +44,11 @@ $(() => {
     // Set board colors
     $('button[class*="player"]').each((i, e) => $(e).css('background-color', JSON.parse(e.value).color));
 
-    // Bank
-    // Qi tokens
-    $('#qi-tokens').append(bank.qiTokens);
-    // Jin jang tokens
-    for (const jinJangColor in bank.jinJangTokens) {
-      if ({}.hasOwnProperty.call(bank.jinJangTokens, jinJangColor)) {
-        $(`#${jinJangColor.toLowerCase()}-jin-jang-token`).append(bank.jinJangTokens[jinJangColor]);
-      }
-    }
-    // Tao tokens
-    for (const taoColor in bank.taoTokens) {
-      if ({}.hasOwnProperty.call(bank.taoTokens, taoColor)) {
-        $(`#${taoColor.toLowerCase()}-tao-token`).append(bank.taoTokens[taoColor]);
-      }
-    }
+    updateBank(bank);
+  });
+
+  socket.on('ghost update bank', (bank) => {
+    updateBank(bank);
   });
 
   socket.on('ghost pick field', (emptyFields, card, fn) => {
