@@ -2,12 +2,12 @@ const CircleOfPrayer = require('../villagers/circle_of_prayer');
 
 function loseQi(players, bank, circleOfPrayer) {
   players.getActualPlayer().loseQi();
-  bank.updateMarkers(players.getTaoists(), circleOfPrayer);
+  bank.updateTokens(players.getTaoists(), circleOfPrayer);
 }
 
 function loseAllTaoTokens(players, bank, circleOfPrayer) {
-  players.getActualPlayer().loseAllTaoMarkers();
-  bank.updateMarkers(players.getTaoists(), circleOfPrayer);
+  players.getActualPlayer().loseAllTaoTokens();
+  bank.updateTokens(players.getTaoists(), circleOfPrayer);
 }
 
 function getTilePositionToHaunt(ghostPosition, villagers, step = 0) {

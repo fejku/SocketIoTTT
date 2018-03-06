@@ -11,8 +11,8 @@ class Cemetery extends Villager {
   }
 
   validateHelp(board, players, bank) {
-    // Check if there are enough Qi markers in bank
-    if (bank.getQiMarkers(players.getTaoists()) < 2) {
+    // Check if there are enough Qi tokens in bank
+    if (bank.getQiTokens(players.getTaoists()) < 2) {
       return false;
     }
 
@@ -38,7 +38,7 @@ class Cemetery extends Villager {
   async action(socket, board, players, bank) {
     const player = await this.pickPlayerToReview(socket, players);
     player.gainQi(2);
-    bank.updateMarkers(players.getTaoists(), board.getVillagerByClass(CircleOfPrayer));
+    bank.updateTokens(players.getTaoists(), board.getVillagerByClass(CircleOfPrayer));
     dice.throwCurseDiceCemetry(socket, board, players, bank);
   }
 }

@@ -17,6 +17,10 @@ $(() => {
     console.log(villagers);
     for (let i = 0; i < villagers.length; i++) {
       $('.villager').filter((index, e) => Number(e.value) === i).text(villagers[i].name);
+      // Set Circle of prayer additional div with tao token color
+      if (villagers[i].name === 'Circle of prayer') {
+        $('.villager').filter((index, e) => Number(e.value) === i).append('<div id="circle_tao_token"></div>');
+      }
     }
     // Set board colors
     $('button[class*="player"]').each((i, e) => $(e).css('background-color', JSON.parse(e.value).color));
@@ -97,12 +101,27 @@ $(() => {
   });
 
   socket.on('ghost pick player to review', (deadPlayers, fn) => {
+    console.log('ghost pick player to review', deadPlayers);
     for (const deadPlayer of deadPlayers) {
       console.log(deadPlayer);
       $('#decisions')
-        .append(`<button class="dead_player" value="${deadPlayer.color}">${deadPlayer.color}"</button>"`)
+        .append(`<button class="dead_player" value="${deadPlayer.color}">${deadPlayer.color}</button>`)
         .on('click', '.dead_player', (e) => {
           $('.dead_player').remove();
+          console.log(e.currentTarget.value);
+          fn(e.currentTarget.value);
+        });
+    }
+  });
+
+  socket.on('ghost circle of prayer pick color', (availableColors, fn) => {
+    console.log('ghost circle of prayer pick color', availableColors);
+    for (const color of availableColors) {
+      $('#decisions')
+        .append(`<button class="availableColors" value="${color}">${color}</button>`)
+        .on('click', '.availableColors', (e) => {
+          $('.availableColors').remove();
+          $('#circle_tao_token').css('background', e.currentTarget.value);
           console.log(e.currentTarget.value);
           fn(e.currentTarget.value);
         });

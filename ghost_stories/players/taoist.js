@@ -4,22 +4,22 @@ const playersUtils = require('./players_utils');
 class Taoist {
   constructor(color) {
     this.color = color;
-    this.qiMarkers = 4;
-    this.jinJangMarker = 1;
-    this.taoMarkers = this.initTaoMarkers();
+    this.qiTokens = 4;
+    this.jinJangToken = 1;
+    this.taoTokens = this.initTaoTokens();
     this.position = 4;
   }
 
-  initTaoMarkers() {
-    const taoMarkers = {};
+  initTaoTokens() {
+    const taoTokens = {};
     for (const colorItem of FiveColors.enums) {
       if (colorItem.key === this.color.key) {
-        taoMarkers[colorItem.key] = 1;
+        taoTokens[colorItem.key] = 1;
       } else {
-        taoMarkers[colorItem.key] = 0;
+        taoTokens[colorItem.key] = 0;
       }
     }
-    return taoMarkers;
+    return taoTokens;
   }
 
   getColor() {
@@ -27,16 +27,16 @@ class Taoist {
   }
 
   gainQi(amount = 1) {
-    this.qiMarkers += amount;
+    this.qiTokens += amount;
   }
 
   loseQi(amount = 1) {
-    this.qiMarkers -= amount;
+    this.qiTokens -= amount;
   }
 
-  loseAllTaoMarkers() {
+  loseAllTaoTokens() {
     for (const colorItem of FiveColors.enums) {
-      this.taoMarkers[colorItem.key] = 0;
+      this.taoTokens[colorItem.key] = 0;
     }
   }
 
@@ -49,7 +49,7 @@ class Taoist {
   }
 
   isAlive() {
-    return this.qiMarkers > 0;
+    return this.qiTokens > 0;
   }
 
   validateExorcism(playersBoards) {

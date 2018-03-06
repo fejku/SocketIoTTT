@@ -1,78 +1,78 @@
 const { FourColors, FiveColors } = require('./enums/color');
 
-const QI_MARKERS_AMOUNT = 20;
-const TAO_MARKERS_AMOUNT = 4;
+const QI_TOKENS_AMOUNT = 20;
+const TAO_TOKENS_AMOUNT = 4;
 
 class Bank {
   constructor() {
-    this.qiMarkers = this.initQiMarkers();
-    this.jinJangMarkers = this.initJinJangMarkers();
-    this.taoMarkers = this.initTaoMarkers();
+    this.qiTokens = this.initQiTokens();
+    this.jinJangTokens = this.initJinJangTokens();
+    this.taoTokens = this.initTaoTokens();
   }
 
-  initQiMarkers() {
+  initQiTokens() {
     return 4;
   }
 
-  initTaoMarkers() {
-    const taoMarkers = [];
+  initTaoTokens() {
+    const taoTokens = {};
     for (const color of FiveColors.enums) {
       if (color.is(FiveColors.BLACK)) {
-        taoMarkers[color] = 4;
+        taoTokens[color] = 4;
       } else {
-        taoMarkers[color] = 3;
+        taoTokens[color] = 3;
       }
     }
-    return taoMarkers;
+
+    return taoTokens;
   }
 
-  initJinJangMarkers() {
-    const jinJangMarkers = [];
+  initJinJangTokens() {
+    const jinJangTokens = [];
     for (const color of FourColors.enums) {
-      jinJangMarkers[color] = 0;
+      jinJangTokens[color] = 0;
     }
-    return jinJangMarkers;
+    return jinJangTokens;
   }
 
-  getQiMarkers(taoists) {
-    let qiMarkers = QI_MARKERS_AMOUNT;
+  getQiTokens(taoists) {
+    let qiTokens = QI_TOKENS_AMOUNT;
     for (const taoist of taoists) {
-      qiMarkers -= taoist.qiMarkers;
+      qiTokens -= taoist.qiTokens;
     }
-    return qiMarkers;
+    return qiTokens;
   }
 
-  getTaoMarkers(taoists, circleOfPrayer) {
-    const taoMarkers = [];
+  getTaoTokens(taoists, circleOfPrayer) {
+    const taoTokens = {};
     for (const color of FiveColors.enums) {
-      taoMarkers[color] = TAO_MARKERS_AMOUNT;
-    }
-    for (const color of FiveColors.enums) {
+      taoTokens[color] = TAO_TOKENS_AMOUNT;
       for (const taoist of taoists) {
-        taoMarkers[color] -= taoist.taoMarkers[color] + circleOfPrayer.taoMarkers[color];
+        taoTokens[color] -= taoist.taoTokens[color];
       }
+      taoTokens[color] -= circleOfPrayer.taoTokens[color];
     }
 
-    return taoMarkers;
+    return taoTokens;
   }
 
-  getJinJangMarkers(taoists) {
-    const jinJangMarkers = [];
+  getJinJangTokens(taoists) {
+    const jinJangTokens = [];
     for (const taoist of taoists) {
-      if (taoist.jinJangMarker === 0) {
-        jinJangMarkers[taoist.color] = 1;
+      if (taoist.jinJangToken === 0) {
+        jinJangTokens[taoist.color] = 1;
       } else {
-        jinJangMarkers[taoist.color] = 0;
+        jinJangTokens[taoist.color] = 0;
       }
     }
 
-    return jinJangMarkers;
+    return jinJangTokens;
   }
 
-  updateMarkers(taoists, circleOfPrayer) {
-    this.qiMarkers = this.getQiMarkers(taoists);
-    this.taoMarkers = this.getTaoMarkers(taoists, circleOfPrayer);
-    this.jinJangMarker = this.getJinJangMarkers(taoists);
+  updateTokens(taoists, circleOfPrayer) {
+    this.qiTokens = this.getQiTokens(taoists);
+    this.taoTokens = this.getTaoTokens(taoists, circleOfPrayer);
+    this.jinJangToken = this.getJinJangTokens(taoists);
   }
 }
 
