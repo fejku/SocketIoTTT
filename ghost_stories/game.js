@@ -45,9 +45,10 @@ class Game {
       );
     } else {
       // Step 3 - Ghost arrival
-      await this.board.ghostArrival(socket, this.players, this.bank);
+      await this.board.ghostArrival(socket, this.players, this.bank, this.board.getVillagerByClass(CircleOfPrayer));
     }
-
+    // TEST
+    this.board.getVillager(0).setHaunted(true);
     // Player phase
     // Step 1 - Player move
     const availableMoves = this.players
@@ -76,7 +77,7 @@ class Game {
       switch (decision) {
         // Help from villager
         case Decision.VILLAGER_HELP.key:
-          this.board.getVillager(this.players.getActualPlayer().getPosition())
+          await this.board.getVillager(this.players.getActualPlayer().getPosition())
             .action(socket, this.board, this.players, this.bank);
           break;
           // Attempt an exorcism

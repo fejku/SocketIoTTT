@@ -36,6 +36,10 @@ class Villagers {
     }
     return null;
   }
+
+  getVillagerByName(name) {
+    return this.villagers.find(item => item.name === name);
+  }
 }
 
 module.exports = Villagers;
