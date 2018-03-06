@@ -34,12 +34,11 @@ $(() => {
     }
     console.log(villagers);
     for (let i = 0; i < villagers.length; i++) {
-      $('.villager').filter((index, e) => Number(e.value) === i).text(villagers[i].name);
-      // Set Circle of prayer additional div with tao token color
-      if (villagers[i].name === 'Circle of prayer') {
-        $('.villager').filter((index, e) => Number(e.value) === i).append('<div id="#circle-tao-token"></div>');
-      }
+      // $('.villager').filter((index, e) => Number(e.value) === i).text(villagers[i].name);
+      $('.villager').filter((index, e) => Number(e.value) === i).val(villagers[i].name).text(villagers[i].name);
     }
+    // Set Circle of prayer additional div with tao token color
+    $('.villager').filter((index, e) => e.value === 'Circle of prayer').append('<div id="circle-tao-token"></div>');
 
     // Set board colors
     $('button[class*="player"]').each((i, e) => $(e).css('background-color', JSON.parse(e.value).color));
@@ -54,13 +53,13 @@ $(() => {
   socket.on('ghost pick field', (emptyFields, card, fn) => {
     console.log('ghost pick field', emptyFields);
     for (const playerEmptyFields of emptyFields) {
-      $('.field')
+      $('.board')
         .filter((i, e) => ((JSON.parse(e.value).color === playerEmptyFields.color)
           && (playerEmptyFields.fields.indexOf(JSON.parse(e.value).field) !== -1)))
         .css('color', 'red')
         .on('click', (e) => {
           // Remove all click handlers
-          $('.field')
+          $('.board')
             .off('click')
             .css('color', '');
           // Append ghost params to field
@@ -151,5 +150,9 @@ $(() => {
           fn(e.currentTarget.value);
         });
     }
+  });
+
+  socket.on('ghost taoist altar pick tile', (hauntedTiles, fn) => {
+    console.log('ghost taoist altar pick tile', hauntedTiles);
   });
 });
