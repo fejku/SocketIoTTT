@@ -3,7 +3,7 @@ $(() => {
 
   socket.emit('ghost start');
 
-  socket.on('ghost init board', (playersBoards, villagers) => {
+  socket.on('ghost init board', (playersBoards, villagers, bank) => {
     console.log('ghost players board', playersBoards);
     for (let i = 0; i < playersBoards.length; i++) {
       for (let j = 0; j < 3; j++) {
@@ -19,11 +19,28 @@ $(() => {
       $('.villager').filter((index, e) => Number(e.value) === i).text(villagers[i].name);
       // Set Circle of prayer additional div with tao token color
       if (villagers[i].name === 'Circle of prayer') {
-        $('.villager').filter((index, e) => Number(e.value) === i).append('<div id="circle_tao_token"></div>');
+        $('.villager').filter((index, e) => Number(e.value) === i).append('<div id="#circle-tao-token"></div>');
       }
     }
+
     // Set board colors
     $('button[class*="player"]').each((i, e) => $(e).css('background-color', JSON.parse(e.value).color));
+
+    // Bank
+    // Qi tokens
+    $('#qi-tokens').append(bank.qiTokens);
+    // Jin jang tokens
+    for (const jinJangColor in bank.jinJangTokens) {
+      if ({}.hasOwnProperty.call(bank.jinJangTokens, jinJangColor)) {
+        $(`#${jinJangColor.toLowerCase()}-jin-jang-token`).append(bank.jinJangTokens[jinJangColor]);
+      }
+    }
+    // Tao tokens
+    for (const taoColor in bank.taoTokens) {
+      if ({}.hasOwnProperty.call(bank.taoTokens, taoColor)) {
+        $(`#${taoColor.toLowerCase()}-tao-token`).append(bank.taoTokens[taoColor]);
+      }
+    }
   });
 
   socket.on('ghost pick field', (emptyFields, card, fn) => {
@@ -121,7 +138,7 @@ $(() => {
         .append(`<button class="availableColors" value="${color}">${color}</button>`)
         .on('click', '.availableColors', (e) => {
           $('.availableColors').remove();
-          $('#circle_tao_token').css('background', e.currentTarget.value);
+          $('#circle-tao-token').css('background', e.currentTarget.value);
           console.log(e.currentTarget.value);
           fn(e.currentTarget.value);
         });

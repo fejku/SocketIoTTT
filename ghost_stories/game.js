@@ -21,6 +21,7 @@ class Game {
 
   async start(io, socket) {
     try {
+      socket.emit('ghost init board', this.board.playersBoards, this.board.getAllVillagers(), this.bank);
       // validate is player alive, are 3 villagers haunted, are still ghost cards in deck
       while (!this.validateGameEnd()) {
         await this.turn(io, socket); /* eslint-disable-line no-await-in-loop */
@@ -32,8 +33,6 @@ class Game {
   }
 
   async turn(io, socket) {
-    socket.emit('ghost init board', this.board.playersBoards, this.board.getAllVillagers());
-
     // Ghost phase
     // Step 1 - Ghosts’ actions
     // Step 2 - Check board overrun

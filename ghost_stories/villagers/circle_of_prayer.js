@@ -65,7 +65,6 @@ class CircleOfPrayer extends Villager {
     this.taoTokens[pickedColor] = 1;
     // Update bank
     bank.updateTokens(players.getTaoists(), this);
-    // Update Bank UI
   }
 }
 

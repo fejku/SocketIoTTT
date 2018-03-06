@@ -28,7 +28,7 @@ class Bank {
   }
 
   initJinJangTokens() {
-    const jinJangTokens = [];
+    const jinJangTokens = {};
     for (const color of FourColors.enums) {
       jinJangTokens[color] = 0;
     }
@@ -69,10 +69,17 @@ class Bank {
     return jinJangTokens;
   }
 
-  updateTokens(taoists, circleOfPrayer) {
+  updateUI(socket) {
+
+  }
+
+  updateTokens(socket, taoists, circleOfPrayer) {
     this.qiTokens = this.getQiTokens(taoists);
     this.taoTokens = this.getTaoTokens(taoists, circleOfPrayer);
     this.jinJangToken = this.getJinJangTokens(taoists);
+
+    // Update Bank UI
+    this.updateUI(socket);
   }
 }
 
