@@ -40,6 +40,14 @@ class Taoist {
     }
   }
 
+  gainTaoToken(color, amount = 1) {
+    this.taoTokens[color] += amount;
+  }
+
+  loseTaoToken(color, amount = 1) {
+    this.taoTokens[color] -= amount;
+  }
+
   getPosition() {
     return this.position;
   }

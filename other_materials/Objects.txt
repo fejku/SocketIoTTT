@@ -1,0 +1,36 @@
+Jing
+1.A. Duch(y) ze zdolnością Nawiedzanie
+1.B. Duch(y) ze zdolnością Dręczenie
+Krok 2. Plansza zapełniona?
+    Tak - -1Qi
+    Nie - Krok 3. Przybycie ducha
+
+Jang
+1) Ruch (opcjonalny)
+2.a) Pomoc od wieśniaka
+2.b) Próba egzorcyzmu
+3) Umieszczenie Buddy (opcjonalne), otrzymanie znaczników mocy
+
+Każdy z graczy bierze 
+4 znaczniki Czi, 
+znacznik Jin-Jang w swoim kolorze, 
+znacznik tao w swoim kolorze i kładzie figurkę Taoisty w swoim kolorze na centralnym 
+żetonie wioski.
+Umieść 2 figurki Buddy na  żetonie wioski ze Świątynią 
+Buddyjską.
+
+Bank
+  Tao tokens
+    { YELLOW: 0, GREEN: 0, BLUE: 0, RED: 0, BLACK: 0 }
+  Jin jang tokens
+    { YELLOW: 0, GREEN: 0, BLUE: 0, RED: 0 }
+  Qi tokens
+    20
+Villagers
+  villagers
+    [ Cemetery { haunted: true, name: 'Cemetery' },
+      TaoistAltar { haunted: false, name: 'Taoist Altar' },
+      CircleOfPrayer {
+        haunted: false,
+        name: 'Circle of prayer',
+        taoTokens: { YELLOW: 0, GREEN: 0, BLUE: 0, RED: 0, BLACK: 0 } } ]

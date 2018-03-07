@@ -158,10 +158,23 @@ $(() => {
     console.log('ghost taoist altar pick tile', hauntedTiles);
     for (const tile of hauntedTiles) {
       $('#decisions')
-        .append(`<button class="pick-tile" value="${tile}">${tile}</button>`)
-        .on('click', '.pick-tile', (e) => {
-          $('.pick-tile').remove();
+        .append(`<button class="taoist-altar-pick-tile" value="${tile}">${tile}</button>`)
+        .on('click', '.taoist-altar-pick-tile', (e) => {
+          $('.taoist-altar-pick-tile').remove();
           console.log('ghost taoist altar pick tile picked value: ', e.currentTarget.value);
+          fn(e.currentTarget.value);
+        });
+    }
+  });
+
+  socket.on('ghost herbalist shop pick token', (availableTaoTokens, fn) => {
+    console.log('ghost herbalist shop pick token', availableTaoTokens);
+    for (const color of availableTaoTokens) {
+      $('#decisions')
+        .append(`<button class="herbalist-shop-pick-color-white-dice" value="${color}">${color}</button>`)
+        .on('click', '.herbalist-shop-pick-color-white-dice', (e) => {
+          $('.herbalist-shop-pick-color-white-dice').remove();
+          console.log('ghost herbalist shop pick token picked color: ', e.currentTarget.value);
           fn(e.currentTarget.value);
         });
     }

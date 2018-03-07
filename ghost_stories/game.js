@@ -47,8 +47,7 @@ class Game {
       // Step 3 - Ghost arrival
       await this.board.ghostArrival(socket, this.players, this.bank, this.board.getVillagerByClass(CircleOfPrayer));
     }
-    // TEST
-    this.board.getVillager(0).setHaunted(true);
+
     // Player phase
     // Step 1 - Player move
     const availableMoves = this.players
