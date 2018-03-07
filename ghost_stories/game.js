@@ -21,7 +21,7 @@ class Game {
 
   async start(io, socket) {
     try {
-      socket.emit('ghost init board', this.board.playersBoards, this.board.getAllVillagers(), this.bank);
+      socket.emit('ghost init board', this.board.getAllPlayersBoards(), this.board.getAllVillagers(), this.bank);
       // validate is player alive, are 3 villagers haunted, are still ghost cards in deck
       while (!this.validateGameEnd()) {
         await this.turn(io, socket); /* eslint-disable-line no-await-in-loop */
@@ -65,7 +65,7 @@ class Game {
       availableDecisions.push(Decision.VILLAGER_HELP.key);
     }
     // Check if exorcism is possible
-    if (this.players.getActualPlayer().validateExorcism(this.board.playersBoards)) {
+    if (this.players.getActualPlayer().validateExorcism(this.board.getAllPlayersBoards())) {
       availableDecisions.push(Decision.EXORCISM.key);
     }
 
@@ -83,7 +83,7 @@ class Game {
         case Decision.EXORCISM.key:
           {
             const ghostsInRange = this.players.getActualPlayer()
-              .getGhostsInRange(this.board.playersBoards);
+              .getGhostsInRange(this.board.getAllPlayersBoards());
               // Throw dices
             const diceThrowResult = colorDice.throwDices(3);
             console.log('diceThrowResult', diceThrowResult);

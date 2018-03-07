@@ -2,7 +2,7 @@ const arrayShuffle = require('array-shuffle');
 const { FiveColors } = require('./enums/color');
 
 const Villagers = require('./villagers/villagers');
-const PlayerBoards = require('./players_boards/player_boards');
+const PlayerBoards = require('./players_boards/players_boards');
 
 const Ghoul = require('./ghosts/ghoul');
 const WalkingCorpse = require('./ghosts/walking_corpse');
@@ -47,12 +47,16 @@ class Board {
     return this.villagers.getVillagerByClass(villagerClass);
   }
 
-  getPlayerBoards() {
+  getPlayersBoards() {
     return this.playersBoards;
   }
 
+  getAllPlayersBoards() {
+    return this.playersBoards.getPlayersBoards();
+  }
+
   getPlayerBoardByColor(color) {
-    return this.playersBoards.getBoardByColor(color);
+    return this.playersBoards.getPlayerBoardByColor(color);
   }
 
   drawCard() {
@@ -82,7 +86,7 @@ class Board {
   }
 
   async ghostArrival(socket, players, bank, circleOfPrayer) {
-    if (this.isAllBoardsFull()) {
+    if (this.getPlayersBoards().isAllBoardsFull()) {
       players.getActualPlayer().loseQi();
       bank.updateTokens(socket, players.getTaoists(), circleOfPrayer);
     } else {
@@ -92,11 +96,11 @@ class Board {
       // Black card on active player board
       if (card.color.key === FiveColors.BLACK) {
         // Get empty fields from actual player
-        emptyFields = this.getEmptyFields(this.getPlayerBoardByColor(players.getActualPlayerColor()));
+        emptyFields = this.getPlayersBoards().getEmptyFields(this.getPlayerBoardByColor(players.getActualPlayerColor()));
         // Other than black color
       } else {
         // Get empty fields from player whose color is same as card color
-        emptyFields = this.getEmptyFields(this.getPlayerBoardByColor(card.color.key));
+        emptyFields = this.getPlayersBoards().getEmptyFields(this.getPlayerBoardByColor(card.color.key));
       }
       // Pick field for card
       const pickedField = await this.pickFieldForCard(socket, emptyFields, card);

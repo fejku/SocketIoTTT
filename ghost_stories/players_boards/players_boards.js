@@ -3,49 +3,49 @@ const YellowBoard = require('./yellow_board');
 const RedBoard = require('./red_board');
 const BlueBoard = require('./blue_board');
 
-class PlayerBoards {
+class PlayersBoards {
   constructor(players) {
     this.playersBoards = this.initPlayersBoards(players);
   }
 
   initPlayersBoards(players) {
-    this.playersBoards = [new GreenBoard(),
+    const boards = [new GreenBoard(),
       new YellowBoard(),
       new RedBoard(),
       new BlueBoard(),
     ];
 
-    return this.setBoardsInPlayersOrder(players);
+    return this.setBoardsInPlayersOrder(boards, players);
   }
 
-  setBoardsInPlayersOrder(players) {
+  setBoardsInPlayersOrder(boards, players) {
     const resultBoards = [];
     for (let i = 0; i < players.getTaoists().length; i++) {
-      resultBoards[i] = this.getBoardByColor(players.getTaoist(i).getColor());
+      resultBoards[i] = this.getPlayerBoardByColor(players.getTaoist(i).getColor().key, boards);
     }
     return resultBoards;
   }
 
-  getBoardByColor(color) {
-    for (const board of this.playersBoards) {
-      if (board.getColor() === color) {
+  getPlayerBoardByColor(color, boards = null) {
+    let boardsArray;
+
+    if (boards === null) {
+      boardsArray = this.playersBoards;
+    } else {
+      boardsArray = boards;
+    }
+
+    for (const board of boardsArray) {
+      if (board.getColor().key === color) {
         return board;
       }
     }
+
     return null;
   }
 
-  getPlayerBoards() {
+  getPlayersBoards() {
     return this.playersBoards;
-  }
-
-  getPlayerBoardByColor(color) {
-    for (const playerBoard of this.playersBoards) {
-      if (playerBoard.color.key === color) {
-        return playerBoard;
-      }
-    }
-    return null;
   }
 
   getPlayerBoardById(id) {
@@ -79,4 +79,4 @@ class PlayerBoards {
   }
 }
 
-module.exports = PlayerBoards;
+module.exports = PlayersBoards;

@@ -10,9 +10,9 @@ class PlayerBoard {
 
   isAnyGhostOnBoard(skipWuFeng = false) {
     if (skipWuFeng) {
-      return this.fields.some(field => field !== null);
+      return this.fields.some(field => (field !== null) && (!field.checkWuFeng()));
     }
-    return this.fields.some(field => (field !== null) && (!field.checkWuFeng()));
+    return this.fields.some(field => field !== null);
   }
 
   getEmptyFields() {

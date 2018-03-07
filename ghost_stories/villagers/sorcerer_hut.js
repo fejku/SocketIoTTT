@@ -12,26 +12,28 @@ class SorcererHut extends Villager {
 
   validateHelp(board, players, bank) {
     // If there is any ghost in play (beside Wu Feng)
-    return board.getPlayerBoards().some(playerBoard => playerBoard.isAnyGhostOnBoard(true));
+    return board.getAllPlayersBoards().some(playerBoard => playerBoard.isAnyGhostOnBoard(true));
   }
 
   getAvailableGhosts(board) {
     const result = [];
-    board.getPlayerBoards().forEach((playerBoard) => {
+    board.getAllPlayersBoards().forEach((playerBoard) => {
       result.push(playerBoard.getOccupiedFields(true));
     });
     return result;
   }
 
-  validatePickedGhost() {
-    return true;
+  validatePickedGhost(availableGhosts, pickedGhost) {
+    return availableGhosts
+      .find(ghost => ghost.color === pickedGhost.color
+        && ghost.fields.indexOf(pickedGhost.field) !== -1) !== undefined;
   }
 
   pickGhost(socket, availableGhosts) {
     return new Promise((resolve, reject) => {
       socket.emit('ghost sorcerer hut pick ghost', availableGhosts, (pickedGhost) => {
-        if (this.validatePickedGhost()) {
-          resolve(pickedGhost);
+        if (this.validatePickedGhost(availableGhosts, JSON.parse(pickedGhost))) {
+          resolve(JSON.parse(pickedGhost));
         } else {
           reject();
         }
@@ -47,6 +49,8 @@ class SorcererHut extends Villager {
     const pickedGhost = await this.pickGhost(socket, availableGhosts);
     console.log('pickedGhost: ', pickedGhost);
     // Remove ghost from board (don't trigger afterWinningEffect)
+    board.getPlayerBoardByColor(pickedGhost.color).setField(pickedGhost.field, null);
+    // Update UI
 
     // Player lose Qi
     players.getActualPlayer().loseQi();
