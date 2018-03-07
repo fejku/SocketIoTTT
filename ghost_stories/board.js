@@ -2,11 +2,7 @@ const arrayShuffle = require('array-shuffle');
 const { FiveColors } = require('./enums/color');
 
 const Villagers = require('./villagers/villagers');
-
-const GreenBoard = require('./players_boards/green_board');
-const YellowBoard = require('./players_boards/yellow_board');
-const RedBoard = require('./players_boards/red_board');
-const BlueBoard = require('./players_boards/blue_board');
+const PlayerBoards = require('./players_boards/player_boards');
 
 const Ghoul = require('./ghosts/ghoul');
 const WalkingCorpse = require('./ghosts/walking_corpse');
@@ -16,35 +12,8 @@ class Board {
     // 0 - top left, 1 - top middle, ...
     this.villagers = new Villagers();
     // 0 - top, 1 - right, 2 - bottom, 3 - left
-    this.playersBoards = this.initPlayersBoards(players);
+    this.playersBoards = new PlayerBoards(players);
     this.ghostCards = this.initGhostCards();
-  }
-
-  initPlayersBoards(players) {
-    const boards = [new GreenBoard(),
-      new YellowBoard(),
-      new RedBoard(),
-      new BlueBoard(),
-    ];
-
-    return this.setBoardsInPlayersOrder(players, boards);
-  }
-
-  setBoardsInPlayersOrder(players, boards) {
-    const resultBoards = [];
-    for (let i = 0; i < players.getTaoists().length; i++) {
-      resultBoards[i] = this.getBoardByColor(boards, players.getTaoist(i).getColor());
-    }
-    return resultBoards;
-  }
-
-  getBoardByColor(boards, color) {
-    for (const board of boards) {
-      if (board.getColor() === color) {
-        return board;
-      }
-    }
-    return null;
   }
 
   initGhostCards() {
@@ -78,51 +47,16 @@ class Board {
     return this.villagers.getVillagerByClass(villagerClass);
   }
 
-  drawCard() {
-    return this.ghostCards.pop();
-  }
-
-  isAllBoardsFull() {
-    for (const board of this.playersBoards) {
-      if (!board.isBoardFull()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   getPlayerBoards() {
     return this.playersBoards;
   }
 
   getPlayerBoardByColor(color) {
-    for (const playerBoard of this.playersBoards) {
-      if (playerBoard.color.key === color) {
-        return playerBoard;
-      }
-    }
-    return null;
+    return this.playersBoards.getBoardByColor(color);
   }
 
-  getPlayerBoardById(id) {
-    return this.playersBoards[id];
-  }
-
-  getEmptyFields(boards, playerBoard) {
-    const emptyFields = [];
-
-    if (playerBoard.isBoardFull()) {
-      for (const board of boards) {
-        if (!board.isBoardFull()) {
-          emptyFields.push(board.getEmptyFields());
-        }
-      }
-
-      return emptyFields;
-    }
-    emptyFields.push(playerBoard.getEmptyFields());
-
-    return emptyFields;
+  drawCard() {
+    return this.ghostCards.pop();
   }
 
   pickFieldForCard(socket, emptyFields, card) {
@@ -158,17 +92,11 @@ class Board {
       // Black card on active player board
       if (card.color.key === FiveColors.BLACK) {
         // Get empty fields from actual player
-        emptyFields = this.getEmptyFields(
-          this.playersBoards,
-          this.getPlayerBoardByColor(players.getActualPlayerColor()),
-        );
+        emptyFields = this.getEmptyFields(this.getPlayerBoardByColor(players.getActualPlayerColor()));
         // Other than black color
       } else {
         // Get empty fields from player whose color is same as card color
-        emptyFields = this.getEmptyFields(
-          this.playersBoards,
-          this.getPlayerBoardByColor(card.color.key),
-        );
+        emptyFields = this.getEmptyFields(this.getPlayerBoardByColor(card.color.key));
       }
       // Pick field for card
       const pickedField = await this.pickFieldForCard(socket, emptyFields, card);
