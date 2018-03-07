@@ -179,4 +179,20 @@ $(() => {
         });
     }
   });
+
+  socket.on('ghost sorcerer hut pick ghost', (availableGhosts, fn) => {
+    console.log('ghost sorcerer hut pick ghost', availableGhosts);
+    // { color: 'YELLOW', fields: [ 0, 1 ] }
+    for (const ghost of availableGhosts) {
+      $('.board')
+        .filter((index, field) => (JSON.parse(field.value).color === ghost.color)
+          && (ghost.fields.indexOf(JSON.parse(field.value).field) !== -1))
+        .css('color', 'white')
+        .on('click', (e) => {
+          $('.board').off().css('color', '');
+          console.log('pickedGhost: ', e.currentTarget.value);
+          fn(e.currentTarget.value);
+        });
+    }
+  });
 });

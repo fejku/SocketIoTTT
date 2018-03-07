@@ -15,7 +15,7 @@ class Villagers {
     return arrayShuffle([new Cemetery(),
       new TaoistAltar(),
       new HerbalistShop(),
-      // new SorcererHut(),
+      new SorcererHut(),
       new CircleOfPryer(),
     ]);
   }

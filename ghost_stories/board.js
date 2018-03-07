@@ -91,6 +91,10 @@ class Board {
     return true;
   }
 
+  getPlayerBoards() {
+    return this.playersBoards;
+  }
+
   getPlayerBoardByColor(color) {
     for (const playerBoard of this.playersBoards) {
       if (playerBoard.color.key === color) {

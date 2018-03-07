@@ -5,6 +5,7 @@ class Ghost {
     this.resistance = resistance;
 
     this.taoDiceHaveEffect = true;
+    this.isWuFeng = false;
   }
 
   immediateEffect() {
@@ -38,6 +39,10 @@ class Ghost {
 
   getResistance() {
     return this.color;
+  }
+
+  checkWuFeng() {
+    return this.isWuFeng;
   }
 }
 

@@ -5,12 +5,14 @@ class PlayerBoard {
   }
 
   isBoardFull() {
-    for (const card of this.fields) {
-      if (card === null) {
-        return false;
-      }
+    return this.fields.every(field => field !== null);
+  }
+
+  isAnyGhostOnBoard(skipWuFeng = false) {
+    if (skipWuFeng) {
+      return this.fields.some(field => field !== null);
     }
-    return true;
+    return this.fields.some(field => (field !== null) && (!field.checkWuFeng()));
   }
 
   getEmptyFields() {
@@ -23,8 +25,27 @@ class PlayerBoard {
     return result;
   }
 
+
+  getOccupiedFields(skipWuFeng = false) {
+    const result = { color: this.color.key, fields: [] };
+    for (let i = 0; i < this.fields.length; i++) {
+      if (skipWuFeng) {
+        if ((this.fields[i] !== null) && (!this.fields[i].checkWuFeng())) {
+          result.fields.push(i);
+        }
+      } else if (this.fields[i] !== null) {
+        result.fields.push(i);
+      }
+    }
+    return result;
+  }
+
   getColor() {
     return this.color;
+  }
+
+  getFields() {
+    return this.fields;
   }
 
   getField(index) {
