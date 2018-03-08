@@ -195,4 +195,9 @@ $(() => {
         });
     }
   });
+
+  socket.on('ghost sorcerer hut remove ghost from board', () => {
+    $('.board')
+      .css('color', 'black');
+  });
 });

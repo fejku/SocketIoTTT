@@ -41,6 +41,12 @@ class SorcererHut extends Villager {
     });
   }
 
+  removeGhostFromBoard(socket, board, pickedGhost) {
+    board.getPlayerBoardByColor(pickedGhost.color).setField(pickedGhost.field, null);
+    // Update UI
+    socket.emit('ghost sorcerer hut remove ghost from board');
+  }
+
   async action(socket, board, players, bank) {
     // Get available Ghosts (skip Wu Feng)
     const availableGhosts = this.getAvailableGhosts(board);
@@ -49,9 +55,7 @@ class SorcererHut extends Villager {
     const pickedGhost = await this.pickGhost(socket, availableGhosts);
     console.log('pickedGhost: ', pickedGhost);
     // Remove ghost from board (don't trigger afterWinningEffect)
-    board.getPlayerBoardByColor(pickedGhost.color).setField(pickedGhost.field, null);
-    // Update UI
-
+    this.removeGhostFromBoard(socket, board, pickedGhost);
     // Player lose Qi
     players.getActualPlayer().loseQi();
     // Update bank
