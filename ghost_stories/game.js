@@ -25,6 +25,8 @@ class Game {
       // validate is player alive, are 3 villagers haunted, are still ghost cards in deck
       while (!this.validateGameEnd()) {
         await this.turn(io, socket); /* eslint-disable-line no-await-in-loop */
+        // Set active player budda figure to active
+        this.players.getActualPlayer().setBuddaFiguresActive();
         this.players.nextPlayer();
       }
     } catch (err) {
@@ -120,7 +122,10 @@ class Game {
           break;
       }
     }
-    // Step 3
+    // Step 3 Place a Buddha (optional)
+    // You may place a Buddha figure on the Buddha symbol of an empty ghost space you are facing
+    // (or 2 if you are on the corner tile). A ghost on a space with a Buddha is discarded
+    // (and does not apply its curses or rewards), and the Buddha is placed on the Buddhist Temple tile.
   }
 }
 module.exports = new Game();

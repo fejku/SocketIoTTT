@@ -8,6 +8,8 @@ class Taoist {
     this.jinJangToken = 1;
     this.taoTokens = this.initTaoTokens();
     this.position = 4;
+
+    this.buddaFigures = [];
   }
 
   initTaoTokens() {
@@ -66,6 +68,18 @@ class Taoist {
 
   getGhostsInRange(playersBoards) {
     return playersUtils.getGhostsInRange(playersBoards, this.position);
+  }
+
+  gainBuddaFigure() {
+    return this.buddaFigures.push({ status: 'inactive' });
+  }
+
+  setBuddaFiguresActive() {
+    this.buddaFigures
+      .filter(budda => budda.status === 'inactive')
+      .forEach((budda) => {
+        budda.status = 'active'; /* eslint-disable-line no-param-reassign */
+      });
   }
 }
 
