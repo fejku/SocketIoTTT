@@ -25,8 +25,8 @@ class Game {
       // validate is player alive, are 3 villagers haunted, are still ghost cards in deck
       while (!this.validateGameEnd()) {
         await this.turn(io, socket); /* eslint-disable-line no-await-in-loop */
-        // Set active player budda figure to active
-        this.players.getActualPlayer().setBuddaFiguresActive();
+        // Set active player buddha figure to active
+        this.players.getActualPlayer().setBuddhaFiguresActive();
         this.players.nextPlayer();
       }
     } catch (err) {
@@ -91,7 +91,7 @@ class Game {
             console.log('diceThrowResult', diceThrowResult);
             console.log('ghostsInRange', ghostsInRange);
             if (ghostsInRange.length === 1) {
-              const ghost = this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
+              const ghost = this.board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
                 .getField(ghostsInRange[0].fieldIndex);
               console.log('ghost', ghost);
               // If result of throwed dices(taoist tao tokens,
@@ -126,6 +126,22 @@ class Game {
     // You may place a Buddha figure on the Buddha symbol of an empty ghost space you are facing
     // (or 2 if you are on the corner tile). A ghost on a space with a Buddha is discarded
     // (and does not apply its curses or rewards), and the Buddha is placed on the Buddhist Temple tile.
+
+    // Check if actual player have active buddha figure
+    while (this.players.getActualPlayer().isActiveBuddhaFigure()) {
+      console.log('FIGURE ACTIVE');
+      // Ask if player want to place buddha figure
+      const placeBudddha = await this.players.getActualPlayer().checkIfPlaceBuddha(socket); /* eslint-disable-line no-await-in-loop */
+      if (placeBudddha) {
+        console.log('yes');
+      } else {
+        console.log('no');
+      }
+      // Get available fields to place buddha
+
+      // Pick field to place buddha
+      // Place buddha on picked field
+    }
   }
 }
 module.exports = new Game();

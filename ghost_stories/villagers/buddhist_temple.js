@@ -5,17 +5,19 @@ class BuddhistTemple extends Villager {
   constructor() {
     super();
     this.name = 'Buddhist Temple';
-    this.buddaFigure = 2;
+    this.buddhaFigure = 2;
   }
 
   validateHelp(board, players, bank) { /* eslint-disable-line no-unused-vars */
-    // Check if there is free budda figure
-    return this.buddaFigure > 0;
+    // Check if there is free buddha figure
+    return this.buddhaFigure > 0;
   }
 
   async action(socket, board, players, bank) { /* eslint-disable-line no-unused-vars */
-    // Give a player budda figure
-    players.getActualPlayer().gainBuddaFigure();
+    // Give a player buddha figure
+    players.getActualPlayer().gainBuddhaFigure();
+    // Remove figure from tile
+    this.buddhaFigure--;
   }
 }
 

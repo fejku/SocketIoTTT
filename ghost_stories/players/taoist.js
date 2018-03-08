@@ -9,7 +9,7 @@ class Taoist {
     this.taoTokens = this.initTaoTokens();
     this.position = 4;
 
-    this.buddaFigures = [];
+    this.buddhaFigures = [];
   }
 
   initTaoTokens() {
@@ -70,16 +70,28 @@ class Taoist {
     return playersUtils.getGhostsInRange(playersBoards, this.position);
   }
 
-  gainBuddaFigure() {
-    return this.buddaFigures.push({ status: 'inactive' });
+  gainBuddhaFigure() {
+    return this.buddhaFigures.push({ status: 'inactive' });
   }
 
-  setBuddaFiguresActive() {
-    this.buddaFigures
-      .filter(budda => budda.status === 'inactive')
-      .forEach((budda) => {
-        budda.status = 'active'; /* eslint-disable-line no-param-reassign */
+  setBuddhaFiguresActive() {
+    this.buddhaFigures
+      .filter(buddha => buddha.status === 'inactive')
+      .forEach((buddha) => {
+        buddha.status = 'active'; /* eslint-disable-line no-param-reassign */
       });
+  }
+
+  isActiveBuddhaFigure() {
+    return this.buddhaFigures.find(buddha => buddha.status === 'active') !== undefined;
+  }
+
+  checkIfPlaceBuddha(socket) {
+    return new Promise((resolve, reject) => {
+      socket.emit('ghost check if place buddha', (choice) => {
+        resolve(choice);
+      });
+    });
   }
 }
 

@@ -6,6 +6,7 @@ const HerbalistShop = require('.//herbalist_shop');
 const SorcererHut = require('./sorcerer_hut');
 const CircleOfPryer = require('./circle_of_prayer');
 const TeaHouse = require('./tea_house');
+const BuddhistTemple = require('./buddhist_temple');
 
 class Villagers {
   constructor() {
@@ -19,6 +20,7 @@ class Villagers {
       new SorcererHut(),
       new CircleOfPryer(),
       new TeaHouse(),
+      new BuddhistTemple(),
     ]);
   }
 

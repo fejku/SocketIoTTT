@@ -200,4 +200,15 @@ $(() => {
     $('.board')
       .css('color', 'black');
   });
+
+  socket.on('ghost check if place buddha', (fn) => {
+    $('.decisions')
+      .append('<button class="check-is-place-buddha" value="true">Yes</button>')
+      .append('<button class="check-is-place-buddha" value="false">No</button>')
+      .on('click', '.check-is-place-buddha', (e) => {
+        $('.check-is-place-buddha').remove();
+        console.log('ghost check if place buddha picked value: ', e.currentTarget.value);
+        fn(e.currentTarget.value);
+      });
+  });
 });

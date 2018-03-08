@@ -2,6 +2,7 @@ class PlayerBoard {
   constructor() {
     this.color = null;
     this.fields = [null, null, null];
+    this.buddhaFields = [false, false, false];
   }
 
   isBoardFull() {
