@@ -69,6 +69,19 @@ class Bank {
     return jinJangTokens;
   }
 
+  isTaoTokenLeft(taoists, circleOfPrayer) {
+    return Object
+      .values(this.getTaoTokens(taoists, circleOfPrayer))
+      .some(tokens => tokens > 0);
+  }
+
+  getAvailableTaoTokensColors(taoists, circleOfPrayer) {
+    return Object
+      .entries(this.getTaoTokens(taoists, circleOfPrayer))
+      .filter(([colorKey, colorValue]) => colorValue > 0) /* eslint-disable-line no-unused-vars */
+      .map(([colorKey]) => colorKey);
+  }
+
   updateUI(socket) {
     socket.emit('ghost update bank', this);
   }

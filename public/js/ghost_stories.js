@@ -167,14 +167,14 @@ $(() => {
     }
   });
 
-  socket.on('ghost herbalist shop pick token', (availableTaoTokens, fn) => {
-    console.log('ghost herbalist shop pick token', availableTaoTokens);
+  socket.on('ghost villager pick tao token color', (availableTaoTokens, fn) => {
+    console.log('ghost villager pick tao token color', availableTaoTokens);
     for (const color of availableTaoTokens) {
       $('#decisions')
-        .append(`<button class="herbalist-shop-pick-color-white-dice" value="${color}">${color}</button>`)
-        .on('click', '.herbalist-shop-pick-color-white-dice', (e) => {
-          $('.herbalist-shop-pick-color-white-dice').remove();
-          console.log('ghost herbalist shop pick token picked color: ', e.currentTarget.value);
+        .append(`<button class="villager-pick-tao-token-color" value="${color}">${color}</button>`)
+        .on('click', '.villager-pick-tao-token-color', (e) => {
+          $('.villager-pick-tao-token-color').remove();
+          console.log('villager-pick-tao-token-color picked color: ', e.currentTarget.value);
           fn(e.currentTarget.value);
         });
     }

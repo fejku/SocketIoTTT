@@ -2,8 +2,8 @@ const Villager = require('./villager');
 const CircleOfPrayer = require('./circle_of_prayer');
 const dice = require('../actions/curse_dice');
 
-// Pośród porosłych chwastami nagrobków grabarz strzeże drzwi pomiędzy królestwami.
-// Przywróć zmarłego Taoistę do rozgrywki. Daj mu 2 Czi, następnie rzuć kością Klątwy.
+// Return a dead Taoist to the game. Give him 2 Qi, then roll the Curse die.
+// The Haunting face haunts the Cemetery tile.
 class Cemetery extends Villager {
   constructor() {
     super();

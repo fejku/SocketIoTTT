@@ -1,9 +1,7 @@
 const Villager = require('./villager');
 const CircleOfPrayer = require('./circle_of_prayer');
 
-// W głębi swej chaty wioskowy czarownik zawsze gotów jest do pomocy. Jego czarna magia jest potężna, ale słono kosztuje...
-// Wyślij dowolnego ducha w grze na stos kart odrzuconych, nie stosując jego zdolności, ale też nie biorąc za niego nagrody.
-// Tracisz jeden punkt Czi.
+// Discard any ghost in play, without activating its ability or reward. Lose 1 Qi point.
 class SorcererHut extends Villager {
   constructor() {
     super();

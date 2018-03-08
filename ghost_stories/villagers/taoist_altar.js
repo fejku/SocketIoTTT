@@ -1,8 +1,7 @@
 const Villager = require('./villager');
 const CircleOfPrayer = require('./circle_of_prayer');
 
-// Dzięki temu ołtarzowi i ochronnym rytuałom wierni uczniowie pomogą ci przegonić ducha nawiedzającego żeton wioski.
-// Anuluj nawiedzenie jednego żetonu wioski, odwracając go na aktywną stronę, a następnie wprowadź do gry ducha.
+// Nullify the haunting of one Village tile by turning its active side face-up, and then bring a ghost into play.
 class TaoistAltar extends Villager {
   constructor() {
     super();
