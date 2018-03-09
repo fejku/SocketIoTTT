@@ -78,7 +78,7 @@ class Taoist {
     this.buddhaFigures
       .filter(buddha => buddha.status === 'inactive')
       .forEach((buddha) => {
-        buddha.status = 'active'; /* eslint-disable-line no-param-reassign */
+        buddha.status = 'active';
       });
   }
 
@@ -86,12 +86,35 @@ class Taoist {
     return this.buddhaFigures.find(buddha => buddha.status === 'active') !== undefined;
   }
 
-  checkIfPlaceBuddha(socket) {
+  getAmountActiveBuddhaFigures() {
+    return this.buddhaFigures.filter(buddha => buddha.status === 'active').length;
+  }
+
+  askIfPlaceBuddha(socket) {
     return new Promise((resolve, reject) => {
-      socket.emit('ghost check if place buddha', (choice) => {
+      socket.emit('ghost ask if place buddha', (choice) => {
         resolve(choice);
       });
     });
+  }
+
+  isPlayerInCornerField() {
+    return playersUtils.isPlayerInCornerField(this.position);
+  }
+
+  isPlayerInMiddleField() {
+    return playersUtils.isPlayerInMiddleField(this.position);
+  }
+
+  placeBuddhaFigures(playersBoards, pickedField = null) {
+    // Place all available buddha figures
+    if (pickedField === null) {
+      const fields = playersUtils.getNearFields(this.position);
+
+      fields.forEach((field) => {
+        playersBoards;
+      });
+    }
   }
 }
 

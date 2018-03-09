@@ -7,6 +7,7 @@ const Decision = require('./enums/decision');
 const { SixColors } = require('./enums/color');
 
 const colorDice = require('./actions/color_dice');
+const questions = require('./utils/questionsUI');
 
 class Game {
   constructor() {
@@ -35,39 +36,38 @@ class Game {
   }
 
   async turn(io, socket) {
+    const actualPlayer = this.players.getActualPlayer();
+    const circleOfPrayer = this.board.getVillagerByClass(CircleOfPrayer);
+    const taoists = this.players.getTaoists();
     // Ghost phase
     // Step 1 - Ghosts’ actions
     // Step 2 - Check board overrun
     if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
-      this.players.getActualPlayer().loseQi();
-      this.bank.updateTokens(
-        socket,
-        this.players.getTaoists(),
-        this.board.getVillagerByClass(CircleOfPrayer),
-      );
+      actualPlayer.loseQi();
+      this.bank.updateTokens(socket, taoists, circleOfPrayer);
     } else {
       // Step 3 - Ghost arrival
-      await this.board.ghostArrival(socket, this.players, this.bank, this.board.getVillagerByClass(CircleOfPrayer));
+      await this.board.ghostArrival(socket, this.players, this.bank, circleOfPrayer);
     }
 
     // Player phase
     // Step 1 - Player move
     const availableMoves = this.players
-      .getAvailableMoves(this.players.getActualPlayer().getPosition());
+      .getAvailableMoves(actualPlayer.getPosition());
     const pickedMove = await this.players.pickMove(socket, availableMoves);
     console.log('availableMoves', availableMoves);
     console.log('pickedMove', pickedMove);
-    this.players.getActualPlayer().move(pickedMove);
+    actualPlayer.move(pickedMove);
     // Step 2 - Help from villager or exorcism
     const availableDecisions = [];
     // Check if villager help is possible
     if (this.board
-      .getVillager(this.players.getActualPlayer().getPosition())
+      .getVillager(actualPlayer.getPosition())
       .validateHelp(this.board, this.players, this.bank)) {
       availableDecisions.push(Decision.VILLAGER_HELP.key);
     }
     // Check if exorcism is possible
-    if (this.players.getActualPlayer().validateExorcism(this.board.getAllPlayersBoards())) {
+    if (actualPlayer.validateExorcism(this.board.getAllPlayersBoards())) {
       availableDecisions.push(Decision.EXORCISM.key);
     }
 
@@ -78,15 +78,14 @@ class Game {
       switch (decision) {
         // Help from villager
         case Decision.VILLAGER_HELP.key:
-          await this.board.getVillager(this.players.getActualPlayer().getPosition())
+          await this.board.getVillager(actualPlayer.getPosition())
             .action(socket, this.board, this.players, this.bank);
           break;
           // Attempt an exorcism
         case Decision.EXORCISM.key:
           {
-            const ghostsInRange = this.players.getActualPlayer()
-              .getGhostsInRange(this.board.getAllPlayersBoards());
-              // Throw dices
+            const ghostsInRange = actualPlayer.getGhostsInRange(this.board.getAllPlayersBoards());
+            // Throw dices
             const diceThrowResult = colorDice.throwDices(3);
             console.log('diceThrowResult', diceThrowResult);
             console.log('ghostsInRange', ghostsInRange);
@@ -110,8 +109,8 @@ class Game {
                   .removeGhostFromField(socket, ghostsInRange[0].fieldIndex);
                 console.log('board: ', this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
               } else {
-                this.players.getActualPlayer().loseQi();
-                this.bank.updateTokens(socket, this.players.getTaoists(), this.board.getVillagerByClass(CircleOfPrayer));
+                actualPlayer.loseQi();
+                this.bank.updateTokens(socket, taoists, circleOfPrayer);
               }
             } else {
               // If player is on corner and result is big enough pick which ghost to exorcism
@@ -127,21 +126,41 @@ class Game {
     // (or 2 if you are on the corner tile). A ghost on a space with a Buddha is discarded
     // (and does not apply its curses or rewards), and the Buddha is placed on the Buddhist Temple tile.
 
-    // Check if actual player have active buddha figure
-    while (this.players.getActualPlayer().isActiveBuddhaFigure()) {
-      console.log('FIGURE ACTIVE');
-      // Ask if player want to place buddha figure
-      const placeBudddha = await this.players.getActualPlayer().checkIfPlaceBuddha(socket); /* eslint-disable-line no-await-in-loop */
-      if (placeBudddha) {
-        console.log('yes');
-      } else {
-        console.log('no');
-      }
-      // Get available fields to place buddha
+    const buddhaFiguresAmount = actualPlayer.getAmountActiveBuddhaFigures();
 
-      // Pick field to place buddha
-      // Place buddha on picked field
+    // TODO: The final solution will be asking one question: Do you want place buddha figure? {Place 2} {Place 1} {No}
+
+    // If player is in corner field and have two buddha figures and fields are empty
+    if (actualPlayer.isPlayerInCornerField()
+        && (buddhaFiguresAmount === 2)
+        && (actualPlayer.getGhostsInRange(this.board.getAllPlayersBoards()) === [])) {
+      const placeBudddha = await questions.ask(
+        socket,
+        'Do you want to place two buddha figure?',
+        ['Place 2', 'Place 1', 'No'],
+      );
+
+      if (placeBudddha === 'Place 2') {
+        actualPlayer.placeTwoBuddhaFigures(this.board.getAllPlayersBoards());
+      } else if (placeBudddha === 'Place 1') {
+
+      }
     }
+
+    // for (let i = 0; i < buddhaFiguresAmount; i++) {
+    //   // Ask if player want to place buddha figure
+    //   const placeBudddha = await actualPlayer.askIfPlaceBuddha(socket); /* eslint-disable-line no-await-in-loop */
+    //   if (placeBudddha) {
+    //     // Player on middle field set buddha without asking
+    //     if (actualPlayer) { console.log('yes'); }
+    //   } else {
+    //     console.log('no');
+    //   }
+    //   // Get available fields to place buddha
+
+    //   // Pick field to place buddha
+    //   // Place buddha on picked field
+    // }
   }
 }
 module.exports = new Game();

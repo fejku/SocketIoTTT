@@ -74,8 +74,6 @@ function getGhostsInRange(playersBoards, position) {
         playerBoardIndex: 3,
         fieldIndex: 1,
       }]);
-    case 4:
-      return [];
     case 5:
       return getGhostsForCoordinates(playersBoards, [{
         playerBoardIndex: 1,
@@ -103,7 +101,7 @@ function getGhostsInRange(playersBoards, position) {
         fieldIndex: 2,
       }]);
     default:
-      return null;
+      return [];
   }
 }
 
@@ -111,3 +109,75 @@ module.exports.getGhostsInRange = getGhostsInRange;
 
 module.exports.isGhostInRange = (playersBoards, position) =>
   getGhostsInRange(playersBoards, position).length > 0;
+
+module.exports.isPlayerInCornerField = (position) => {
+  const cornerFields = [0, 2, 6, 8];
+
+  return cornerFields.find(field => field === position) !== undefined;
+};
+
+module.exports.isPlayerInMiddleField = (position) => {
+  const middleFields = [1, 3, 5, 7];
+
+  return middleFields.find(field => field === position) !== undefined;
+};
+
+module.exports.getNearFields = (position) => {
+  switch (position) {
+    case 0:
+      return [{
+        playerBoardIndex: 0,
+        fieldIndex: 0,
+      }, {
+        playerBoardIndex: 3,
+        fieldIndex: 0,
+      }];
+    case 1:
+      return [{
+        playerBoardIndex: 0,
+        fieldIndex: 1,
+      }];
+    case 2:
+      return [{
+        playerBoardIndex: 0,
+        fieldIndex: 2,
+      }, {
+        playerBoardIndex: 1,
+        fieldIndex: 0,
+      }];
+    case 3:
+      return [{
+        playerBoardIndex: 3,
+        fieldIndex: 1,
+      }];
+    case 5:
+      return [{
+        playerBoardIndex: 1,
+        fieldIndex: 1,
+      }];
+    case 6:
+      return [{
+        playerBoardIndex: 3,
+        fieldIndex: 2,
+      }, {
+        playerBoardIndex: 2,
+        fieldIndex: 0,
+      }];
+    case 7:
+      return [{
+        playerBoardIndex: 2,
+        fieldIndex: 1,
+      }];
+    case 8:
+      return [{
+        playerBoardIndex: 1,
+        fieldIndex: 2,
+      }, {
+        playerBoardIndex: 2,
+        fieldIndex: 2,
+      }];
+    default:
+      return [];
+  }
+};
+

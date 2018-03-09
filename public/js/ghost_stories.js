@@ -23,27 +23,44 @@ $(() => {
 
   socket.on('ghost init board', (playersBoards, villagers, bank) => {
     console.log('ghost players board', playersBoards);
+    // Set player board value
     for (let i = 0; i < playersBoards.length; i++) {
       for (let j = 0; j < 3; j++) {
         const fieldValue = JSON.stringify({
           color: playersBoards[i].color,
           field: j,
         });
-        $(`.player${i}.field${j}`).val(fieldValue);
+        document.querySelector(`.player${i}.field${j}`).value = fieldValue;
       }
     }
-    console.log(villagers);
+    console.log('villagers: ', villagers);
+    // Set villagers value and text
+    const villagersTiles = Array.from(document.querySelectorAll('.villager'));
     for (let i = 0; i < villagers.length; i++) {
-      $('.villager')
-        .filter((index, e) => Number(e.value) === i)
-        .val(JSON.stringify({ id: i, name: villagers[i].name }))
-        .text(villagers[i].name);
+      villagersTiles
+        .filter((index, e) => e === i)
+        .forEach((villager) => {
+          villager.value = JSON.stringify({ id: i, name: villagers[i].name });
+          villager.textContent = villagers[i].name;
+        });
     }
+
     // Set Circle of prayer additional div with tao token color
-    $('.villager').filter((index, e) => JSON.parse(e.value).name === 'Circle of prayer').append('<div id="circle-tao-token"></div>');
+    villagersTiles
+      .find(villager => JSON.parse(villager.value).name === 'Circle of prayer')
+      .innerHTML += '<div id="circle-tao-token"></div>';
+
+    // Set Buddhist Temple additional div with figures amount
+    const buddhistTemple = villagers.find(villager => villager.name === 'Buddhist Temple').buddhaFigure;
+    villagersTiles
+      .find(villager => JSON.parse(villager.value).name === 'Buddhist Temple')
+      .innerHTML += `<div id="buddha-figures-amount">${buddhistTemple}</div>`;
 
     // Set board colors
-    $('button[class*="player"]').each((i, e) => $(e).css('background-color', JSON.parse(e.value).color));
+    Array.from(document.querySelectorAll('button[class*="player"]'))
+      .forEach((field) => {
+        field.style.backgroundColor = JSON.parse(field.value).color;
+      });
 
     updateBank(bank);
   });
@@ -201,13 +218,46 @@ $(() => {
       .css('color', 'black');
   });
 
-  socket.on('ghost check if place buddha', (fn) => {
-    $('.decisions')
-      .append('<button class="check-is-place-buddha" value="true">Yes</button>')
-      .append('<button class="check-is-place-buddha" value="false">No</button>')
-      .on('click', '.check-is-place-buddha', (e) => {
-        $('.check-is-place-buddha').remove();
-        console.log('ghost check if place buddha picked value: ', e.currentTarget.value);
+  socket.on('ghost question yes no', (mainQuestion, additionalText, fn) => {
+    console.log('ghost question yes no');
+
+    const decisions = $('#decisions');
+
+    decisions.append(`<div>${mainQuestion}</div>`);
+
+    if (additionalText !== null) {
+      decisions.append(`<div>${additionalText}</div>`);
+    }
+
+    decisions
+      .append('<button class="question-yes-no" value="true">Yes</button>')
+      .append('<button class="question-yes-no" value="false">No</button>')
+      .on('click', '.question-yes-no', (e) => {
+        $('#decisions').empty();
+        console.log('ghost question yes no picked value: ', e.currentTarget.value);
+        fn(e.currentTarget.value);
+      });
+  });
+
+  socket.on('ghost question', (mainQuestion, answersArray, additionalText, fn) => {
+    console.log('ghost question');
+
+    const decisions = $('#decisions');
+
+    decisions.append(`<div>${mainQuestion}</div>`);
+
+    if (additionalText !== null) {
+      decisions.append(`<div>${additionalText}</div>`);
+    }
+
+    answersArray.forEach((answer) => {
+      decisions.append(`<button class="question" value="${answer}">${answer}</button>`);
+    });
+
+    decisions
+      .on('click', '.question', (e) => {
+        $('#decisions').empty();
+        console.log('ghost question picked value: ', e.currentTarget.value);
         fn(e.currentTarget.value);
       });
   });
