@@ -55,6 +55,7 @@ class Game {
       // Step 3 - Ghost arrival
       await this.board.ghostArrival(socket, this.players, this.bank, circleOfPrayer);
     }
+    socket.emit('ghost update players stats', this.players);
 
     // Player phase
     // Step 1 - Player move
@@ -127,6 +128,7 @@ class Game {
           break;
       }
     }
+    socket.emit('ghost update players stats', this.players);
     // Step 3 Place a Buddha (optional)
     // You may place a Buddha figure on the Buddha symbol of an empty ghost space you are facing
     // (or 2 if you are on the corner tile). A ghost on a space with a Buddha is discarded

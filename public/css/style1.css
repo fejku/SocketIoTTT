@@ -2,7 +2,8 @@ body {
     display: grid;
     grid-template-areas:
     'board board board board board'
-    'bank player0-stats player1-stats player2-stats player3-stats';
+    'bank player0-stats player1-stats player2-stats player3-stats'
+    'actual-player actual-player actual-player actual-player actual-player';
 }
 
 #bank {
@@ -23,6 +24,10 @@ body {
 
 #player3-stats {
     grid-area: player3-stats;
+}
+
+#actual-player {
+    grid-area: actual-player;
 }
 
 #board {

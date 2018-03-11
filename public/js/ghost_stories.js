@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Players stats
   function updatePlayersStats(players) {
     console.log(players);
-    players.forEach((player, i) => {
+    players.taoists.forEach((player, i) => {
       console.log(i);
       // Color
       const color = document.getElementById(`player${i}-stats-color`);
@@ -46,6 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const buddhaPigures = document.getElementById(`player${i}-stats-buddha-figures`);
       buddhaPigures.innerText = player.buddhaFigures.length;
     });
+
+    // Actual player
+    const actualPlayer = document.getElementById('actual-player');
+    actualPlayer.innerText = `Actual player: ${players.actualPlayer}`;
   }
 
   socket.emit('ghost start');
@@ -92,11 +96,15 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
     updateBank(bank);
-    updatePlayersStats(players.taoists);
+    updatePlayersStats(players);
   });
 
   socket.on('ghost update bank', (bank) => {
     updateBank(bank);
+  });
+
+  socket.on('ghost update players stats', (players) => {
+    updatePlayersStats(players);
   });
 
   socket.on('ghost pick field', (emptyFields, card, fn) => {
