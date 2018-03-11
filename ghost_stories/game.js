@@ -22,7 +22,13 @@ class Game {
 
   async start(io, socket) {
     try {
-      socket.emit('ghost init board', this.board.getAllPlayersBoards(), this.board.getAllVillagers(), this.bank);
+      socket.emit(
+        'ghost init board',
+        this.board.getAllPlayersBoards(),
+        this.board.getAllVillagers(),
+        this.players,
+        this.bank,
+      );
       // validate is player alive, are 3 villagers haunted, are still ghost cards in deck
       while (!this.validateGameEnd()) {
         await this.turn(io, socket); /* eslint-disable-line no-await-in-loop */
@@ -105,9 +111,9 @@ class Game {
                 // Ghost action after winning
                 ghost.afterWinningEffect();
                 // Remove ghost from field
-                this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
+                this.board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
                   .removeGhostFromField(socket, ghostsInRange[0].fieldIndex);
-                console.log('board: ', this.board.getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
+                console.log('board: ', this.board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
               } else {
                 actualPlayer.loseQi();
                 this.bank.updateTokens(socket, taoists, circleOfPrayer);
@@ -130,10 +136,10 @@ class Game {
 
     // TODO: The final solution will be asking one question: Do you want place buddha figure? {Place 2} {Place 1} {No}
 
-    // If player is in corner field and have two buddha figures and fields are empty
+    // If player is in corner field and have two active buddha figures and fields are empty
     if (actualPlayer.isPlayerInCornerField()
         && (buddhaFiguresAmount === 2)
-        && (actualPlayer.getGhostsInRange(this.board.getAllPlayersBoards()) === [])) {
+        && (actualPlayer.getGhostsInRange(this.board.getAllPlayersBoards()).length === 0)) {
       const placeBudddha = await questions.ask(
         socket,
         'Do you want to place two buddha figure?',
@@ -141,26 +147,12 @@ class Game {
       );
 
       if (placeBudddha === 'Place 2') {
-        actualPlayer.placeTwoBuddhaFigures(this.board.getAllPlayersBoards());
+        actualPlayer.placeBuddhaFigures(socket, this.board.getPlayersBoards());
       } else if (placeBudddha === 'Place 1') {
-
+        // Pick one field
+        actualPlayer.placeBuddhaFigures(socket, this.board.getPlayersBoards());
       }
     }
-
-    // for (let i = 0; i < buddhaFiguresAmount; i++) {
-    //   // Ask if player want to place buddha figure
-    //   const placeBudddha = await actualPlayer.askIfPlaceBuddha(socket); /* eslint-disable-line no-await-in-loop */
-    //   if (placeBudddha) {
-    //     // Player on middle field set buddha without asking
-    //     if (actualPlayer) { console.log('yes'); }
-    //   } else {
-    //     console.log('no');
-    //   }
-    //   // Get available fields to place buddha
-
-    //   // Pick field to place buddha
-    //   // Place buddha on picked field
-    // }
   }
 }
 module.exports = new Game();

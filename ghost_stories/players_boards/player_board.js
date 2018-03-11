@@ -67,6 +67,10 @@ class PlayerBoard {
   removeGhostFromFieldUI(socket, fieldIndex) {
     socket.emit('ghost remove ghost from field', this.getColor(), fieldIndex);
   }
+
+  setBuddhaField(fieldIndex, state) {
+    this.buddhaFields[fieldIndex] = state;
+  }
 }
 
 module.exports = PlayerBoard;

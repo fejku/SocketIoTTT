@@ -1,4 +1,4 @@
-$(() => {
+document.addEventListener('DOMContentLoaded', () => {
   const socket = io();
 
   // Bank
@@ -19,9 +19,38 @@ $(() => {
     }
   }
 
+  // Players stats
+  function updatePlayersStats(players) {
+    console.log(players);
+    players.forEach((player, i) => {
+      console.log(i);
+      // Color
+      const color = document.getElementById(`player${i}-stats-color`);
+      color.innerText = player.color;
+
+      // Qi tokens
+      const qiTokens = document.getElementById(`player${i}-stats-qi-tokens`);
+      qiTokens.innerText = player.qiTokens;
+
+      // Tao tokens
+      Object.entries(player.taoTokens).forEach(([taoColor, taoAmount]) => {
+        const statsTaoToken = document.getElementById(`player${i}-stats-${taoColor.toLowerCase()}-tao-token`);
+        statsTaoToken.innerText = taoAmount;
+      });
+
+      // JinJang tokens
+      const jinJangToken = document.getElementById(`player${i}-stats-jin-jang-token`);
+      jinJangToken.innerText = player.jinJangToken;
+
+      // Buddha figures
+      const buddhaPigures = document.getElementById(`player${i}-stats-buddha-figures`);
+      buddhaPigures.innerText = player.buddhaFigures.length;
+    });
+  }
+
   socket.emit('ghost start');
 
-  socket.on('ghost init board', (playersBoards, villagers, bank) => {
+  socket.on('ghost init board', (playersBoards, villagers, players, bank) => {
     console.log('ghost players board', playersBoards);
     // Set player board value
     for (let i = 0; i < playersBoards.length; i++) {
@@ -63,6 +92,7 @@ $(() => {
       });
 
     updateBank(bank);
+    updatePlayersStats(players.taoists);
   });
 
   socket.on('ghost update bank', (bank) => {
@@ -216,6 +246,18 @@ $(() => {
   socket.on('ghost sorcerer hut remove ghost from board', () => {
     $('.board')
       .css('color', 'black');
+  });
+
+  socket.on('ghost update buddhist temple figures', (buddhaFiguresAmount) => {
+    console.log('ghost update buddhist temple figures');
+
+    document.getElementById('buddha-figures-amount').innerHTML = buddhaFiguresAmount;
+  });
+
+  socket.on('ghost place buddha figure on field', (field) => {
+    console.log('ghost place buddha figure on field');
+
+    document.querySelector(`.player${field.playerBoardIndex}.field${field.fieldIndex}`).innerHTML += '*B*';
   });
 
   socket.on('ghost question yes no', (mainQuestion, additionalText, fn) => {

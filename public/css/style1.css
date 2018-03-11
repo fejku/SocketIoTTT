@@ -1,4 +1,32 @@
+body {
+    display: grid;
+    grid-template-areas:
+    'board board board board board'
+    'bank player0-stats player1-stats player2-stats player3-stats';
+}
+
+#bank {
+    grid-area: bank;
+}
+
+#player0-stats {
+    grid-area: player0-stats;
+}
+
+#player1-stats {
+    grid-area: player1-stats;
+}
+
+#player2-stats {
+    grid-area: player2-stats;
+}
+
+#player3-stats {
+    grid-area: player3-stats;
+}
+
 #board {
+    grid-area: board;
     height: 300px;
     display: flex;
     flex-direction: column;

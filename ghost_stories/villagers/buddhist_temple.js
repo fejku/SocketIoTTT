@@ -18,6 +18,7 @@ class BuddhistTemple extends Villager {
     players.getActualPlayer().gainBuddhaFigure();
     // Remove figure from tile
     this.buddhaFigure--;
+    socket.emit('ghost update buddhist temple figures', this.buddhaFigure);
   }
 }
 
