@@ -3,6 +3,7 @@ body {
     grid-template-areas:
     'board board board board board'
     'bank player0-stats player1-stats player2-stats player3-stats'
+    'decisions decisions decisions decisions decisions'
     'actual-player actual-player actual-player actual-player actual-player';
 }
 
@@ -37,6 +38,10 @@ body {
     flex-direction: column;
 }
 
+#decisions {
+    grid-area: decisions;
+}
+
 .board-row {
     height: 20%;
     display: flex;
@@ -53,14 +58,14 @@ body {
     border: 1px black solid;
 }
 
-.decision {
-    display: none;
-}
-
 #circle-tao-token {
     border-radius: 50%;
     width: 10px;
     height: 10px;
     background: #FFFFFF;
+    border: 1px solid #000000;
+}
+
+.border {
     border: 1px solid #000000;
 }

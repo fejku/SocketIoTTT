@@ -4,17 +4,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Bank
   function updateBank(bank) {
     // Qi tokens
-    $('#qi-tokens').empty().append(bank.qiTokens);
+    document.getElementById('bank-qi-tokens').innerText = bank.qiTokens;
     // Jin jang tokens
     for (const jinJangColor in bank.jinJangTokens) {
       if ({}.hasOwnProperty.call(bank.jinJangTokens, jinJangColor)) {
-        $(`#${jinJangColor.toLowerCase()}-jin-jang-token`).empty().append(bank.jinJangTokens[jinJangColor]);
+        document.getElementById(`bank-${jinJangColor.toLowerCase()}-jin-jang-token`).innerText = bank.jinJangTokens[jinJangColor];
       }
     }
     // Tao tokens
     for (const taoColor in bank.taoTokens) {
       if ({}.hasOwnProperty.call(bank.taoTokens, taoColor)) {
-        $(`#${taoColor.toLowerCase()}-tao-token`).empty().append(bank.taoTokens[taoColor]);
+        document.getElementById(`bank-${taoColor.toLowerCase()}-tao-token`).innerText = bank.taoTokens[taoColor];
       }
     }
   }
@@ -47,9 +47,13 @@ document.addEventListener('DOMContentLoaded', () => {
       buddhaPigures.innerText = player.buddhaFigures.length;
     });
 
-    // Actual player
-    const actualPlayer = document.getElementById('actual-player');
-    actualPlayer.innerText = `Actual player: ${players.actualPlayer}`;
+    // Remove border from all players stats and add into actual player
+    const playersStats = document.getElementsByClassName('player-stats');
+    [...playersStats].forEach((playerStats) => {
+      playerStats.classList.remove('border');
+    });
+    const actualPlayer = document.getElementById(`player${players.actualPlayer}-stats`);
+    actualPlayer.classList.add('border');
   }
 
   socket.emit('ghost start');
@@ -120,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .off('click')
             .css('color', '');
           // Append ghost params to field
-          $(e.currentTarget).append(` <div>${card.name}</div> <div>(${card.color}: ${card.resistance})</div>`);
+          $(e.currentTarget).append(`<div class="ghost"><div>${card.name}</div><div>(${card.color}: ${card.resistance})</div></div>`);
           console.log(e.currentTarget.value);
           fn(JSON.parse(e.currentTarget.value));
         });
@@ -148,21 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
           .css('color', '');
         console.log(JSON.parse(e.currentTarget.value).id);
         fn(Number(JSON.parse(e.currentTarget.value).id));
-      });
-  });
-
-  socket.on('ghost player decision', (availableDecisions, fn) => {
-    console.log('ghost player decision', availableDecisions);
-    $('.decision')
-      .filter((i, e) => availableDecisions.indexOf(e.value) !== -1)
-      .show()
-      .on('click', (e) => {
-        // Remove all click handlers
-        $('.decision')
-          .off('click')
-          .hide();
-        console.log(e.currentTarget.value);
-        fn(e.currentTarget.value);
       });
   });
 
@@ -251,9 +240,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  socket.on('ghost sorcerer hut remove ghost from board', () => {
-    $('.board')
-      .css('color', 'black');
+  socket.on('ghost sorcerer hut remove ghost from board', (boardId, fieldId) => {
+    console.log('ghost sorcerer hut remove ghost from board', boardId, fieldId);
+    const ghostField = document.querySelector(`.board.player${boardId}.field${fieldId} .ghost`);
+    ghostField.remove();
   });
 
   socket.on('ghost update buddhist temple figures', (buddhaFiguresAmount) => {

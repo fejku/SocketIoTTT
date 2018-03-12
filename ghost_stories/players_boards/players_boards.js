@@ -52,6 +52,10 @@ class PlayersBoards {
     return this.playersBoards[id];
   }
 
+  getPlayerBoardIdByColor(color) {
+    return this.playersBoards.findIndex(playerBoard => playerBoard.color.key === color);
+  }
+
   getEmptyFields(playerBoard) {
     const emptyFields = [];
 

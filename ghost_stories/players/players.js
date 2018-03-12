@@ -47,20 +47,16 @@ class Players {
     return null;
   }
 
+  getPlayerIdByColor(color) {
+    return this.taoists.findIndex(taoist => taoist.color === color);
+  }
+
   getAvailableMoves(actualField) {
     return playersUtils.getAvailableMoves(actualField);
   }
 
   pickMove(socket, availableMoves) {
     return playersUtils.pickMove(socket, availableMoves);
-  }
-
-  makeDecision(socket, availableDecisions) {
-    return new Promise((resolve) => {
-      socket.emit('ghost player decision', availableDecisions, (decision) => {
-        resolve(decision);
-      });
-    });
   }
 
   getDeadPlayers() {

@@ -45,6 +45,8 @@ class Game {
     const actualPlayer = this.players.getActualPlayer();
     const circleOfPrayer = this.board.getVillagerByClass(CircleOfPrayer);
     const taoists = this.players.getTaoists();
+
+    socket.emit('ghost update players stats', this.players);
     // Ghost phase
     // Step 1 - Ghosts’ actions
     // Step 2 - Check board overrun
@@ -80,7 +82,11 @@ class Game {
 
     console.log('availableDecisions', availableDecisions);
     if (availableDecisions.length > 0) {
-      const decision = await this.players.makeDecision(socket, availableDecisions);
+      const decision = await questions.ask(
+        socket,
+        'What to do?',
+        availableDecisions,
+      );
       console.log('decision', decision);
       switch (decision) {
         // Help from villager
