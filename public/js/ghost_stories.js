@@ -63,11 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set player board value
     for (let i = 0; i < playersBoards.length; i++) {
       for (let j = 0; j < 3; j++) {
-        const fieldValue = JSON.stringify({
-          color: playersBoards[i].color,
-          field: j,
-        });
-        document.querySelector(`.player${i}.field${j}`).value = fieldValue;
+        document.querySelector(`.player${i}.field${j}`).dataset.boardColor = playersBoards[i].color;
+        document.querySelector(`.player${i}.field${j}`).dataset.fieldIndex = j;
       }
     }
     console.log('villagers: ', villagers);
