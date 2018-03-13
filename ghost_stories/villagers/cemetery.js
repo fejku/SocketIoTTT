@@ -28,10 +28,15 @@ class Cemetery extends Villager {
   async pickPlayerToReview(socket, players) {
     return new Promise((resolve) => {
       const deadPlayers = players.getDeadPlayers();
-      socket.emit('ghost pick player to review', deadPlayers, (pickedPlayerColor) => {
-        const player = players.getPlayerByColor(pickedPlayerColor);
-        resolve(player);
-      });
+      socket.emit(
+        'ghost question',
+        'Pick a color which player you want to review',
+        deadPlayers.map(deadPlayer => deadPlayer.color),
+        (pickedPlayerColor) => {
+          const player = players.getPlayerByColor(pickedPlayerColor);
+          resolve(player);
+        },
+      );
     });
   }
 

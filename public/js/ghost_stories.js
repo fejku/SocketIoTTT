@@ -187,20 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   });
 
-  socket.on('ghost pick player to review', (deadPlayers, fn) => {
-    console.log('ghost pick player to review', deadPlayers);
-    for (const deadPlayer of deadPlayers) {
-      console.log(deadPlayer);
-      $('#decisions')
-        .append(`<button class="dead-player" value="${deadPlayer.color}">${deadPlayer.color}</button>`)
-        .on('click', '.dead-player', (e) => {
-          $('.dead-player').remove();
-          console.log(e.currentTarget.value);
-          fn(e.currentTarget.value);
-        });
-    }
-  });
-
   socket.on('ghost circle of prayer pick color', (availableColors, fn) => {
     console.log('ghost circle of prayer pick color', availableColors);
     for (const color of availableColors) {
