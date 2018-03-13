@@ -69,3 +69,16 @@ body {
 .border {
     border: 1px solid #000000;
 }
+
+.active {
+    box-sizing: border-box;
+    animation-name: example;
+    animation-duration: 700ms;
+    animation-iteration-count: infinite;
+}
+
+@keyframes example {
+    0% {border: 1px solid black;}
+    50% {border: 5px solid black;}
+    100% {border: 1px solid black;}
+}

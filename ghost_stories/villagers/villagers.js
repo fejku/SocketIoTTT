@@ -7,6 +7,8 @@ const SorcererHut = require('./sorcerer_hut');
 const CircleOfPryer = require('./circle_of_prayer');
 const TeaHouse = require('./tea_house');
 const BuddhistTemple = require('./buddhist_temple');
+const NightWatchmansBeat = require('./night_watchmans_beat');
+const PavilionOfTheHeavenlyWinds = require('./pavilion_of_the_heavenly_winds');
 
 class Villagers {
   constructor() {
@@ -21,6 +23,8 @@ class Villagers {
       new CircleOfPryer(),
       new TeaHouse(),
       new BuddhistTemple(),
+      new NightWatchmansBeat(),
+      new PavilionOfTheHeavenlyWinds(),
     ]);
   }
 

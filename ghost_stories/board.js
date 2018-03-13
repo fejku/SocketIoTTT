@@ -66,6 +66,7 @@ class Board {
   pickFieldForCard(socket, emptyFields, card) {
     return new Promise((resolve, reject) => {
       socket.emit('ghost pick field', emptyFields, card, (pickedField) => {
+        console.log('ghost pick field picked field: ', pickedField);
         if (this.validatePickedField(emptyFields, pickedField)) {
           resolve(pickedField);
         } else {

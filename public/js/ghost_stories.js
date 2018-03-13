@@ -61,39 +61,34 @@ document.addEventListener('DOMContentLoaded', () => {
   socket.on('ghost init board', (playersBoards, villagers, players, bank) => {
     console.log('ghost players board', playersBoards);
     // Set player board value
-    for (let i = 0; i < playersBoards.length; i++) {
-      for (let j = 0; j < 3; j++) {
-        document.querySelector(`.player${i}.field${j}`).dataset.boardColor = playersBoards[i].color;
-        document.querySelector(`.player${i}.field${j}`).dataset.fieldIndex = j;
-      }
-    }
+    [...document.getElementsByClassName('player-board')].forEach((playerBoard) => {
+      playerBoard.dataset.boardColor = playersBoards[playerBoard.dataset.boardIndex].color;
+    });
+
     console.log('villagers: ', villagers);
     // Set villagers value and text
-    const villagersTiles = Array.from(document.querySelectorAll('.villager'));
-    for (let i = 0; i < villagers.length; i++) {
-      villagersTiles
-        .filter((index, e) => e === i)
-        .forEach((villager) => {
-          villager.value = JSON.stringify({ id: i, name: villagers[i].name });
-          villager.textContent = villagers[i].name;
-        });
-    }
+    const villagersTiles = [...document.querySelectorAll('.villager')];
+    villagersTiles.forEach((villager) => {
+      villager.dataset.name = villagers[villager.dataset.villagerIndex].name;
+      // https://stackoverflow.com/questions/35213147/difference-between-text-content-vs-inner-text
+      villager.textContent = villagers[villager.dataset.villagerIndex].name;
+    });
 
     // Set Circle of prayer additional div with tao token color
     villagersTiles
-      .find(villager => JSON.parse(villager.value).name === 'Circle of prayer')
+      .find(villager => villager.dataset.name === 'Circle of prayer')
       .innerHTML += '<div id="circle-tao-token"></div>';
 
     // Set Buddhist Temple additional div with figures amount
     const buddhistTemple = villagers.find(villager => villager.name === 'Buddhist Temple').buddhaFigure;
     villagersTiles
-      .find(villager => JSON.parse(villager.value).name === 'Buddhist Temple')
+      .find(villager => villager.dataset.name === 'Buddhist Temple')
       .innerHTML += `<div id="buddha-figures-amount">${buddhistTemple}</div>`;
 
     // Set board colors
-    Array.from(document.querySelectorAll('button[class*="player"]'))
+    [...document.getElementsByClassName('player-board')]
       .forEach((field) => {
-        field.style.backgroundColor = JSON.parse(field.value).color;
+        field.style.backgroundColor = field.dataset.boardColor;
       });
 
     updateBank(bank);
@@ -110,60 +105,85 @@ document.addEventListener('DOMContentLoaded', () => {
 
   socket.on('ghost pick field', (emptyFields, card, fn) => {
     console.log('ghost pick field', emptyFields);
-    for (const playerEmptyFields of emptyFields) {
-      $('.board')
-        .filter((i, e) => ((JSON.parse(e.value).color === playerEmptyFields.color)
-          && (playerEmptyFields.fields.indexOf(JSON.parse(e.value).field) !== -1)))
-        .css('color', 'red')
-        .on('click', (e) => {
-          // Remove all click handlers
-          $('.board')
-            .off('click')
-            .css('color', '');
-          // Append ghost params to field
-          $(e.currentTarget).append(`<div class="ghost"><div>${card.name}</div><div>(${card.color}: ${card.resistance})</div></div>`);
-          console.log(e.currentTarget.value);
-          fn(JSON.parse(e.currentTarget.value));
+
+    emptyFields.forEach((emptyField) => {
+      [...document.getElementsByClassName('player-board')]
+        .filter(boardField => (boardField.dataset.boardColor === emptyField.color)
+          && (emptyField.fields.indexOf(Number(boardField.dataset.fieldIndex)) !== -1))
+        .forEach((boardField) => {
+          boardField.classList.add('active');
+          boardField.addEventListener('click', function pickGhostField(e) {
+            // Remove all click handlers
+            [...document.getElementsByClassName('player-board')].forEach((removeBoardField) => {
+              removeBoardField.classList.remove('active');
+              removeBoardField.removeEventListener('click', pickGhostField);
+            });
+            // Append ghost params to field
+            const clickedField = e.target;
+            clickedField.innerHTML = (`<div class="ghost"><div>${card.name}</div><div>(${card.color}: ${card.resistance})</div></div>`);
+            // const ghostDiv = document.createElement('div');
+            // ghostDiv.className = 'ghost';
+            // const ghostName = document.createElement('div');
+            // ghostName.innerText = card.name;
+            // ghostDiv.appendChild(ghostName);
+            // const ghostStats = document.createElement('div');
+            // ghostStats.innerText = `(${card.color}: ${card.resistance})`;
+            // ghostDiv.appendChild(ghostStats);
+            // clickedField.appendChild(ghostDiv);
+            const returnFieldValues = {
+              color: clickedField.dataset.boardColor,
+              field: Number(clickedField.dataset.fieldIndex),
+            };
+            console.log('ghost pick field picked field: ', returnFieldValues);
+            fn(returnFieldValues);
+          });
         });
-    }
+    });
   });
 
   socket.on('ghost remove ghost from field', (color, fieldIndex) => {
     console.log('ghost remove ghost from field', color, fieldIndex);
-    $('.field')
-      .filter((i, e) => ((JSON.parse(e.value).color === color)
-        && (JSON.parse(e.value).field === fieldIndex)))
-      .children('div')
-      .remove();
+    [...document.getElementsByClassName('player-board')]
+      .filter(ghostField => (ghostField.dataset.boardColor === color)
+        && (Number(ghostField.dataset.fieldIndex) === fieldIndex))
+      .forEach((ghostField) => {
+        while (ghostField.hasChildNodes) {
+          ghostField.removeChild(ghostField.lastChild);
+        }
+      });
   });
 
   socket.on('ghost player move', (availableMoves, fn) => {
     console.log('ghost player move', availableMoves);
-    $('.villager')
-      .filter((i, e) => availableMoves.indexOf(JSON.parse(e.value).id) !== -1)
-      .css('color', 'green')
-      .on('click', (e) => {
-        // Remove all click handlers
-        $('.villager')
-          .off('click')
-          .css('color', '');
-        console.log(JSON.parse(e.currentTarget.value).id);
-        fn(Number(JSON.parse(e.currentTarget.value).id));
+    [...document.getElementsByClassName('villager')]
+      .filter(villager => availableMoves.indexOf(villager.dataset.villagerIndex) === -1)
+      .forEach((villager) => {
+        villager.classList.add('active');
+        villager.addEventListener('click', function pickVillagerTile(e) {
+          [...document.getElementsByClassName('villager')].forEach((villagerRemove) => {
+            villagerRemove.classList.remove('active');
+            villagerRemove.removeEventListener('click', pickVillagerTile);
+          });
+          console.log('ghost player move picked villager tile: ', e.target.dataset.villagerIndex);
+          fn(Number(e.target.dataset.villagerIndex));
+        });
       });
   });
 
   socket.on('ghost pick tile to haunt', (availableTilesToHaunt, fn) => {
     console.log('ghost pick tile to haunt', availableTilesToHaunt);
-    $('.villager')
-      .filter((i, e) => availableTilesToHaunt.indexOf(Number(e.value)) !== -1)
-      .css('color', 'red')
-      .on('click', (e) => {
-        // Remove all click handlers
-        $('.villager')
-          .off()
-          .css('color', '');
-        console.log(e.currentTarget.value);
-        fn(Number(e.currentTarget.value));
+    [...document.getElementsByClassName('villager')]
+      .filter(villager => availableTilesToHaunt.indexOf(Number(villager.dataset.villagerIndex)) !== -1)
+      .forEach((villager) => {
+        villager.classList.add('active');
+        villager.addEventListener('click', function pickVillager(e) {
+          [...document.getElementsByClassName('villager')].forEach((removeVillager) => {
+            removeVillager.classList.remove('active');
+            removeVillager.removeEventListener('click', pickVillager);
+          });
+          console.log(e.currentTarget.value);
+          fn(Number(e.currentTarget.value));
+        });
       });
   });
 
@@ -271,31 +291,33 @@ document.addEventListener('DOMContentLoaded', () => {
       .append('<button class="question-yes-no" value="false">No</button>')
       .on('click', '.question-yes-no', (e) => {
         $('#decisions').empty();
-        console.log('ghost question yes no picked value: ', e.currentTarget.value);
+        console.log('ghost question yes no picked value:', e.currentTarget.value);
         fn(e.currentTarget.value);
       });
   });
 
   socket.on('ghost question', (mainQuestion, answersArray, additionalText, fn) => {
-    console.log('ghost question');
+    console.log('ghost question: ', mainQuestion, answersArray);
+    const decisions = document.getElementById('decisions');
 
-    const decisions = $('#decisions');
-
-    decisions.append(`<div>${mainQuestion}</div>`);
+    decisions.innerHTML = `<div>${mainQuestion}</div>`;
 
     if (additionalText !== null) {
-      decisions.append(`<div>${additionalText}</div>`);
+      decisions.innerHTML += `<div>${additionalText}</div>`;
     }
 
     answersArray.forEach((answer) => {
-      decisions.append(`<button class="question" value="${answer}">${answer}</button>`);
+      decisions.innerHTML += `<button class="question" data-answer-value="${answer}">${answer}</button>`;
     });
 
-    decisions
-      .on('click', '.question', (e) => {
-        $('#decisions').empty();
-        console.log('ghost question picked value: ', e.currentTarget.value);
-        fn(e.currentTarget.value);
-      });
+    decisions.addEventListener('click', function questionDecision(e) {
+      const pickedDecision = e.target;
+      while (decisions.hasChildNodes()) {
+        decisions.removeChild(decisions.lastChild);
+      }
+      decisions.removeEventListener('click', questionDecision);
+      console.log('ghost question picked value: ', pickedDecision.dataset.answerValue);
+      fn(pickedDecision.dataset.answerValue);
+    });
   });
 });
