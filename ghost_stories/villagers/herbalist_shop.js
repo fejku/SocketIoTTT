@@ -45,7 +45,7 @@ class HerbalistShop extends Villager {
               board.getVillagerByClass(CircleOfPrayer),
             );
             console.log('availableTaoTokensColors: ', availableTaoTokensColors);
-            const pickedColor = await this.pickColor(socket, availableTaoTokensColors); /* eslint-disable-line no-await-in-loop */
+            const pickedColor = await this.pickColor(socket, 'Pick tao token color', availableTaoTokensColors); /* eslint-disable-line no-await-in-loop, max-len */
             console.log('pickedColor: ', pickedColor);
             this.givePlayerTaoToken(socket, board, players, bank, pickedColor);
           }

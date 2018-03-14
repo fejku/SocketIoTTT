@@ -8,7 +8,7 @@ class SorcererHut extends Villager {
     this.name = 'Sorcerer Hut';
   }
 
-  validateHelp(board, players, bank) {
+  validateHelp(board, players, bank) { // eslint-disable-line no-unused-vars
     if (!super.validateHelp()) {
       return false;
     }

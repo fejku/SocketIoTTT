@@ -28,7 +28,7 @@ class TeaHouse extends Villager {
       const availableTaoTokensColors = bank.getAvailableTaoTokensColors(taoists, circleOfPrayer);
       console.log('availableTaoTokensColors: ', availableTaoTokensColors);
       // Pick tao token
-      const pickedColor = await this.pickColor(socket, availableTaoTokensColors);
+      const pickedColor = await this.pickColor(socket, 'Pick tao token color', availableTaoTokensColors);
       console.log('pickedColor: ', pickedColor);
       // Give player tao token
       this.givePlayerTaoToken(socket, board, players, bank, pickedColor);
