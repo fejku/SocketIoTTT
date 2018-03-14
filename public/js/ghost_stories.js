@@ -180,50 +180,41 @@ document.addEventListener('DOMContentLoaded', () => {
     // { color: 'YELLOW', fields: [ 0, 1 ] }
     availableGhosts.forEach((ghost) => {
       [...document.getElementsByClassName('player-board')]
-        .filter(field => ghost.color === field.dataset.boardColor
-          && ghost.fields.indexOf(Number(field.dataset.fieldIndex)) !== -1)
+        .filter(field => (ghost.color === field.dataset.boardColor)
+          && (ghost.fields.indexOf(Number(field.dataset.fieldIndex)) !== -1))
         .forEach((field) => {
           field.classList.add('active');
           field.addEventListener('click', function pickGhost(e) {
+            const pickedField = e.currentTarget.dataset;
             [...document.getElementsByClassName('player-board')].forEach((removeField) => {
               removeField.classList.remove('active');
               removeField.removeEventListener('click', pickGhost);
             });
-            const result = { color: e.target.dataset.boardColor, field: field.dataset.fieldIndex };
+            const result = JSON.stringify({
+              color: pickedField.boardColor,
+              field: Number(pickedField.fieldIndex),
+            });
             console.log('ghost sorcerer hut pick ghost pickedGhost: ', result);
             fn(result);
           });
         });
     });
-
-    // for (const ghost of availableGhosts) {
-    //   $('.board')
-    //     .filter((index, field) => (JSON.parse(field.value).color === ghost.color)
-    //       && (ghost.fields.indexOf(JSON.parse(field.value).field) !== -1))
-    //     .css('color', 'white')
-    //     .on('click', (e) => {
-    //       $('.board').off().css('color', '');
-    //       console.log('pickedGhost: ', e.currentTarget.value);
-    //       fn(e.currentTarget.value);
-    //     });
-    // }
   });
 
-  socket.on('ghost sorcerer hut remove ghost from board', (boardId, fieldId) => {
-    console.log('ghost sorcerer hut remove ghost from board', boardId, fieldId);
-    const ghostField = document.querySelector(`.board.player${boardId}.field${fieldId} .ghost`);
+  socket.on('ghost sorcerer hut remove ghost from board', (pickedGhost) => {
+    console.log('ghost sorcerer hut remove ghost from board', pickedGhost);
+    const ghostField =
+      document.querySelector(`.player-board[data-board-color="${pickedGhost.color}"][data-field-index="${pickedGhost.field}"] .ghost`);
     ghostField.remove();
   });
 
   socket.on('ghost update buddhist temple figures', (buddhaFiguresAmount) => {
     console.log('ghost update buddhist temple figures');
-
     document.getElementById('buddha-figures-amount').innerHTML = buddhaFiguresAmount;
   });
 
   socket.on('ghost place buddha figure on field', (field) => {
     console.log('ghost place buddha figure on field');
-
     document.querySelector(`.player${field.playerBoardIndex}.field${field.fieldIndex}`).innerHTML += '*B*';
   });
 
