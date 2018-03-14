@@ -9,6 +9,9 @@ class SorcererHut extends Villager {
   }
 
   validateHelp(board, players, bank) {
+    if (!super.validateHelp()) {
+      return false;
+    }
     // If there is any ghost in play (beside Wu Feng)
     return board.getAllPlayersBoards().some(playerBoard => playerBoard.isAnyGhostOnBoard(true));
   }

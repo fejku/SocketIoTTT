@@ -9,6 +9,9 @@ class BuddhistTemple extends Villager {
   }
 
   validateHelp(board, players, bank) { /* eslint-disable-line no-unused-vars */
+    if (!super.validateHelp()) {
+      return false;
+    }
     // Check if there is free buddha figure
     return this.buddhaFigure > 0;
   }

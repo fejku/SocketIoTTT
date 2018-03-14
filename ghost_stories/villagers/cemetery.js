@@ -11,6 +11,9 @@ class Cemetery extends Villager {
   }
 
   validateHelp(board, players, bank) {
+    if (!super.validateHelp()) {
+      return false;
+    }
     // Check if there are enough Qi tokens in bank
     if (bank.getQiTokens(players.getTaoists()) < 2) {
       return false;
@@ -25,8 +28,12 @@ class Cemetery extends Villager {
     return false;
   }
 
+  validatePickedPlayer(deadPlayers, pickedPlayer) {
+    return deadPlayers.indexOf(pickedPlayer) !== -1;
+  }
+
   async pickPlayerToReview(socket, players) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const deadPlayers = players.getDeadPlayers().map(deadPlayer => deadPlayer.color.key);
       console.log('pickPlayerToReview', deadPlayers);
       socket.emit(
@@ -34,10 +41,14 @@ class Cemetery extends Villager {
         'Pick a color which player you want to review',
         deadPlayers,
         null,
-        (pickedPlayerColor) => {
-          console.log('pickPlayerToReview picked player', pickedPlayerColor);
-          const player = players.getPlayerByColor(pickedPlayerColor);
-          resolve(player);
+        (pickedPlayer) => {
+          console.log('pickPlayerToReview picked player', pickedPlayer);
+          if (this.validatePickedPlayer(deadPlayers, pickedPlayer)) {
+            const player = players.getPlayerByColor(pickedPlayer);
+            resolve(player);
+          } else {
+            reject();
+          }
         },
       );
     });

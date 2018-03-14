@@ -187,31 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   });
 
-  socket.on('ghost circle of prayer pick color', (availableColors, fn) => {
-    console.log('ghost circle of prayer pick color', availableColors);
-    for (const color of availableColors) {
-      $('#decisions')
-        .append(`<button class="available-colors" value="${color}">${color}</button>`)
-        .on('click', '.available-colors', (e) => {
-          $('.available-colors').remove();
-          $('#circle-tao-token').css('background', e.currentTarget.value);
-          console.log('ghost circle of prayer pick color picked color: ', e.currentTarget.value);
-          fn(e.currentTarget.value);
-        });
-    }
-  });
-
-  socket.on('ghost taoist altar pick tile', (hauntedTiles, fn) => {
-    console.log('ghost taoist altar pick tile', hauntedTiles);
-    for (const tile of hauntedTiles) {
-      $('#decisions')
-        .append(`<button class="taoist-altar-pick-tile" value="${tile}">${tile}</button>`)
-        .on('click', '.taoist-altar-pick-tile', (e) => {
-          $('.taoist-altar-pick-tile').remove();
-          console.log('ghost taoist altar pick tile picked value: ', e.currentTarget.value);
-          fn(e.currentTarget.value);
-        });
-    }
+  socket.on('ghost circle of prayer update token color', (pickedColor) => {
+    console.log('ghost circle of prayer update token color', pickedColor);
+    document.getElementById('circle-tao-token').style.background = pickedColor;
   });
 
   socket.on('ghost villager pick tao token color', (availableTaoTokens, fn) => {

@@ -27,6 +27,9 @@ class CircleOfPrayer extends Villager {
   }
 
   validateHelp(board, players, bank) { /* eslint-disable-line no-unused-vars */
+    if (!super.validateHelp()) {
+      return false;
+    }
     // If exist tao token in bank
     return bank.isTaoTokenLeft(players.getTaoists(), board.getVillagerByClass(CircleOfPrayer));
   }
@@ -48,7 +51,7 @@ class CircleOfPrayer extends Villager {
 
   async pickColor(socket, availableColors) {
     return new Promise((resolve, reject) => {
-      socket.emit('ghost circle of prayer pick color', availableColors, (pickedColor) => {
+      socket.emit('ghost question', 'Pick a color', availableColors, null, (pickedColor) => {
         // Validate if picked color was available in colors array
         if (this.validatePickedColor(availableColors, pickedColor)) {
           resolve(pickedColor);
@@ -70,6 +73,8 @@ class CircleOfPrayer extends Villager {
     this.taoTokens[pickedColor] = 1;
     // Update bank
     bank.updateTokens(socket, players.getTaoists(), this);
+    // Update token UI
+    socket.emit('ghost circle of prayer update token color', pickedColor);
   }
 }
 

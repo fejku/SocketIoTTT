@@ -16,7 +16,10 @@ class Villager {
   }
 
   validateHelp(board, players, bank) {
-    return false;
+    if (this.haunted) {
+      return false;
+    }
+    return true;
   }
 
   validatePickedColor(availableTaoTokensColors, pickedToken) {

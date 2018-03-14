@@ -9,6 +9,9 @@ class TeaHouse extends Villager {
   }
 
   validateHelp(board, players, bank) {
+    if (!super.validateHelp()) {
+      return false;
+    }
     const taoists = players.getTaoists();
     // If there are tao and qi tokens
     return bank.isTaoTokenLeft(taoists, board.getVillagerByClass(CircleOfPrayer))

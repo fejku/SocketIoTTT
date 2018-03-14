@@ -12,6 +12,9 @@ class HerbalistShop extends Villager {
   }
 
   validateHelp(board, players, bank) {
+    if (!super.validateHelp()) {
+      return false;
+    }
     // Check if tao tokens left
     return bank.isTaoTokenLeft(
       players.getTaoists(),

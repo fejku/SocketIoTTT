@@ -9,6 +9,9 @@ class TaoistAltar extends Villager {
   }
 
   validateHelp(board, players, bank) {
+    if (!super.validateHelp()) {
+      return false;
+    }
     // Check if exists haunted tile
     return board.getAllVillagers().find(item => item.isHaunted()) !== undefined;
   }
@@ -23,13 +26,21 @@ class TaoistAltar extends Villager {
 
   pickTile(socket, hauntedTiles) {
     return new Promise((resolve, reject) => {
-      socket.emit('ghost taoist altar pick tile', hauntedTiles, (pickedTile) => {
-        if (this.validatePickedTile(hauntedTiles, pickedTile)) {
-          resolve(pickedTile);
-        } else {
-          reject();
-        }
-      });
+      console.log('Taoist altar hauntedTiles: ', hauntedTiles);
+      socket.emit(
+        'ghost question',
+        'Pick village tile from which you want to chase ghost away',
+        hauntedTiles,
+        null,
+        (pickedTile) => {
+          console.log('Taoist altar pickedTile: ', pickedTile);
+          if (this.validatePickedTile(hauntedTiles, pickedTile)) {
+            resolve(pickedTile);
+          } else {
+            reject();
+          }
+        },
+      );
     });
   }
 
