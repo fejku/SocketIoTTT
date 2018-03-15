@@ -71,9 +71,7 @@ class Taoist {
   }
 
   gainBuddhaFigure() {
-    // this.buddhaFigures.push({ status: 'inactive' });
-    this.buddhaFigures.push({ status: 'active' });
-    this.buddhaFigures.push({ status: 'active' });
+    this.buddhaFigures.push({ status: 'inactive' });
   }
 
   setBuddhaFiguresActive() {
@@ -89,6 +87,10 @@ class Taoist {
   }
 
   getAmountActiveBuddhaFigures() {
+    // TEST
+    this.buddhaFigures.push({ status: 'active' });
+    this.buddhaFigures.push({ status: 'active' });
+    // TEST
     return this.buddhaFigures.filter(buddha => buddha.status === 'active').length;
   }
 
@@ -108,10 +110,14 @@ class Taoist {
     return playersUtils.isPlayerInMiddleField(this.position);
   }
 
+  getNearFields() {
+    return playersUtils.getNearFields(this.position);
+  }
+
   placeBuddhaFigures(socket, playersBoards, pickedField = null) {
     // Place all available buddha figures
     if (pickedField === null) {
-      const fields = playersUtils.getNearFields(this.position);
+      const fields = this.getNearFields();
 
       fields.forEach((field) => {
         playersBoards.getPlayerBoardById(field.playerBoardIndex).setBuddhaField(field.fieldIndex, true);

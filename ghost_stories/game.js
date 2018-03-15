@@ -141,9 +141,6 @@ class Game {
     // (and does not apply its curses or rewards), and the Buddha is placed on the Buddhist Temple tile.
 
     const buddhaFiguresAmount = actualPlayer.getAmountActiveBuddhaFigures();
-
-    // TODO: The final solution will be asking one question: Do you want place buddha figure? {Place 2} {Place 1} {No}
-
     // If player is in corner field and have two active buddha figures and fields are empty
     if (actualPlayer.isPlayerInCornerField()
         && (buddhaFiguresAmount === 2)
@@ -157,9 +154,15 @@ class Game {
       if (placeBudddha === 'Place 2') {
         actualPlayer.placeBuddhaFigures(socket, this.board.getPlayersBoards());
       } else if (placeBudddha === 'Place 1') {
+        // Get available fields
+        const availableFields = actualPlayer.getNearFields();
+        const pickedField = questions.pickPlayerBoardField(socket, availableFields);
         // Pick one field
         actualPlayer.placeBuddhaFigures(socket, this.board.getPlayersBoards());
       }
+    } else if (!actualPlayer.isPlayerInMiddleField()
+      && (buddhaFiguresAmount > 0)) {
+      // if ((ghost in range 1 and player in corner) or (ghost in range 0 and player in 1,3,5,7))
     }
   }
 }

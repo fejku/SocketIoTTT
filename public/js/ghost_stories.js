@@ -103,6 +103,34 @@ document.addEventListener('DOMContentLoaded', () => {
     updatePlayersStats(players);
   });
 
+  socket.on('ghost pick player board field', (availableFields, fn) => {
+    console.log('ghost pick player board field availableFields', availableFields);
+    [...document.getElementsByClassName('.player-board')]
+      .filter(field => (Number(field.dataset.boardIndex) === availableFields.playerBoardIndex)
+        && (Number(field.dataset.fieldIndex) === availableFields.fieldIndex))
+      .forEach((field) => {
+        field.classList.add('active');
+      });
+
+    // availableFields.forEach((field) => {
+    //   const fieldElement = document.querySelector(`.player-board[data-board-index="${field.playerBoardIndex}"]`
+    //     + `[data-field-index="${field.fieldIndex}"]`);
+    //   fieldElement.classList.add('active');
+    //   fieldElement.addEventListener('click', function pickPlayerBoardField(e) {
+    //     [...document.getElementsByClassName('.player-board')].forEach((removeField));
+    //     fieldElement.classList.remove('active');
+
+    //     pickPlayerBoardField;
+    //   });
+    // });
+    // document.querySelector(`.player-board[data-board-index="${pickedGhost.color}"]`
+    // + `[data-field-index="${pickedGhost.field}"] .ghost`);
+
+    // [...document.getElementsByClassName('player-board')]
+    //   .filter(field => (field.dataset.boardIndex === availableFields.playerBoardIndex)
+    //     && (field.dataset.fieldIndex === availableFields.fieldIndex));
+  });
+
   socket.on('ghost pick field', (emptyFields, card, fn) => {
     console.log('ghost pick field', emptyFields);
 
@@ -203,8 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   socket.on('ghost sorcerer hut remove ghost from board', (pickedGhost) => {
     console.log('ghost sorcerer hut remove ghost from board', pickedGhost);
-    const ghostField =
-      document.querySelector(`.player-board[data-board-color="${pickedGhost.color}"][data-field-index="${pickedGhost.field}"] .ghost`);
+    const ghostField = document.querySelector(`.player-board[data-board-color="${pickedGhost.color}"]`
+        + `[data-field-index="${pickedGhost.field}"] .ghost`);
     ghostField.remove();
   });
 
@@ -215,7 +243,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   socket.on('ghost place buddha figure on field', (field) => {
     console.log('ghost place buddha figure on field');
-    document.querySelector(`.player${field.playerBoardIndex}.field${field.fieldIndex}`).innerHTML += '*B*';
+    document.querySelector(`.player-board[data-board-index="${field.playerBoardIndex}"]`
+      + `[data-field-index="${field.fieldIndex}"]`).innerHTML += '<div class="buddha">*B*</div>';
   });
 
   socket.on('ghost question yes no', (mainQuestion, additionalText, fn) => {
