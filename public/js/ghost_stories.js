@@ -21,9 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Players stats
   function updatePlayersStats(players) {
-    console.log(players);
     players.taoists.forEach((player, i) => {
-      console.log(i);
       // Color
       const color = document.getElementById(`player${i}-stats-color`);
       color.innerText = player.color;
@@ -151,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('ghost remove ghost from field', (color, fieldIndex) => {
+    // TODO TypeError: Argument 1 of Node.removeChild is not an object.
     console.log('ghost remove ghost from field', color, fieldIndex);
     [...document.getElementsByClassName('player-board')]
       .filter(ghostField => (ghostField.dataset.boardColor === color)
@@ -223,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('ghost place buddha figure on field', (field) => {
-    console.log('ghost place buddha figure on field');
+    console.log('ghost place buddha figure on field', field);
     document.querySelector(`.player-board[data-board-index="${field.playerBoardIndex}"]`
       + `[data-field-index="${field.fieldIndex}"]`).innerHTML += '<div class="buddha">*B*</div>';
   });
@@ -267,13 +266,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     decisions.addEventListener('click', function questionDecision(e) {
-      const pickedDecision = e.target.dataset.answerValue;
-      while (decisions.hasChildNodes()) {
-        decisions.removeChild(decisions.lastChild);
+      if (e.target.classList.contains('question')) {
+        const pickedDecision = e.target.dataset.answerValue;
+        while (decisions.hasChildNodes()) {
+          decisions.removeChild(decisions.lastChild);
+        }
+        decisions.removeEventListener('click', questionDecision);
+        console.log('ghost question picked value: ', pickedDecision);
+        fn(pickedDecision);
       }
-      decisions.removeEventListener('click', questionDecision);
-      console.log('ghost question picked value: ', pickedDecision);
-      fn(pickedDecision);
     });
   });
 });

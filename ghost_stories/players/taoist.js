@@ -89,12 +89,13 @@ class Taoist {
   getAmountActiveBuddhaFigures() {
     // TEST
     this.buddhaFigures.push({ status: 'active' });
-    this.buddhaFigures.push({ status: 'active' });
     // TEST
+    this.buddhaFigures.push({ status: 'active' });
     return this.buddhaFigures.filter(buddha => buddha.status === 'active').length;
   }
 
   askIfPlaceBuddha(socket) {
+    // TODO: dodać reject
     return new Promise((resolve, reject) => {
       socket.emit('ghost ask if place buddha', (choice) => {
         resolve(choice);
@@ -123,6 +124,9 @@ class Taoist {
         playersBoards.getPlayerBoardById(field.playerBoardIndex).setBuddhaField(field.fieldIndex, true);
         socket.emit('ghost place buddha figure on field', field);
       });
+    } else {
+      playersBoards.getPlayerBoardById(pickedField.playerBoardIndex).setBuddhaField(pickedField.fieldIndex, true);
+      socket.emit('ghost place buddha figure on field', pickedField);
     }
   }
 }

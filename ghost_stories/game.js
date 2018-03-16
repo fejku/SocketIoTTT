@@ -141,28 +141,52 @@ class Game {
     // (and does not apply its curses or rewards), and the Buddha is placed on the Buddhist Temple tile.
 
     const buddhaFiguresAmount = actualPlayer.getAmountActiveBuddhaFigures();
-    // If player is in corner field and have two active buddha figures and fields are empty
-    if (actualPlayer.isPlayerInCornerField()
-        && (buddhaFiguresAmount === 2)
-        && (actualPlayer.getGhostsInRange(this.board.getAllPlayersBoards()).length === 0)) {
-      const placeBudddha = await questions.ask(
-        socket,
-        'Do you want to place two buddha figure?',
-        ['Place 2', 'Place 1', 'No'],
-      );
+    const ghostInRange = actualPlayer.getGhostsInRange(this.board.getAllPlayersBoards());
+    const ghostInRangeCount = actualPlayer.getGhostsInRange(this.board.getAllPlayersBoards()).length;
+    const playerInCorner = actualPlayer.isPlayerInCornerField();
+    const playerInMiddleOuter = !actualPlayer.isPlayerInCornerField() && !actualPlayer.isPlayerInMiddleField();
+    const nearFields = actualPlayer.getNearFields();
 
-      if (placeBudddha === 'Place 2') {
-        actualPlayer.placeBuddhaFigures(socket, this.board.getPlayersBoards());
-      } else if (placeBudddha === 'Place 1') {
-        // Get available fields
-        const availableFields = actualPlayer.getNearFields();
-        const pickedField = questions.pickPlayerBoardField(socket, availableFields);
-        // Pick one field
-        actualPlayer.placeBuddhaFigures(socket, this.board.getPlayersBoards());
+    // If player is in corner field and have two active buddha figures and fields are empty
+    if (buddhaFiguresAmount > 0) {
+      if (playerInCorner && (ghostInRangeCount === 0)) {
+        if (buddhaFiguresAmount === 2) {
+          const placeBudddha = await questions.ask(
+            socket,
+            'Do you want to place buddha figure?',
+            ['Place 2', 'Place 1', 'No'],
+          );
+
+          if (placeBudddha === 'Place 2') {
+            actualPlayer.placeBuddhaFigures(socket, this.board.getPlayersBoards());
+          } else if (placeBudddha === 'Place 1') {
+            const pickedField = await questions.pickPlayerBoardField(socket, nearFields);
+            // Pick one field
+            actualPlayer.placeBuddhaFigures(socket, this.board.getPlayersBoards(), pickedField);
+          }
+        } else if (buddhaFiguresAmount === 1) {
+          const placeBudddha = await questions.askYesNo(socket, 'Do you want to place buddha figure?');
+          if (placeBudddha) {
+            const pickedField = await questions.pickPlayerBoardField(socket, nearFields);
+            // Pick one field
+            actualPlayer.placeBuddhaFigures(socket, this.board.getPlayersBoards(), pickedField);
+          }
+        }
       }
-    } else if (!actualPlayer.isPlayerInMiddleField()
-      && (buddhaFiguresAmount > 0)) {
-      // if ((ghost in range 1 and player in corner) or (ghost in range 0 and player in 1,3,5,7))
+      if (playerInCorner && (ghostInRangeCount === 1)) {
+        const placeBudddha = await questions.askYesNo(socket, 'Do you want to place buddha figure?');
+        if (placeBudddha) {
+          const emptyField = nearFields.find(nearField => !((nearField.playerBoardIndex === ghostInRange[0].playerBoardIndex)
+            && (nearField.fieldIndex === ghostInRange[0].fieldIndex)));
+          actualPlayer.placeBuddhaFigures(socket, this.board.getPlayersBoards(), emptyField);
+        }
+      }
+      if (playerInMiddleOuter && (ghostInRangeCount === 0)) {
+        const placeBudddha = await questions.askYesNo(socket, 'Do you want to place buddha figure?');
+        if (placeBudddha) {
+          actualPlayer.placeBuddhaFigures(socket, this.board.getPlayersBoards());
+        }
+      }
     }
   }
 }
