@@ -7,6 +7,8 @@ const PlayerBoards = require('./players_boards/players_boards');
 const Ghoul = require('./ghosts/ghoul');
 const WalkingCorpse = require('./ghosts/walking_corpse');
 
+const questions = require('./utils/questionsUI');
+
 class Board {
   constructor(players) {
     // 0 - top left, 1 - top middle, ...
@@ -17,6 +19,7 @@ class Board {
   }
 
   initGhostCards() {
+    // TEST
     return arrayShuffle([new Ghoul(),
       new Ghoul(),
       new Ghoul(),
@@ -63,27 +66,9 @@ class Board {
     return this.ghostCards.pop();
   }
 
-  pickFieldForCard(socket, emptyFields, card) {
-    return new Promise((resolve, reject) => {
-      socket.emit('ghost pick field', emptyFields, card, (pickedField) => {
-        console.log('ghost pick field picked field: ', pickedField);
-        if (this.validatePickedField(emptyFields, pickedField)) {
-          resolve(pickedField);
-        } else {
-          reject();
-        }
-      });
-    });
-  }
-
-  validatePickedField(emptyFields, pickedField) {
-    for (const emptyField of emptyFields) {
-      if ((emptyField.color === pickedField.color)
-        && (emptyField.fields.indexOf(pickedField.field) !== -1)) {
-        return true;
-      }
-    }
-    return false;
+  layCardOnField(socket, pickedField, card) {
+    this.getPlayerBoardByColor(pickedField.playerBoardColor).fields[pickedField.fieldIndex] = card;
+    socket.emit('ghost lay ghost card on picked field', pickedField, card);
   }
 
   async ghostArrival(socket, players, bank, circleOfPrayer) {
@@ -104,10 +89,9 @@ class Board {
         emptyFields = this.getPlayersBoards().getEmptyFields(this.getPlayerBoardByColor(card.color.key));
       }
       // Pick field for card
-      const pickedField = await this.pickFieldForCard(socket, emptyFields, card);
+      const pickedField = await questions.pickPlayerBoardField(socket, emptyFields);// this.pickFieldForCard(socket, emptyFields, card);
       // Lay card of picked field
-      this.getPlayerBoardByColor(pickedField.color).fields[pickedField.field] = card;
-      console.log(this.getPlayerBoardByColor(pickedField.color));
+      this.layCardOnField(socket, pickedField, card);
       card.immediateEffect();
     }
   }

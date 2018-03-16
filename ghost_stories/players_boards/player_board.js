@@ -17,13 +17,10 @@ class PlayerBoard {
   }
 
   getEmptyFields() {
-    const result = { color: this.color.key, fields: [] };
-    for (let i = 0; i < this.fields.length; i++) {
-      if (this.fields[i] === null) {
-        result.fields.push(i);
-      }
-    }
-    return result;
+    return this.fields
+      .map((field, fieldIndex) => ({ playerBoardColor: this.color.key, field, fieldIndex }))
+      .filter(field => field.field === null)
+      .map(field => ({ playerBoardColor: field.playerBoardColor, fieldIndex: field.fieldIndex }));
   }
 
 

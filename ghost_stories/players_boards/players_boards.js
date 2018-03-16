@@ -57,20 +57,17 @@ class PlayersBoards {
   }
 
   getEmptyFields(playerBoard) {
-    const emptyFields = [];
-
     if (playerBoard.isBoardFull()) {
+      let emptyFields = [];
       for (const board of this.playersBoards) {
         if (!board.isBoardFull()) {
-          emptyFields.push(board.getEmptyFields());
+          emptyFields = emptyFields.concat(board.getEmptyFields());
         }
       }
 
       return emptyFields;
     }
-    emptyFields.push(playerBoard.getEmptyFields());
-
-    return emptyFields;
+    return playerBoard.getEmptyFields();
   }
 
   isAllBoardsFull() {

@@ -3,6 +3,13 @@ function validatePickedAnswer(answersArray, pickedAnswer) {
   return answersArray.find(answer => answer === pickedAnswer) !== undefined;
 }
 
+function validatePickedBoardField(availableFields, pickedField) {
+  return availableFields
+    .find(field => ((field.playerBoardIndex === pickedField.playerBoardIndex)
+      || (field.playerBoardColor === pickedField.playerBoardColor))
+      && (field.fieldIndex === pickedField.fieldIndex)) !== undefined;
+}
+
 module.exports.askYesNo = async (socket, mainQuestion = '', additionalText = null) =>
   new Promise((resolve, reject) => {
     socket.emit('ghost question yes no', mainQuestion, additionalText, (pickedAnswer) => {
@@ -30,7 +37,7 @@ module.exports.pickPlayerBoardField = async (socket, availableFields) =>
     console.log('ghost pick player board field availableFields: ', availableFields);
     socket.emit('ghost pick player board field', availableFields, (pickedField) => {
       console.log('ghost pick player board field pickedField: ', pickedField);
-      if (validatePickedAnswer(availableFields, pickedField)) {
+      if (validatePickedBoardField(availableFields, pickedField)) {
         resolve(pickedField);
       } else {
         reject();
