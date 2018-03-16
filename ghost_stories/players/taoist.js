@@ -1,5 +1,6 @@
 const { FiveColors } = require('../enums/color');
 const playersUtils = require('./players_utils');
+const questions = require('../utils/questionsUI');
 
 class Taoist {
   constructor(color) {
@@ -113,6 +114,57 @@ class Taoist {
 
   getNearFields() {
     return playersUtils.getNearFields(this.position);
+  }
+
+  async placeBuddha(socket, board) {
+    const buddhaFiguresAmount = this.getAmountActiveBuddhaFigures();
+    const ghostInRange = this.getGhostsInRange(board.getAllPlayersBoards());
+    const ghostInRangeCount = this.getGhostsInRange(board.getAllPlayersBoards()).length;
+    const playerInCorner = this.isPlayerInCornerField();
+    const playerInMiddleOuter = !this.isPlayerInCornerField() && !this.isPlayerInMiddleField();
+    const nearFields = this.getNearFields();
+
+    // If player is in corner field and have two active buddha figures and fields are empty
+    if (buddhaFiguresAmount > 0) {
+      if (playerInCorner && (ghostInRangeCount === 0)) {
+        if (buddhaFiguresAmount === 2) {
+          const placeBudddha = await questions.ask(
+            socket,
+            'Do you want to place buddha figure?',
+            ['Place 2', 'Place 1', 'No'],
+          );
+
+          if (placeBudddha === 'Place 2') {
+            this.placeBuddhaFigures(socket, board.getPlayersBoards());
+          } else if (placeBudddha === 'Place 1') {
+            const pickedField = await questions.pickPlayerBoardField(socket, nearFields);
+            // Pick one field
+            this.placeBuddhaFigures(socket, board.getPlayersBoards(), pickedField);
+          }
+        } else if (buddhaFiguresAmount === 1) {
+          const placeBudddha = await questions.askYesNo(socket, 'Do you want to place buddha figure?');
+          if (placeBudddha) {
+            const pickedField = await questions.pickPlayerBoardField(socket, nearFields);
+            // Pick one field
+            this.placeBuddhaFigures(socket, board.getPlayersBoards(), pickedField);
+          }
+        }
+      }
+      if (playerInCorner && (ghostInRangeCount === 1)) {
+        const placeBudddha = await questions.askYesNo(socket, 'Do you want to place buddha figure?');
+        if (placeBudddha) {
+          const emptyField = nearFields.find(nearField => !((nearField.playerBoardIndex === ghostInRange[0].playerBoardIndex)
+            && (nearField.fieldIndex === ghostInRange[0].fieldIndex)));
+          this.placeBuddhaFigures(socket, board.getPlayersBoards(), emptyField);
+        }
+      }
+      if (playerInMiddleOuter && (ghostInRangeCount === 0)) {
+        const placeBudddha = await questions.askYesNo(socket, 'Do you want to place buddha figure?');
+        if (placeBudddha) {
+          this.placeBuddhaFigures(socket, board.getPlayersBoards());
+        }
+      }
+    }
   }
 
   placeBuddhaFigures(socket, playersBoards, pickedField = null) {
