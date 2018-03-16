@@ -2,8 +2,8 @@ body {
     display: grid;
     grid-template-areas:
     'board board board board board'
-    'bank player0-stats player1-stats player2-stats player3-stats'
     'decisions decisions decisions decisions decisions'
+    'bank player0-stats player1-stats player2-stats player3-stats'   
     'actual-player actual-player actual-player actual-player actual-player';
 }
 
@@ -48,7 +48,8 @@ body {
 }
 
 .field {
-    width: 100%;
+    box-sizing: border-box;
+    width: 20%;
     border: none;
     background: none;
     box-shadow: none;
@@ -71,7 +72,7 @@ body {
 }
 
 .active {
-    box-sizing: border-box;
+    
     animation-name: example;
     animation-duration: 700ms;
     animation-iteration-count: infinite;

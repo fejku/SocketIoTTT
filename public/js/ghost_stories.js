@@ -103,42 +103,51 @@ document.addEventListener('DOMContentLoaded', () => {
     updatePlayersStats(players);
   });
 
-  socket.on('ghost pick field', (emptyFields, card, fn) => {
-    console.log('ghost pick field', emptyFields);
-
-    emptyFields.forEach((emptyField) => {
-      [...document.getElementsByClassName('player-board')]
-        .filter(boardField => (boardField.dataset.boardColor === emptyField.color)
-          && (emptyField.fields.indexOf(Number(boardField.dataset.fieldIndex)) !== -1))
-        .forEach((boardField) => {
-          boardField.classList.add('active');
-          boardField.addEventListener('click', function pickGhostField(e) {
-            // Remove all click handlers
-            [...document.getElementsByClassName('player-board')].forEach((removeBoardField) => {
-              removeBoardField.classList.remove('active');
-              removeBoardField.removeEventListener('click', pickGhostField);
-            });
-            // Append ghost params to field
-            const clickedField = e.target;
-            clickedField.innerHTML = (`<div class="ghost"><div>${card.name}</div><div>(${card.color}: ${card.resistance})</div></div>`);
-            // const ghostDiv = document.createElement('div');
-            // ghostDiv.className = 'ghost';
-            // const ghostName = document.createElement('div');
-            // ghostName.innerText = card.name;
-            // ghostDiv.appendChild(ghostName);
-            // const ghostStats = document.createElement('div');
-            // ghostStats.innerText = `(${card.color}: ${card.resistance})`;
-            // ghostDiv.appendChild(ghostStats);
-            // clickedField.appendChild(ghostDiv);
-            const returnFieldValues = {
-              color: clickedField.dataset.boardColor,
-              field: Number(clickedField.dataset.fieldIndex),
-            };
-            console.log('ghost pick field picked field: ', returnFieldValues);
-            fn(returnFieldValues);
-          });
+  socket.on('ghost pick player board field', (availableFields, fn) => {
+    console.log('ghost pick player board field availableFields', availableFields);
+    availableFields.forEach((availableField) => {
+      let fieldElement;
+      if (availableField.playerBoardIndex !== undefined) {
+        // Get field by board index
+        fieldElement = document.querySelector(`.player-board[data-board-index="${availableField.playerBoardIndex}"]`
+          + `[data-field-index="${availableField.fieldIndex}"]`);
+      } else {
+        // Get field by board color
+        fieldElement = document.querySelector(`.player-board[data-board-color="${availableField.playerBoardColor}"]`
+          + `[data-field-index="${availableField.fieldIndex}"]`);
+      }
+      fieldElement.classList.add('active');
+      fieldElement.addEventListener('click', function pickPlayerBoardField(e) {
+        const pickedField = {
+          playerBoardIndex: Number(e.target.dataset.boardIndex),
+          playerBoardColor: e.target.dataset.boardColor,
+          fieldIndex: Number(e.target.dataset.fieldIndex),
+        };
+        [...document.getElementsByClassName('player-board')].forEach((removeAvailableField) => {
+          removeAvailableField.classList.remove('active');
+          removeAvailableField.removeEventListener('click', pickPlayerBoardField);
         });
+        console.log('ghost pick player board field pickedField: ', pickedField);
+        fn(pickedField);
+      });
     });
+  });
+
+  socket.on('ghost lay ghost card on picked field', (pickedField, card) => {
+    console.log('ghost lay ghost card on picked field', pickedField.playerBoardIndex);
+    [...document.getElementsByClassName('player-board')]
+      .find(field => (Number(field.dataset.boardIndex) === pickedField.playerBoardIndex)
+        && (Number(field.dataset.fieldIndex) === pickedField.fieldIndex))
+      .innerHTML = `<div class="ghost"><div>${card.name}</div><div>(${card.color}: ${card.resistance})</div></div>`;
+    // const ghostDiv = document.createElement('div');
+    // ghostDiv.className = 'ghost';
+    // const ghostName = document.createElement('div');
+    // ghostName.innerText = card.name;
+    // ghostDiv.appendChild(ghostName);
+    // const ghostStats = document.createElement('div');
+    // ghostStats.innerText = `(${card.color}: ${card.resistance})`;
+    // ghostDiv.appendChild(ghostStats);
+    // clickedField.appendChild(ghostDiv);
   });
 
   socket.on('ghost remove ghost from field', (color, fieldIndex) => {
@@ -203,8 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   socket.on('ghost sorcerer hut remove ghost from board', (pickedGhost) => {
     console.log('ghost sorcerer hut remove ghost from board', pickedGhost);
-    const ghostField =
-      document.querySelector(`.player-board[data-board-color="${pickedGhost.color}"][data-field-index="${pickedGhost.field}"] .ghost`);
+    const ghostField = document.querySelector(`.player-board[data-board-color="${pickedGhost.color}"]`
+        + `[data-field-index="${pickedGhost.field}"] .ghost`);
     ghostField.remove();
   });
 
@@ -215,7 +224,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   socket.on('ghost place buddha figure on field', (field) => {
     console.log('ghost place buddha figure on field');
-    document.querySelector(`.player${field.playerBoardIndex}.field${field.fieldIndex}`).innerHTML += '*B*';
+    document.querySelector(`.player-board[data-board-index="${field.playerBoardIndex}"]`
+      + `[data-field-index="${field.fieldIndex}"]`).innerHTML += '<div class="buddha">*B*</div>';
   });
 
   socket.on('ghost question yes no', (mainQuestion, additionalText, fn) => {
