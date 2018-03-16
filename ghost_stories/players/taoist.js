@@ -108,8 +108,8 @@ class Taoist {
     return playersUtils.isPlayerInCornerField(this.position);
   }
 
-  isPlayerInMiddleField() {
-    return playersUtils.isPlayerInMiddleField(this.position);
+  isPlayerInMiddleOuterField() {
+    return playersUtils.isPlayerInMiddleOuterField(this.position);
   }
 
   getNearFields() {
@@ -121,7 +121,7 @@ class Taoist {
     const ghostInRange = this.getGhostsInRange(board.getAllPlayersBoards());
     const ghostInRangeCount = this.getGhostsInRange(board.getAllPlayersBoards()).length;
     const playerInCorner = this.isPlayerInCornerField();
-    const playerInMiddleOuter = !this.isPlayerInCornerField() && !this.isPlayerInMiddleField();
+    const playerInMiddleOuterField = this.isPlayerInMiddleOuterField();
     const nearFields = this.getNearFields();
 
     // If player is in corner field and have two active buddha figures and fields are empty
@@ -158,7 +158,7 @@ class Taoist {
           this.placeBuddhaFigures(socket, board.getPlayersBoards(), emptyField);
         }
       }
-      if (playerInMiddleOuter && (ghostInRangeCount === 0)) {
+      if (playerInMiddleOuterField && (ghostInRangeCount === 0)) {
         const placeBudddha = await questions.askYesNo(socket, 'Do you want to place buddha figure?');
         if (placeBudddha) {
           this.placeBuddhaFigures(socket, board.getPlayersBoards());

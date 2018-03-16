@@ -171,8 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
             villagerRemove.classList.remove('active');
             villagerRemove.removeEventListener('click', pickVillagerTile);
           });
-          console.log('ghost player move picked villager tile: ', e.target.dataset.villagerIndex);
-          fn(Number(e.target.dataset.villagerIndex));
+          console.log('ghost player move picked villager tile: ', e.currentTarget.dataset.villagerIndex);
+          fn(Number(e.currentTarget.dataset.villagerIndex));
         });
       });
   });
@@ -215,8 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ghostField.remove();
   });
 
-  socket.on('ghost update buddhist temple figures', (buddhaFiguresAmount) => {
-    console.log('ghost update buddhist temple figures');
+  socket.on('ghost update buddhist temple figures amount', (buddhaFiguresAmount) => {
+    console.log('ghost update buddhist temple figures ');
     document.getElementById('buddha-figures-amount').innerHTML = buddhaFiguresAmount;
   });
 
@@ -224,6 +224,12 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('ghost place buddha figure on field', field);
     document.querySelector(`.player-board[data-board-index="${field.playerBoardIndex}"]`
       + `[data-field-index="${field.fieldIndex}"]`).innerHTML += '<div class="buddha">*B*</div>';
+  });
+
+  socket.on('ghost remove buddha figure from field', (field) => {
+    console.log('ghost remove buddha figure from field', field);
+    document.querySelector(`.player-board[data-board-index="${field.playerBoardIndex}"]`
+      + `[data-field-index="${field.fieldIndex}"] .buddha`).remove();
   });
 
   socket.on('ghost question yes no', (mainQuestion, additionalText, fn) => {
@@ -240,13 +246,15 @@ document.addEventListener('DOMContentLoaded', () => {
     decisions.innerHTML += '<button class="question-yes-no" data-answer="true">Yes</button>';
     decisions.innerHTML += '<button class="question-yes-no" data-answer="false">No</button>';
     decisions.addEventListener('click', function decisionYesNo(e) {
-      const pickedDecision = e.target.dataset.answer;
-      while (decisions.hasChildNodes()) {
-        decisions.removeChild(decisions.lastChild);
+      if (e.target.classList.contains('question-yes-no')) {
+        const pickedDecision = e.target.dataset.answer;
+        while (decisions.hasChildNodes()) {
+          decisions.removeChild(decisions.lastChild);
+        }
+        decisions.removeEventListener('click', decisionYesNo);
+        console.log('ghost question yes no picked value:', pickedDecision);
+        fn(pickedDecision);
       }
-      decisions.removeEventListener('click', decisionYesNo);
-      console.log('ghost question yes no picked value:', pickedDecision);
-      fn(pickedDecision);
     });
   });
 

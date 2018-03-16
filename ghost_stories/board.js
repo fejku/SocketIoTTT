@@ -4,6 +4,7 @@ const { FiveColors } = require('./enums/color');
 const Villagers = require('./villagers/villagers');
 const PlayerBoards = require('./players_boards/players_boards');
 
+const BuddhistTemple = require('./villagers/buddhist_temple');
 const Ghoul = require('./ghosts/ghoul');
 const WalkingCorpse = require('./ghosts/walking_corpse');
 
@@ -62,6 +63,10 @@ class Board {
     return this.playersBoards.getPlayerBoardByColor(color);
   }
 
+  getPlayerBoardById(index) {
+    return this.playersBoards.getPlayerBoardById(index);
+  }
+
   drawCard() {
     return this.ghostCards.pop();
   }
@@ -90,17 +95,19 @@ class Board {
       }
       // Pick field for card
       const pickedField = await questions.pickPlayerBoardField(socket, emptyFields);// this.pickFieldForCard(socket, emptyFields, card);
-      // TODO: if buddha on field and card is not wufeng
-      if (buddha on field) && (card is wuFeng) {
-        // remove buddha from field
+
+      if (this.getPlayerBoardById(pickedField.playerBoardIndex).isBuddhaOnField(pickedField.fieldIndex)) {
+        // Remove buddha from field
+        this.getPlayerBoardById(pickedField.playerBoardIndex).setBuddhaField(pickedField.fieldIndex, false);
+        socket.emit('ghost remove buddha figure from field', pickedField);
         // back buddha into temple
-      } else if (buddha on field) && (card is not wuFeng) {}
-        // remove buddha from field
-        // back buddha into temple
-        // place card 
-        // immediateEffect
+        this.villagers.getVillagerByClass(BuddhistTemple).addBuddhaFigure(socket);
+        if (card.isWuFeng()) {
+          // TODO
+          // place card
+          // immediateEffect
+        }
       } else {
-        // Lay card of picked field
         this.layCardOnField(socket, pickedField, card);
         card.immediateEffect();
       }
