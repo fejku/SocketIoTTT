@@ -149,13 +149,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('ghost remove ghost from field', (color, fieldIndex) => {
-    // TODO TypeError: Argument 1 of Node.removeChild is not an object.
     console.log('ghost remove ghost from field', color, fieldIndex);
     [...document.getElementsByClassName('player-board')]
       .filter(ghostField => (ghostField.dataset.boardColor === color)
         && (Number(ghostField.dataset.fieldIndex) === fieldIndex))
       .forEach((ghostField) => {
-        while (ghostField.hasChildNodes) {
+        while (ghostField.hasChildNodes()) {
           ghostField.removeChild(ghostField.lastChild);
         }
       });
