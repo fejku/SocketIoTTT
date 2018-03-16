@@ -90,9 +90,20 @@ class Board {
       }
       // Pick field for card
       const pickedField = await questions.pickPlayerBoardField(socket, emptyFields);// this.pickFieldForCard(socket, emptyFields, card);
-      // Lay card of picked field
-      this.layCardOnField(socket, pickedField, card);
-      card.immediateEffect();
+      // TODO: if buddha on field and card is not wufeng
+      if (buddha on field) && (card is wuFeng) {
+        // remove buddha from field
+        // back buddha into temple
+      } else if (buddha on field) && (card is not wuFeng) {}
+        // remove buddha from field
+        // back buddha into temple
+        // place card 
+        // immediateEffect
+      } else {
+        // Lay card of picked field
+        this.layCardOnField(socket, pickedField, card);
+        card.immediateEffect();
+      }
     }
   }
 }
