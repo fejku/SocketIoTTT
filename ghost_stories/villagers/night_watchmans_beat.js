@@ -1,5 +1,7 @@
 const Villager = require('./villager');
 
+// Move all the Haunting figures on one
+// board backward on the card.
 class NightWatchmansBeat extends Villager {
   constructor() {
     super();
