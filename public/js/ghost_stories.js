@@ -215,21 +215,29 @@ document.addEventListener('DOMContentLoaded', () => {
     ghostField.remove();
   });
 
-  socket.on('ghost update buddhist temple figures amount', (buddhaFiguresAmount) => {
-    console.log('ghost update buddhist temple figures ');
+  socket.on('ghost update buddha figures', (buddhaFiguresAmount, playersBoards) => {
+    console.log('ghost update buddha figures', buddhaFiguresAmount, playersBoards);
+    // Update buddha temple
     document.getElementById('buddha-figures-amount').innerHTML = buddhaFiguresAmount;
-  });
-
-  socket.on('ghost place buddha figure on field', (field) => {
-    console.log('ghost place buddha figure on field', field);
-    document.querySelector(`.player-board[data-board-index="${field.playerBoardIndex}"]`
-      + `[data-field-index="${field.fieldIndex}"]`).innerHTML += '<div class="buddha">*B*</div>';
-  });
-
-  socket.on('ghost remove buddha figure from field', (field) => {
-    console.log('ghost remove buddha figure from field', field);
-    document.querySelector(`.player-board[data-board-index="${field.playerBoardIndex}"]`
-      + `[data-field-index="${field.fieldIndex}"] .buddha`).remove();
+    // Remove non existing buddha figures from players boards
+    [...document.querySelectorAll('.player-board .buddha')].forEach((playerBoardElement) => {
+      if (playersBoards[playerBoardElement.parentNode.dataset.boardIndex]
+        .buddhaFields[playerBoardElement.parentNode.dataset.fieldIndex] === false) {
+        playerBoardElement.remove();
+      }
+    });
+    // Place new buddha figures on players boards
+    playersBoards.forEach((playerBoard, playerBoardIndex) => {
+      playerBoard.buddhaFields.forEach((buddhaField, buddhaFieldIndex) => {
+        if (buddhaField) {
+          if (document.querySelector(`.player-board[data-board-index="${playerBoardIndex}"]` +
+              `[data-field-index="${buddhaFieldIndex}"] .buddha`) === null) {
+            document.querySelector(`.player-board[data-board-index="${playerBoardIndex}"]`
+              + `[data-field-index="${buddhaFieldIndex}"]`).innerHTML += '<div class="buddha">*B*</div>';
+          }
+        }
+      });
+    });
   });
 
   socket.on('ghost question yes no', (mainQuestion, additionalText, fn) => {

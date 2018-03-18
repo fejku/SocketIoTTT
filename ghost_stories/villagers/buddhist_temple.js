@@ -8,9 +8,12 @@ class BuddhistTemple extends Villager {
     this.buddhaFigure = 2;
   }
 
-  addBuddhaFigure(socket, amount = 1) {
+  addBuddhaFigure(amount = 1) {
     this.buddhaFigure += amount;
-    socket.emit('ghost update buddhist temple figures amount', this.buddhaFigure);
+  }
+
+  refresBuddhaFiguresUI(socket, playersBoards) {
+    socket.emit('ghost update buddha figures', this.buddhaFigure, playersBoards);
   }
 
   validateHelp(board, players, bank) { /* eslint-disable-line no-unused-vars */
@@ -26,7 +29,7 @@ class BuddhistTemple extends Villager {
     players.getActualPlayer().gainBuddhaFigure();
     // Remove figure from tile
     this.buddhaFigure--;
-    socket.emit('ghost update buddhist temple figures amount', this.buddhaFigure);
+    this.refresBuddhaFiguresUI(socket, board.getAllPlayersBoards());
   }
 }
 

@@ -99,9 +99,10 @@ class Board {
       if (this.getPlayerBoardById(pickedField.playerBoardIndex).isBuddhaOnField(pickedField.fieldIndex)) {
         // Remove buddha from field
         this.getPlayerBoardById(pickedField.playerBoardIndex).setBuddhaField(pickedField.fieldIndex, false);
-        socket.emit('ghost remove buddha figure from field', pickedField);
-        // back buddha into temple
-        this.villagers.getVillagerByClass(BuddhistTemple).addBuddhaFigure(socket);
+        const buddhistTemple = this.villagers.getVillagerByClass(BuddhistTemple);
+        // Back buddha into temple
+        buddhistTemple.addBuddhaFigure();
+        buddhistTemple.refresBuddhaFiguresUI(socket, this.getAllPlayersBoards());
         if (card.isWuFeng()) {
           // TODO
           // place card
