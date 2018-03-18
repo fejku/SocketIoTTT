@@ -11,7 +11,7 @@ class PlayerBoard {
 
   isAnyGhostOnBoard(skipWuFeng = false) {
     if (skipWuFeng) {
-      return this.fields.some(field => (field !== null) && (!field.checkWuFeng()));
+      return this.fields.some(field => (field !== null) && (!field.isWuFeng()));
     }
     return this.fields.some(field => field !== null);
   }
@@ -28,7 +28,7 @@ class PlayerBoard {
     const result = { color: this.color.key, fields: [] };
     for (let i = 0; i < this.fields.length; i++) {
       if (skipWuFeng) {
-        if ((this.fields[i] !== null) && (!this.fields[i].checkWuFeng())) {
+        if ((this.fields[i] !== null) && (!this.fields[i].isWuFeng())) {
           result.fields.push(i);
         }
       } else if (this.fields[i] !== null) {
@@ -63,6 +63,10 @@ class PlayerBoard {
 
   removeGhostFromFieldUI(socket, fieldIndex) {
     socket.emit('ghost remove ghost from field', this.getColor(), fieldIndex);
+  }
+
+  isBuddhaOnField(fieldIndex) {
+    return this.buddhaFields[fieldIndex];
   }
 
   setBuddhaField(fieldIndex, state) {

@@ -32,6 +32,12 @@ module.exports.ask = async (socket, mainQuestion, answersArray, additionalText =
     });
   });
 
+/**
+ * Returns picked field
+ * @param {object} socket
+ * @param {Array} availableFields [{fieldIndex, [playerBoardIndex], [playerBoardColor]}}]
+ * @returns {object} {playerBoardIndex, playerBoardColor, fieldIndex}
+ */
 module.exports.pickPlayerBoardField = async (socket, availableFields) =>
   new Promise((resolve, reject) => {
     console.log('ghost pick player board field availableFields: ', availableFields);

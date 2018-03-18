@@ -2,6 +2,8 @@ const { FiveColors } = require('../enums/color');
 const playersUtils = require('./players_utils');
 const questions = require('../utils/questionsUI');
 
+const BuddhistTemple = require('../villagers/buddhist_temple');
+
 class Taoist {
   constructor(color) {
     this.color = color;
@@ -108,8 +110,8 @@ class Taoist {
     return playersUtils.isPlayerInCornerField(this.position);
   }
 
-  isPlayerInMiddleField() {
-    return playersUtils.isPlayerInMiddleField(this.position);
+  isPlayerInMiddleOuterField() {
+    return playersUtils.isPlayerInMiddleOuterField(this.position);
   }
 
   getNearFields() {
@@ -117,11 +119,12 @@ class Taoist {
   }
 
   async placeBuddha(socket, board) {
+    const buddhistTemple = board.getVillagers().getVillagerByClass(BuddhistTemple);
     const buddhaFiguresAmount = this.getAmountActiveBuddhaFigures();
     const ghostInRange = this.getGhostsInRange(board.getAllPlayersBoards());
     const ghostInRangeCount = this.getGhostsInRange(board.getAllPlayersBoards()).length;
     const playerInCorner = this.isPlayerInCornerField();
-    const playerInMiddleOuter = !this.isPlayerInCornerField() && !this.isPlayerInMiddleField();
+    const playerInMiddleOuterField = this.isPlayerInMiddleOuterField();
     const nearFields = this.getNearFields();
 
     // If player is in corner field and have two active buddha figures and fields are empty
@@ -135,18 +138,18 @@ class Taoist {
           );
 
           if (placeBudddha === 'Place 2') {
-            this.placeBuddhaFigures(socket, board.getPlayersBoards());
+            this.placeBuddhaFigures(socket, buddhistTemple, board.getPlayersBoards());
           } else if (placeBudddha === 'Place 1') {
             const pickedField = await questions.pickPlayerBoardField(socket, nearFields);
             // Pick one field
-            this.placeBuddhaFigures(socket, board.getPlayersBoards(), pickedField);
+            this.placeBuddhaFigures(socket, buddhistTemple, board.getPlayersBoards(), pickedField);
           }
         } else if (buddhaFiguresAmount === 1) {
           const placeBudddha = await questions.askYesNo(socket, 'Do you want to place buddha figure?');
           if (placeBudddha) {
             const pickedField = await questions.pickPlayerBoardField(socket, nearFields);
             // Pick one field
-            this.placeBuddhaFigures(socket, board.getPlayersBoards(), pickedField);
+            this.placeBuddhaFigures(socket, buddhistTemple, board.getPlayersBoards(), pickedField);
           }
         }
       }
@@ -155,31 +158,30 @@ class Taoist {
         if (placeBudddha) {
           const emptyField = nearFields.find(nearField => !((nearField.playerBoardIndex === ghostInRange[0].playerBoardIndex)
             && (nearField.fieldIndex === ghostInRange[0].fieldIndex)));
-          this.placeBuddhaFigures(socket, board.getPlayersBoards(), emptyField);
+          this.placeBuddhaFigures(socket, buddhistTemple, board.getPlayersBoards(), emptyField);
         }
       }
-      if (playerInMiddleOuter && (ghostInRangeCount === 0)) {
+      if (playerInMiddleOuterField && (ghostInRangeCount === 0)) {
         const placeBudddha = await questions.askYesNo(socket, 'Do you want to place buddha figure?');
         if (placeBudddha) {
-          this.placeBuddhaFigures(socket, board.getPlayersBoards());
+          this.placeBuddhaFigures(socket, buddhistTemple, board.getPlayersBoards());
         }
       }
     }
   }
 
-  placeBuddhaFigures(socket, playersBoards, pickedField = null) {
+  placeBuddhaFigures(socket, buddhistTemple, playersBoards, pickedField = null) {
     // Place all available buddha figures
     if (pickedField === null) {
       const fields = this.getNearFields();
 
       fields.forEach((field) => {
         playersBoards.getPlayerBoardById(field.playerBoardIndex).setBuddhaField(field.fieldIndex, true);
-        socket.emit('ghost place buddha figure on field', field);
       });
     } else {
       playersBoards.getPlayerBoardById(pickedField.playerBoardIndex).setBuddhaField(pickedField.fieldIndex, true);
-      socket.emit('ghost place buddha figure on field', pickedField);
     }
+    buddhistTemple.refresBuddhaFiguresUI(socket, playersBoards.getPlayersBoards());
   }
 }
 

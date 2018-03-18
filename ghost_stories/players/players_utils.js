@@ -116,7 +116,7 @@ module.exports.isPlayerInCornerField = (position) => {
   return cornerFields.find(field => field === position) !== undefined;
 };
 
-module.exports.isPlayerInMiddleField = (position) => {
+module.exports.isPlayerInMiddleOuterField = (position) => {
   const middleFields = [1, 3, 5, 7];
 
   return middleFields.find(field => field === position) !== undefined;

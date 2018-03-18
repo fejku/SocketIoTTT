@@ -171,8 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
             villagerRemove.classList.remove('active');
             villagerRemove.removeEventListener('click', pickVillagerTile);
           });
-          console.log('ghost player move picked villager tile: ', e.target.dataset.villagerIndex);
-          fn(Number(e.target.dataset.villagerIndex));
+          console.log('ghost player move picked villager tile: ', e.currentTarget.dataset.villagerIndex);
+          fn(Number(e.currentTarget.dataset.villagerIndex));
         });
       });
   });
@@ -215,15 +215,29 @@ document.addEventListener('DOMContentLoaded', () => {
     ghostField.remove();
   });
 
-  socket.on('ghost update buddhist temple figures', (buddhaFiguresAmount) => {
-    console.log('ghost update buddhist temple figures');
+  socket.on('ghost update buddha figures', (buddhaFiguresAmount, playersBoards) => {
+    console.log('ghost update buddha figures', buddhaFiguresAmount, playersBoards);
+    // Update buddha temple
     document.getElementById('buddha-figures-amount').innerHTML = buddhaFiguresAmount;
-  });
-
-  socket.on('ghost place buddha figure on field', (field) => {
-    console.log('ghost place buddha figure on field', field);
-    document.querySelector(`.player-board[data-board-index="${field.playerBoardIndex}"]`
-      + `[data-field-index="${field.fieldIndex}"]`).innerHTML += '<div class="buddha">*B*</div>';
+    // Remove non existing buddha figures from players boards
+    [...document.querySelectorAll('.player-board .buddha')].forEach((playerBoardElement) => {
+      if (playersBoards[playerBoardElement.parentNode.dataset.boardIndex]
+        .buddhaFields[playerBoardElement.parentNode.dataset.fieldIndex] === false) {
+        playerBoardElement.remove();
+      }
+    });
+    // Place new buddha figures on players boards
+    playersBoards.forEach((playerBoard, playerBoardIndex) => {
+      playerBoard.buddhaFields.forEach((buddhaField, buddhaFieldIndex) => {
+        if (buddhaField) {
+          if (document.querySelector(`.player-board[data-board-index="${playerBoardIndex}"]` +
+              `[data-field-index="${buddhaFieldIndex}"] .buddha`) === null) {
+            document.querySelector(`.player-board[data-board-index="${playerBoardIndex}"]`
+              + `[data-field-index="${buddhaFieldIndex}"]`).innerHTML += '<div class="buddha">*B*</div>';
+          }
+        }
+      });
+    });
   });
 
   socket.on('ghost question yes no', (mainQuestion, additionalText, fn) => {
@@ -240,13 +254,15 @@ document.addEventListener('DOMContentLoaded', () => {
     decisions.innerHTML += '<button class="question-yes-no" data-answer="true">Yes</button>';
     decisions.innerHTML += '<button class="question-yes-no" data-answer="false">No</button>';
     decisions.addEventListener('click', function decisionYesNo(e) {
-      const pickedDecision = e.target.dataset.answer;
-      while (decisions.hasChildNodes()) {
-        decisions.removeChild(decisions.lastChild);
+      if (e.target.classList.contains('question-yes-no')) {
+        const pickedDecision = e.target.dataset.answer;
+        while (decisions.hasChildNodes()) {
+          decisions.removeChild(decisions.lastChild);
+        }
+        decisions.removeEventListener('click', decisionYesNo);
+        console.log('ghost question yes no picked value:', pickedDecision);
+        fn(pickedDecision);
       }
-      decisions.removeEventListener('click', decisionYesNo);
-      console.log('ghost question yes no picked value:', pickedDecision);
-      fn(pickedDecision);
     });
   });
 
