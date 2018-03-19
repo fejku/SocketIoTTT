@@ -38,6 +38,20 @@ class PlayerBoard {
     return result;
   }
 
+  getGhosts(skipWuFeng = false) {
+    const result = [];
+    for (let i = 0; i < this.fields.length; i++) {
+      if (skipWuFeng) {
+        if ((this.fields[i] !== null) && (!this.fields[i].isWuFeng())) {
+          result.push(i);
+        }
+      } else if (this.fields[i] !== null) {
+        result.push(i);
+      }
+    }
+    return result;
+  }
+
   getColor() {
     return this.color;
   }

@@ -78,6 +78,20 @@ class PlayersBoards {
     }
     return true;
   }
+
+  getGhosts(skipWuFeng = false) {
+    const ghosts = [];
+    this.playersBoards.forEach((playerBoard, playerBoardIndex) => {
+      ghosts.push(...playerBoard.getGhosts(skipWuFeng)
+        .map(fieldIndex => ({
+          playerBoardIndex,
+          playerBoardColor: playerBoard.color.key,
+          fieldIndex,
+        })));
+    });
+
+    return ghosts; // Result (array[playerBoardIndex, playerBoardColor, fieldIndex])
+  }
 }
 
 module.exports = PlayersBoards;
