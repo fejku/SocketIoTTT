@@ -12,7 +12,7 @@ class BuddhistTemple extends Villager {
     this.buddhaFigure += amount;
   }
 
-  refresBuddhaFiguresUI(socket, playersBoards) {
+  refreshBuddhaFiguresUI(socket, playersBoards) {
     socket.emit('ghost update buddha figures', this.buddhaFigure, playersBoards);
   }
 
@@ -29,7 +29,7 @@ class BuddhistTemple extends Villager {
     players.getActualPlayer().gainBuddhaFigure();
     // Remove figure from tile
     this.buddhaFigure--;
-    this.refresBuddhaFiguresUI(socket, board.getAllPlayersBoards());
+    this.refreshBuddhaFiguresUI(socket, board.getAllPlayersBoards());
   }
 }
 

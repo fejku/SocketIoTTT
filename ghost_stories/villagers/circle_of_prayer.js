@@ -14,16 +14,19 @@ class CircleOfPrayer extends Villager {
   }
 
   initTaoTokens() {
-    return this.removeTaoTokenFromTile();
+    const tokens = {};
+
+    FiveColors.enums.forEach((color) => {
+      tokens[color.key] = 0;
+    });
+
+    return tokens;
   }
 
   removeTaoTokenFromTile() {
-    const taoTokens = {};
-    for (const colorItem of FiveColors.enums) {
-      taoTokens[colorItem.key] = 0;
-    }
-
-    return taoTokens;
+    FiveColors.enums.forEach((color) => {
+      this.taoTokens[color.key] = 0;
+    });
   }
 
   validateHelp(board, players, bank) { /* eslint-disable-line no-unused-vars */

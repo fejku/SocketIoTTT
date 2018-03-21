@@ -60,13 +60,11 @@ class Players {
   }
 
   getDeadPlayers() {
-    const deadPlayers = [];
-    for (const player of this.taoists) {
-      if (!player.isAlive()) {
-        deadPlayers.push(player);
-      }
-    }
-    return deadPlayers;
+    return this.taoists.filter(taoist => !taoist.isAlive());
+  }
+
+  getAlivePlayers() {
+    return this.taoists.filter(taoist => taoist.isAlive());
   }
 
   nextPlayer() {

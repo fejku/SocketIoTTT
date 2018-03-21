@@ -91,8 +91,10 @@ class Bank {
     this.taoTokens = this.getTaoTokens(taoists, circleOfPrayer);
     this.jinJangToken = this.getJinJangTokens(taoists);
 
-    // Update Bank UI
-    this.updateUI(socket);
+    if (socket !== null) {
+      // Update Bank UI
+      this.updateUI(socket);
+    }
   }
 }
 

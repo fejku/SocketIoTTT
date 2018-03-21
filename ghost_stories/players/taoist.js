@@ -181,7 +181,7 @@ class Taoist {
     } else {
       playersBoards.getPlayerBoardById(pickedField.playerBoardIndex).setBuddhaField(pickedField.fieldIndex, true);
     }
-    buddhistTemple.refresBuddhaFiguresUI(socket, playersBoards.getPlayersBoards());
+    buddhistTemple.refreshBuddhaFiguresUI(socket, playersBoards.getPlayersBoards());
   }
 }
 
