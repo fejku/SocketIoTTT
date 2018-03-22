@@ -34,7 +34,7 @@ describe('Circle of prayer', () => {
       circleOfPrayer.initTaoTokens();
 
       const tokenAmount = Object.values(circleOfPrayer.taoTokens).reduce((prev, act) => prev + act, 0);
-      assert.equal(tokenAmount, 0);
+      assert.strictEqual(tokenAmount, 0);
     });
   });
 
@@ -44,14 +44,14 @@ describe('Circle of prayer', () => {
       circleOfPrayer.removeTaoTokenFromTile();
 
       const tokenAmount = Object.values(circleOfPrayer.taoTokens).reduce((prev, act) => prev + act, 0);
-      assert.equal(tokenAmount, 0);
+      assert.strictEqual(tokenAmount, 0);
     });
 
     it('should return array with 0 tao tokens if there wasn`t any token', () => {
       circleOfPrayer.removeTaoTokenFromTile();
 
       const tokenAmount = Object.values(circleOfPrayer.taoTokens).reduce((prev, act) => prev + act, 0);
-      assert.equal(tokenAmount, 0);
+      assert.strictEqual(tokenAmount, 0);
     });
   });
 
@@ -86,17 +86,33 @@ describe('Circle of prayer', () => {
 
   describe('validateHelp', () => {
     it('should be available when there is any tao token left in bank', () => {
-      assert.equal(circleOfPrayer.validateHelp(board, players, bank), true);
+      assert.strictEqual(circleOfPrayer.validateHelp(board, players, bank), true);
     });
 
     it('shouldn`t be available when there is no tao token left in bank', () => {
       removeAllTaoTokensFromBank(players, bank, circleOfPrayer);
 
-      assert.equal(circleOfPrayer.validateHelp(board, players, bank), false);
+      assert.strictEqual(circleOfPrayer.validateHelp(board, players, bank), false);
     });
   });
 
-  describe('action', () => {
-    it('TODO don`t know how to check this function, it waits for user input');
+  describe('changeToken', () => {
+    it('should place new token if there isn`t any', () => {
+      circleOfPrayer.changeToken('YELLOW');
+
+      assert.strictEqual(circleOfPrayer.taoTokens.YELLOW, 1);
+    });
+
+    it('should return only ', () => {
+      circleOfPrayer.changeToken('YELLOW');
+      const sum = Object.values(circleOfPrayer.taoTokens).reduce((prev, curr) => prev + curr, 0);
+
+      assert.strictEqual(sum, 1);
+    });
+
+    it('should place new token if there isn`t any', () => {
+      circleOfPrayer.changeToken('YELLOW');
+      // assert.strictEqual(circleOfPrayer.)
+    });
   });
 });
