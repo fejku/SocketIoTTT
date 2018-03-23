@@ -117,9 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
       fieldElement.classList.add('active');
       fieldElement.addEventListener('click', function pickPlayerBoardField(e) {
         const pickedField = {
-          playerBoardIndex: Number(e.target.dataset.boardIndex),
-          playerBoardColor: e.target.dataset.boardColor,
-          fieldIndex: Number(e.target.dataset.fieldIndex),
+          playerBoardIndex: Number(e.currentTarget.dataset.boardIndex),
+          playerBoardColor: e.currentTarget.dataset.boardColor,
+          fieldIndex: Number(e.currentTarget.dataset.fieldIndex),
         };
         [...document.getElementsByClassName('player-board')].forEach((removeAvailableField) => {
           removeAvailableField.classList.remove('active');
@@ -127,6 +127,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         console.log('ghost pick player board field pickedField: ', pickedField);
         fn(pickedField);
+      });
+    });
+  });
+
+  /**
+   * Remove all ghost from player boards and place them all over again
+   * @param playersBoards Array of players boards
+   */
+  socket.on('ghost refresh player boards', (playersBoards) => {
+    console.log('ghost refresh player boards', playersBoards);
+    // Remove all ghosts
+    [...document.getElementsByClassName('ghost')].forEach((ghost) => {
+      ghost.remove();
+    });
+    // Place ghosts
+    playersBoards.forEach((playerBoard, playerBoardIndex) => {
+      playerBoard.fields.forEach((field, fieldIndex) => {
+        if (field !== null) {
+          document.querySelector(`.player-board[data-board-index="${playerBoardIndex}"][data-field-index="${fieldIndex}"]`)
+            .innerHTML = `<div class="ghost"><div>${field.name}</div><div>(${field.color}: ${field.resistance})</div></div>`;
+        }
       });
     });
   });
@@ -149,6 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('ghost remove ghost from field', (color, fieldIndex) => {
+    // TODO: refactor or remove and always use refresh function
     console.log('ghost remove ghost from field', color, fieldIndex);
     [...document.getElementsByClassName('player-board')]
       .filter(ghostField => (ghostField.dataset.boardColor === color)
@@ -209,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('ghost sorcerer hut remove ghost from board', (pickedGhost) => {
+    // TODO: Use refresh ghosts method??
     console.log('ghost sorcerer hut remove ghost from board', pickedGhost);
     const ghostField = document.querySelector(`.player-board[data-board-color="${pickedGhost.color}"]`
         + `[data-field-index="${pickedGhost.field}"] .ghost`);
@@ -216,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('ghost update buddha figures', (buddhaFiguresAmount, playersBoards) => {
+    // TODO: Remove all buddha figures and place all??? (prevent missing pigures after refreshing page)
     console.log('ghost update buddha figures', buddhaFiguresAmount, playersBoards);
     // Update buddha temple
     document.getElementById('buddha-figures-amount').innerHTML = buddhaFiguresAmount;

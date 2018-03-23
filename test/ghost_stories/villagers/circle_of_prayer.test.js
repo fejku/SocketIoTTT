@@ -12,16 +12,6 @@ describe('Circle of prayer', () => {
   let circleOfPrayer;
   let bank;
 
-  function removeAllTaoTokensFromBank(playersParam, bankParam, circleOfPrayerParam) {
-    // Remove all tao tokens from bank
-    FiveColors.enums.forEach((color) => {
-      const colorsAmount = (color.key === 'BLACK') ? 4 : 3;
-      playersParam.getActualPlayer().gainTaoToken(color.key, colorsAmount);
-    });
-
-    bankParam.updateTokens(null, playersParam.getTaoists(), circleOfPrayerParam);
-  }
-
   beforeEach(() => {
     players = new Players();
     board = new Board(players);
@@ -97,22 +87,42 @@ describe('Circle of prayer', () => {
   });
 
   describe('changeToken', () => {
-    it('should place new token if there isn`t any', () => {
+    it('should return one yellow token when adding first tao token', () => {
       circleOfPrayer.changeToken('YELLOW');
 
       assert.strictEqual(circleOfPrayer.taoTokens.YELLOW, 1);
     });
 
-    it('should return only ', () => {
+    it('should return only one token ', () => {
+      circleOfPrayer.changeToken('YELLOW');
       circleOfPrayer.changeToken('YELLOW');
       const sum = Object.values(circleOfPrayer.taoTokens).reduce((prev, curr) => prev + curr, 0);
 
       assert.strictEqual(sum, 1);
     });
 
-    it('should place new token if there isn`t any', () => {
+    it('should remove previous tao token', () => {
+      circleOfPrayer.changeToken('RED');
       circleOfPrayer.changeToken('YELLOW');
-      // assert.strictEqual(circleOfPrayer.)
+
+      assert.strictEqual(circleOfPrayer.taoTokens.RED, 0);
+    });
+
+    it('should add new tao token', () => {
+      circleOfPrayer.changeToken('RED');
+      circleOfPrayer.changeToken('YELLOW');
+
+      assert.strictEqual(circleOfPrayer.taoTokens.YELLOW, 1);
     });
   });
 });
+
+function removeAllTaoTokensFromBank(playersParam, bankParam, circleOfPrayerParam) {
+  // Remove all tao tokens from bank
+  FiveColors.enums.forEach((color) => {
+    const colorsAmount = (color.key === 'BLACK') ? 4 : 3;
+    playersParam.getActualPlayer().gainTaoToken(color.key, colorsAmount);
+  });
+
+  bankParam.updateTokens(null, playersParam.getTaoists(), circleOfPrayerParam);
+}

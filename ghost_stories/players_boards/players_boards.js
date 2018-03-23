@@ -70,6 +70,14 @@ class PlayersBoards {
     return playerBoard.getEmptyFields();
   }
 
+  getEmptyFieldsAllBoards() {
+    const emptyFields = [];
+    this.playersBoards.forEach((playerBoard) => {
+      emptyFields.push(...playerBoard.getEmptyFields());
+    });
+    return emptyFields;
+  }
+
   isAllBoardsFull() {
     for (const board of this.playersBoards) {
       if (!board.isBoardFull()) {
@@ -91,6 +99,18 @@ class PlayersBoards {
     });
 
     return ghosts; // Result (array[playerBoardIndex, playerBoardColor, fieldIndex])
+  }
+
+  moveGhost(pickedGhostField, pickedNewField) {
+    const ghost = this.playersBoards[pickedGhostField.playerBoardIndex].fields[pickedGhostField.fieldIndex];
+    // Remove ghost from old field
+    this.playersBoards[pickedGhostField.playerBoardIndex].fields[pickedGhostField.fieldIndex] = null;
+    // If placed on buddha remove ghost
+    const isNoBuddha = !this.playersBoards[pickedNewField.playerBoardIndex].buddhaFields[pickedNewField.fieldIndex];
+    if (isNoBuddha) {
+      // Place ghost on new field
+      this.playersBoards[pickedNewField.playerBoardIndex].fields[pickedNewField.fieldIndex] = ghost;
+    }
   }
 }
 

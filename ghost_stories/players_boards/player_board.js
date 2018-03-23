@@ -18,9 +18,8 @@ class PlayerBoard {
 
   getEmptyFields() {
     return this.fields
-      .map((field, fieldIndex) => ({ playerBoardColor: this.color.key, field, fieldIndex }))
-      .filter(field => field.field === null)
-      .map(field => ({ playerBoardColor: field.playerBoardColor, fieldIndex: field.fieldIndex }));
+      .map((field, fieldIndex) => ({ playerBoardColor: this.color.key, fieldIndex, ghost: field }))
+      .filter(field => field.ghost === null);
   }
 
 

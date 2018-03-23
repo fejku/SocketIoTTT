@@ -63,8 +63,12 @@ class Players {
     return this.taoists.filter(taoist => !taoist.isAlive());
   }
 
-  getAlivePlayers() {
-    return this.taoists.filter(taoist => taoist.isAlive());
+  getAlivePlayers(skipActualPlayer = false) {
+    let [...taoists] = this.taoists;
+    if (skipActualPlayer) {
+      taoists = taoists.filter((taoist, taoistIndex) => taoistIndex !== this.actualPlayer);
+    }
+    return taoists.filter(taoist => taoist.isAlive());
   }
 
   nextPlayer() {

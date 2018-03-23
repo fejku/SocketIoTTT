@@ -31,20 +31,28 @@ class PavilionOfTheHeavenlyWinds extends Villager {
       const isMoveGhost = await questions.askYesNo(socket, 'Do you want to move a ghost?');
       if (isMoveGhost) {
         // Pick ghost to move
-        const pickedGhost = await questions.pickPlayerBoardField(socket, ghosts);
+        const pickedGhostField = await questions.pickPlayerBoardField(socket, ghosts);
         // Get available places
-        // getEmptyFields();
+        const availableFieldsToMove = board.getPlayersBoards().getEmptyFieldsAllBoards();
         // Pick palce to place ghost
-        const pickedNewField = await questions.pickPlayerBoardField(socket, availableFields);
+        const pickedNewField = await questions.pickPlayerBoardField(socket, availableFieldsToMove);
         // Move ghost
-        // If placed on buddha remove ghost (TODO: is this checking neccessery here???)
+        board.getPlayersBoards().moveGhost(pickedGhostField, pickedNewField);
+        socket.emit('ghost refresh player boards', board.getAllPlayersBoards());
       }
     }
     // Is any other player to move (player can`t move himself)
-    // Ask if move player
-    // Pick player to move
-    // Get available places to move (move by one place)
-    // Move player
+    const otherPlayers = players.getAlivePlayers(true);
+    if (otherPlayers.length > 0) {
+      // Ask if move player
+      const isMovePlayer = await questions.askYesNo(socket, 'Do you want to move a taoist?');
+      if (isMovePlayer) {
+        // Pick player to move
+        const pickedPlayer = await questions.pickPlayer(socket, ghosts);
+        // Get available places to move (move by one place)
+        // Move player
+      }
+    }
   }
 }
 
