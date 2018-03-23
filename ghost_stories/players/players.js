@@ -1,5 +1,6 @@
 const arrayShuffle = require('array-shuffle');
 const playersUtils = require('./players_utils');
+const questions = require('../utils/questionsUI');
 
 const { FourColors } = require('../enums/color');
 const Taoist = require('./taoist');
@@ -56,7 +57,7 @@ class Players {
   }
 
   pickMove(socket, availableMoves) {
-    return playersUtils.pickMove(socket, availableMoves);
+    return questions.pickVillagerTile(socket, availableMoves);
   }
 
   getDeadPlayers() {

@@ -169,6 +169,17 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /**
+   * Picking villager tile position
+   * @param {number[]} availableVillagerTiles
+   * @param {function} fn Callback function
+   * @returns {number} Villager position
+   */
+  socket.on('ghost pick villager tile', (availableVillagerTiles, fn) => {
+    console.log('ghost pick villager tile availableVillagerTiles', availableVillagerTiles);
+    availableVillagerTiles.forEach(())
+  });
+
+  /**
    * Remove all ghost from player boards and place them all over again
    * @param {Array} playersBoards Array of players boards
    */
@@ -221,24 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
         while (ghostField.hasChildNodes()) {
           ghostField.removeChild(ghostField.lastChild);
         }
-      });
-  });
-
-  // TODO: change to general pickVillagerTile, refactor
-  socket.on('ghost player move', (availableMoves, fn) => {
-    console.log('ghost player move', availableMoves);
-    [...document.getElementsByClassName('villager')]
-      .filter(villager => availableMoves.indexOf(Number(villager.dataset.villagerIndex)) !== -1)
-      .forEach((villager) => {
-        villager.classList.add('active');
-        villager.addEventListener('click', function pickVillagerTile(e) {
-          [...document.getElementsByClassName('villager')].forEach((villagerRemove) => {
-            villagerRemove.classList.remove('active');
-            villagerRemove.removeEventListener('click', pickVillagerTile);
-          });
-          console.log('ghost player move picked villager tile: ', e.currentTarget.dataset.villagerIndex);
-          fn(Number(e.currentTarget.dataset.villagerIndex));
-        });
       });
   });
 

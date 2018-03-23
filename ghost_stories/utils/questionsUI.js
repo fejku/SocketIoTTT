@@ -14,6 +14,10 @@ function validatePickedPlayer(availablePlayers, pickedPlayerColor) {
   return availablePlayers.find(player => player.color.key === pickedPlayerColor) !== undefined;
 }
 
+function validatePickedVillagerTile(availableVillagerTiles, pickedVillagerTilePosition) {
+  return availableVillagerTiles.indexOf(pickedVillagerTilePosition) !== -1;
+}
+
 /**
  *
  * @param {Socket} socket
@@ -98,14 +102,13 @@ module.exports.pickPlayer = async (socket, availablePlayers) =>
    */
 module.exports.pickVillagerTile = async (socket, availableVillagerTiles) =>
   new Promise((resolve, reject) => {
-    // console.log('ghost pick villager tile availableVillagerTiles: ', availableVillagerTiles);
-    // socket.emit('ghost pick player', availablePlayers, (pickedPlayerColor) => {
-    //   console.log('ghost pick player pickedPlayerColor: ', pickedPlayerColor);
-    //   if (validatePickedPlayer(availablePlayers, pickedPlayerColor)) {
-    //     const pickedPlayer = availablePlayers.find(player => player.color.key === pickedPlayerColor);
-    //     resolve(pickedPlayer);
-    //   } else {
-    //     reject();
-    //   }
-    // });
+    console.log('ghost pick villager tile availableVillagerTiles: ', availableVillagerTiles);
+    socket.emit('ghost pick villager tile', availableVillagerTiles, (pickedVillagerTilePosition) => {
+      console.log('ghost pick villager tile pickedVillagerTilePosition: ', pickedVillagerTilePosition);
+      if (validatePickedVillagerTile(availableVillagerTiles, pickedVillagerTilePosition)) {
+        resolve(pickedVillagerTilePosition);
+      } else {
+        reject();
+      }
+    });
   });

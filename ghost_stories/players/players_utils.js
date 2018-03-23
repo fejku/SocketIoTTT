@@ -23,17 +23,6 @@ module.exports.getAvailableMoves = (position) => {
   }
 };
 
-module.exports.pickMove = (socket, availableMoves) => new Promise((resolve, reject) => {
-  socket.emit('ghost player move', availableMoves, (pickedMove) => {
-    // If picked move was on available moves array
-    if (availableMoves.indexOf(pickedMove) !== -1) {
-      resolve(pickedMove);
-    } else {
-      reject();
-    }
-  });
-});
-
 function getGhostsForCoordinates(playersBoards, coordinates) {
   const ghostsInRange = [];
 
