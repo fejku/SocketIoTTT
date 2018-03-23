@@ -1,6 +1,7 @@
 const Villager = require('./villager');
 
 const questions = require('../utils/questionsUI');
+const playersUtils = require('../players/players_utils');
 
 // Move a ghost of your choice to any free space (even if occupied by a Buddha figure),
 // then move a different Taoist to a Village tile. When the ghost moves,
@@ -48,8 +49,11 @@ class PavilionOfTheHeavenlyWinds extends Villager {
       const isMovePlayer = await questions.askYesNo(socket, 'Do you want to move a taoist?');
       if (isMovePlayer) {
         // Pick player to move
-        const pickedPlayer = await questions.pickPlayer(socket, ghosts);
+        const pickedPlayer = await questions.pickPlayer(socket, otherPlayers);
         // Get available places to move (move by one place)
+        const availableFields = playersUtils.getNearFields(pickedPlayer.position);
+        // Pick field
+
         // Move player
       }
     }

@@ -54,13 +54,32 @@ document.addEventListener('DOMContentLoaded', () => {
     actualPlayer.classList.add('border');
   }
 
+  function updatePlayers(players) {
+    // Remove all players from board
+    [...document.querySelectorAll('.player')].forEach((player) => { player.remove(); });
+    // Set players
+    players.taoists.forEach((player) => {
+      // If player is alive
+      if (player.qiTokens > 0) {
+        // Append player token
+        document.querySelector(`.villager[data-villager-index="${player.position}"] .players`)
+          .innerHTML += `<div class="player" data-player-color="${player.color}"></div>`;
+        // Fill player token with player color
+        const addedPlayer = document.querySelector(`.player[data-player-color="${player.color}"]`);
+        addedPlayer.style.background = player.color;
+      }
+    });
+  }
+
   socket.emit('ghost start');
 
   socket.on('ghost init board', (playersBoards, villagers, players, bank) => {
     console.log('ghost players board', playersBoards);
-    // Set player board value
-    [...document.getElementsByClassName('player-board')].forEach((playerBoard) => {
-      playerBoard.dataset.boardColor = playersBoards[playerBoard.dataset.boardIndex].color;
+    [...document.getElementsByClassName('player-board')].forEach((field) => {
+      // Set player board value
+      field.dataset.boardColor = playersBoards[field.dataset.boardIndex].color;
+      // Set board colors
+      field.style.backgroundColor = field.dataset.boardColor;
     });
 
     console.log('villagers: ', villagers);
@@ -69,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     villagersTiles.forEach((villager) => {
       villager.dataset.name = villagers[villager.dataset.villagerIndex].name;
       // https://stackoverflow.com/questions/35213147/difference-between-text-content-vs-inner-text
-      villager.textContent = villagers[villager.dataset.villagerIndex].name;
+      villager.querySelector('.name').textContent = villagers[villager.dataset.villagerIndex].name;
     });
 
     // Set Circle of prayer additional div with tao token color
@@ -83,14 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
       .find(villager => villager.dataset.name === 'Buddhist Temple')
       .innerHTML += `<div id="buddha-figures-amount">${buddhistTemple}</div>`;
 
-    // Set board colors
-    [...document.getElementsByClassName('player-board')]
-      .forEach((field) => {
-        field.style.backgroundColor = field.dataset.boardColor;
-      });
-
     updateBank(bank);
     updatePlayersStats(players);
+    updatePlayers(players);
   });
 
   socket.on('ghost update bank', (bank) => {
@@ -132,8 +146,31 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /**
+   * Picking player
+   * @param {Taoist[]} availablePlayers
+   * @param {function} fn Callback function
+   * @returns {String} Player color
+   */
+  socket.on('ghost pick player', (availablePlayers, fn) => {
+    console.log('ghost pick player availablePlayers', availablePlayers);
+    availablePlayers.forEach((player) => {
+      const playerToken = document.querySelector(`.player[data-player-color="${player.color}"]`);
+      playerToken.classList.add('active');
+      playerToken.addEventListener('click', function pickPlayer(e) {
+        const pickPlayerColor = e.currentTarget.dataset.playerColor;
+        [...document.getElementsByClassName('player')].forEach((removeAvailablePlayer) => {
+          removeAvailablePlayer.classList.remove('active');
+          removeAvailablePlayer.removeEventListener('click', pickPlayer);
+        });
+        console.log('ghost pick player pickPlayerColor: ', pickPlayerColor);
+        fn(pickPlayerColor);
+      });
+    });
+  });
+
+  /**
    * Remove all ghost from player boards and place them all over again
-   * @param playersBoards Array of players boards
+   * @param {Array} playersBoards Array of players boards
    */
   socket.on('ghost refresh player boards', (playersBoards) => {
     console.log('ghost refresh player boards', playersBoards);
@@ -150,6 +187,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     });
+  });
+
+  socket.on('ghost refresh players tokens', (players) => {
+    console.log('ghost refresh players tokens', players);
+    updatePlayers(players);
   });
 
   socket.on('ghost lay ghost card on picked field', (pickedField, card) => {
@@ -182,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   });
 
+  // TODO: change to general pickVillagerTile, refactor
   socket.on('ghost player move', (availableMoves, fn) => {
     console.log('ghost player move', availableMoves);
     [...document.getElementsByClassName('villager')]

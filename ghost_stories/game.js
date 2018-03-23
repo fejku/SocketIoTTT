@@ -67,6 +67,7 @@ class Game {
     console.log('availableMoves', availableMoves);
     console.log('pickedMove', pickedMove);
     actualPlayer.move(pickedMove);
+    socket.emit('ghost refresh players tokens', this.players);
     // Step 2 - Help from villager or exorcism
     const availableDecisions = [];
     // Check if villager help is possible

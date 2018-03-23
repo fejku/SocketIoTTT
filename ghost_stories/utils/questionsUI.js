@@ -10,6 +10,16 @@ function validatePickedBoardField(availableFields, pickedField) {
       && (field.fieldIndex === pickedField.fieldIndex)) !== undefined;
 }
 
+function validatePickedPlayer(availablePlayers, pickedPlayerColor) {
+  return availablePlayers.find(player => player.color.key === pickedPlayerColor) !== undefined;
+}
+
+/**
+ *
+ * @param {Socket} socket
+ * @param {string} [mainQuestion]
+ * @param {string} [additionalText]
+ */
 module.exports.askYesNo = async (socket, mainQuestion = '', additionalText = null) =>
   new Promise((resolve, reject) => {
     socket.emit('ghost question yes no', mainQuestion, additionalText, (pickedAnswer) => {
@@ -21,6 +31,13 @@ module.exports.askYesNo = async (socket, mainQuestion = '', additionalText = nul
     });
   });
 
+/**
+ *
+ * @param {Socket} socket
+ * @param {string} mainQuestion
+ * @param {string[]} answersArray
+ * @param {string} [additionalText]
+ */
 module.exports.ask = async (socket, mainQuestion, answersArray, additionalText = null) =>
   new Promise((resolve, reject) => {
     socket.emit('ghost question', mainQuestion, answersArray, additionalText, (pickedAnswer) => {
@@ -34,9 +51,12 @@ module.exports.ask = async (socket, mainQuestion, answersArray, additionalText =
 
 /**
  * Returns picked field
- * @param {object} socket
- * @param {Array} availableFields [{fieldIndex, [playerBoardIndex], [playerBoardColor]}}]
- * @returns {object} {playerBoardIndex, playerBoardColor, fieldIndex}
+ * @param {Socket} socket
+ * @param {Object[]} availableFields
+ * @param {number} availableFields.fieldIndex
+ * @param {string} [availableFields.playerBoardIndex]
+ * @param {number} [availableFields.playerBoardColor]
+ * @returns {Object} {playerBoardIndex, playerBoardColor, fieldIndex}
  */
 module.exports.pickPlayerBoardField = async (socket, availableFields) =>
   new Promise((resolve, reject) => {
@@ -49,4 +69,43 @@ module.exports.pickPlayerBoardField = async (socket, availableFields) =>
         reject();
       }
     });
+  });
+
+/**
+ *
+ * @param {Socket} socket
+ * @param {Taoist[]} availablePlayers
+ * @returns {Taoist}
+ */
+module.exports.pickPlayer = async (socket, availablePlayers) =>
+  new Promise((resolve, reject) => {
+    console.log('ghost pick player availablePlayers: ', availablePlayers);
+    socket.emit('ghost pick player', availablePlayers, (pickedPlayerColor) => {
+      console.log('ghost pick player pickedPlayerColor: ', pickedPlayerColor);
+      if (validatePickedPlayer(availablePlayers, pickedPlayerColor)) {
+        const pickedPlayer = availablePlayers.find(player => player.color.key === pickedPlayerColor);
+        resolve(pickedPlayer);
+      } else {
+        reject();
+      }
+    });
+  });
+
+/**
+   *
+   * @param {Socket} socket
+   * @param {number[]} availableVillagerTiles
+   */
+module.exports.pickVillagerTile = async (socket, availableVillagerTiles) =>
+  new Promise((resolve, reject) => {
+    // console.log('ghost pick villager tile availableVillagerTiles: ', availableVillagerTiles);
+    // socket.emit('ghost pick player', availablePlayers, (pickedPlayerColor) => {
+    //   console.log('ghost pick player pickedPlayerColor: ', pickedPlayerColor);
+    //   if (validatePickedPlayer(availablePlayers, pickedPlayerColor)) {
+    //     const pickedPlayer = availablePlayers.find(player => player.color.key === pickedPlayerColor);
+    //     resolve(pickedPlayer);
+    //   } else {
+    //     reject();
+    //   }
+    // });
   });
