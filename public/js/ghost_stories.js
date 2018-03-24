@@ -176,7 +176,19 @@ document.addEventListener('DOMContentLoaded', () => {
    */
   socket.on('ghost pick villager tile', (availableVillagerTiles, fn) => {
     console.log('ghost pick villager tile availableVillagerTiles', availableVillagerTiles);
-    availableVillagerTiles.forEach(())
+    availableVillagerTiles.forEach((villagerIndex) => {
+      const villagerTile = document.querySelector(`.villager[data-villager-index="${villagerIndex}"]`);
+      villagerTile.classList.add('active');
+      villagerTile.addEventListener('click', function pickVillagerTile(e) {
+        const pickedVillagerTilePosition = Number(e.currentTarget.dataset.villagerIndex);
+        [...document.getElementsByClassName('villager')].forEach((removeVillagerTile) => {
+          removeVillagerTile.classList.remove('active');
+          removeVillagerTile.removeEventListener('click', pickVillagerTile);
+        });
+        console.log('ghost pick villager tile pickedTile', pickedVillagerTilePosition);
+        fn(pickedVillagerTilePosition);
+      });
+    });
   });
 
   /**

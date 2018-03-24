@@ -56,10 +56,6 @@ class Players {
     return playersUtils.getAvailableMoves(actualField);
   }
 
-  pickMove(socket, availableMoves) {
-    return questions.pickVillagerTile(socket, availableMoves);
-  }
-
   getDeadPlayers() {
     return this.taoists.filter(taoist => !taoist.isAlive());
   }

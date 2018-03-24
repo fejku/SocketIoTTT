@@ -63,7 +63,7 @@ class Game {
     // Step 1 - Player move
     const availableMoves = this.players
       .getAvailableMoves(actualPlayer.getPosition());
-    const pickedMove = await this.players.pickMove(socket, availableMoves);
+    const pickedMove = await questions.pickVillagerTile(socket, availableMoves);
     console.log('availableMoves', availableMoves);
     console.log('pickedMove', pickedMove);
     actualPlayer.move(pickedMove);

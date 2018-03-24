@@ -39,6 +39,7 @@ class PavilionOfTheHeavenlyWinds extends Villager {
         const pickedNewField = await questions.pickPlayerBoardField(socket, availableFieldsToMove);
         // Move ghost
         board.getPlayersBoards().moveGhost(pickedGhostField, pickedNewField);
+        // Refresh UI
         socket.emit('ghost refresh player boards', board.getAllPlayersBoards());
       }
     }
@@ -51,10 +52,13 @@ class PavilionOfTheHeavenlyWinds extends Villager {
         // Pick player to move
         const pickedPlayer = await questions.pickPlayer(socket, otherPlayers);
         // Get available places to move (move by one place)
-        const availableFields = playersUtils.getNearFields(pickedPlayer.position);
+        const availableFields = playersUtils.getAvailableMoves(pickedPlayer.position);
         // Pick field
-
+        const pickedField = await questions.pickVillagerTile(socket, availableFields);
         // Move player
+        pickedPlayer.move(pickedField);
+        // Refresh UI
+        socket.emit('ghost refresh players tokens', players);
       }
     }
   }

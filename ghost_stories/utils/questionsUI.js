@@ -99,6 +99,7 @@ module.exports.pickPlayer = async (socket, availablePlayers) =>
    *
    * @param {Socket} socket
    * @param {number[]} availableVillagerTiles
+   * @returns {number} Picked villager tile position
    */
 module.exports.pickVillagerTile = async (socket, availableVillagerTiles) =>
   new Promise((resolve, reject) => {
