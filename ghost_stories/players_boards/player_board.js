@@ -18,9 +18,8 @@ class PlayerBoard {
 
   getEmptyFields() {
     return this.fields
-      .map((field, fieldIndex) => ({ playerBoardColor: this.color.key, field, fieldIndex }))
-      .filter(field => field.field === null)
-      .map(field => ({ playerBoardColor: field.playerBoardColor, fieldIndex: field.fieldIndex }));
+      .map((field, fieldIndex) => ({ playerBoardColor: this.color.key, fieldIndex, ghost: field }))
+      .filter(field => field.ghost === null);
   }
 
 
@@ -33,6 +32,20 @@ class PlayerBoard {
         }
       } else if (this.fields[i] !== null) {
         result.fields.push(i);
+      }
+    }
+    return result;
+  }
+
+  getGhosts(skipWuFeng = false) {
+    const result = [];
+    for (let i = 0; i < this.fields.length; i++) {
+      if (skipWuFeng) {
+        if ((this.fields[i] !== null) && (!this.fields[i].isWuFeng())) {
+          result.push(i);
+        }
+      } else if (this.fields[i] !== null) {
+        result.push(i);
       }
     }
     return result;

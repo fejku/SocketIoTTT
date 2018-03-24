@@ -102,7 +102,7 @@ class Board {
         const buddhistTemple = this.villagers.getVillagerByClass(BuddhistTemple);
         // Back buddha into temple
         buddhistTemple.addBuddhaFigure();
-        buddhistTemple.refresBuddhaFiguresUI(socket, this.getAllPlayersBoards());
+        buddhistTemple.refreshBuddhaFiguresUI(socket, this.getAllPlayersBoards());
         if (card.isWuFeng()) {
           // TODO
           // place card

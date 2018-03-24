@@ -67,6 +67,19 @@ body {
     border: 1px solid #000000;
 }
 
+.players {
+    display: flex;
+}
+
+.player {
+    box-sizing: border-box;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    background: #FFFFFF;
+    border: 1px solid #000000;
+}
+
 .border {
     border: 1px solid #000000;
 }

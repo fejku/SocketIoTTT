@@ -1,5 +1,6 @@
 const arrayShuffle = require('array-shuffle');
 const playersUtils = require('./players_utils');
+const questions = require('../utils/questionsUI');
 
 const { FourColors } = require('../enums/color');
 const Taoist = require('./taoist');
@@ -55,18 +56,16 @@ class Players {
     return playersUtils.getAvailableMoves(actualField);
   }
 
-  pickMove(socket, availableMoves) {
-    return playersUtils.pickMove(socket, availableMoves);
+  getDeadPlayers() {
+    return this.taoists.filter(taoist => !taoist.isAlive());
   }
 
-  getDeadPlayers() {
-    const deadPlayers = [];
-    for (const player of this.taoists) {
-      if (!player.isAlive()) {
-        deadPlayers.push(player);
-      }
+  getAlivePlayers(skipActualPlayer = false) {
+    let [...taoists] = this.taoists;
+    if (skipActualPlayer) {
+      taoists = taoists.filter((taoist, taoistIndex) => taoistIndex !== this.actualPlayer);
     }
-    return deadPlayers;
+    return taoists.filter(taoist => taoist.isAlive());
   }
 
   nextPlayer() {
