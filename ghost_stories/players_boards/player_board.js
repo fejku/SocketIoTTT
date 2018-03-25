@@ -37,15 +37,22 @@ class PlayerBoard {
     return result;
   }
 
+  /**
+   * Returns ghosts that are on player board
+   *
+   * @param {boolean} [skipWuFeng=false] Is Wu Feng should be returned
+   * @returns {Object[]} [{ fieldIndex: number, ghost: Ghost }]
+   * @memberof PlayerBoard
+   */
   getGhosts(skipWuFeng = false) {
     const result = [];
     for (let i = 0; i < this.fields.length; i++) {
       if (skipWuFeng) {
         if ((this.fields[i] !== null) && (!this.fields[i].isWuFeng())) {
-          result.push(i);
+          result.push({ fieldIndex: i, ghost: this.fields[i] });
         }
       } else if (this.fields[i] !== null) {
-        result.push(i);
+        result.push({ fieldIndex: i, ghost: this.fields[i] });
       }
     }
     return result;

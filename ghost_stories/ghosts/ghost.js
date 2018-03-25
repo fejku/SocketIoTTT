@@ -4,6 +4,8 @@ class Ghost {
     this.color = color;
     this.resistance = resistance;
 
+    this.hauntingFigurePosition = 0;
+
     this.taoDiceHaveEffect = true;
     this.wuFeng = false;
   }
@@ -33,16 +35,31 @@ class Ghost {
     this.taoDiceHaveEffect = false;
   }
 
+  /**
+   * Return ghost color
+   *
+   * @returns {string} Ghost color
+   * @memberof Ghost
+   */
   getColor() {
     return this.color.key;
   }
 
   getResistance() {
-    return this.color;
+    return this.resistance;
   }
 
   isWuFeng() {
     return this.wuFeng;
+  }
+
+  moveHauntingFigure() {
+    if (this.hauntingFigurePosition === 1) {
+      // TODO: Haunting tile, here??? or return bool isHaunt and calling function haunt???
+      this.hauntingFigurePosition = 0;
+    } else {
+      this.hauntingFigurePosition++;
+    }
   }
 }
 

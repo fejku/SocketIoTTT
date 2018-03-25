@@ -87,14 +87,22 @@ class PlayersBoards {
     return true;
   }
 
+  /**
+   * Returns ghosts from all players boards
+   *
+   * @param {boolean} [skipWuFeng=false] Is Wu Feng should be returned
+   * @returns {Object[]} [{ playerBoardIndex: number, playerBoardColor: string, fieldIndex: number, ghost: Ghost }]
+   * @memberof PlayersBoards
+   */
   getGhosts(skipWuFeng = false) {
     const ghosts = [];
     this.playersBoards.forEach((playerBoard, playerBoardIndex) => {
       ghosts.push(...playerBoard.getGhosts(skipWuFeng)
-        .map(fieldIndex => ({
+        .map(({ fieldIndex, ghost }) => ({
           playerBoardIndex,
           playerBoardColor: playerBoard.color.key,
           fieldIndex,
+          ghost,
         })));
     });
 
