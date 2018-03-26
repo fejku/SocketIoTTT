@@ -49,6 +49,11 @@ class Game {
     socket.emit('ghost update players stats', this.players);
     // Ghost phase
     // Step 1 - Ghosts’ actions
+    this.board.getPlayerBoardByColor(actualPlayer.getColorKey()).getGhosts().forEach((ghostWrapper) => {
+      const ghostPosition = { boardIndex: this.players.getActualPlayerId(), fieldIndex: ghostWrapper.fieldIndex };
+      ghostWrapper.ghost.yinPhaseEffect(socket, this.board, this.players, ghostPosition, this.bank);
+    });
+    socket.emit('ghost refresh player boards', this.board.getAllPlayersBoards());
     // Step 2 - Check board overrun
     if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
       actualPlayer.loseQi();

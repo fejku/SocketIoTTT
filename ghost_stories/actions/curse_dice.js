@@ -31,7 +31,7 @@ function getTilePositionToHaunt(ghostPosition, villagers, step = 0) {
   }
 
   if (villagers.getVillager(tilePosition).isHaunted()) {
-    getTilePositionToHaunt(ghostPosition, villagers, ++step); // eslint-disable-line no-param-reassign, max-len
+    getTilePositionToHaunt(ghostPosition, villagers, ++step); // eslint-disable-line no-param-reassign
   }
 
   return tilePosition;
@@ -60,15 +60,15 @@ function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryC
         ghostPosition, board.getVillagers(), isCemeteryCall,
       );
       break;
-      // The player must bring a ghost into play according to the placement rules.
+    // The player must bring a ghost into play according to the placement rules.
     case 3:
       board.ghostArrival(socket, players, bank, board.getVillagerByClass(CircleOfPrayer));
       break;
-      // The player must discard all his Tao tokens.
+    // The player must discard all his Tao tokens.
     case 4:
       loseAllTaoTokens(socket, players, bank, board.getVillagerByClass(CircleOfPrayer));
       break;
-      // The Taoist loses one Qi token.
+    // The Taoist loses one Qi token.
     case 5:
       loseQi(socket, players, bank, board.getVillagerByClass(CircleOfPrayer));
       break;

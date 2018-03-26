@@ -15,7 +15,7 @@ class Ghost {
     console.log('immediateEffect abstract');
   }
 
-  yinPhaseEffect() {
+  yinPhaseEffect(socket, board, players, ghostPosition, bank) { /* eslint-disable-line no-unused-vars */
     //
     console.log('yinPhaseEffect abstract');
   }
@@ -27,8 +27,8 @@ class Ghost {
   }
 
   // Effects
-  haunter() {
-
+  haunter(ghostPosition, villagers) {
+    this.progressHauntingFigure(ghostPosition, villagers);
   }
 
   taoDiceHaveNoEffect() {
@@ -57,17 +57,54 @@ class Ghost {
     return this.wuFeng;
   }
 
-  moveHauntingFigure() {
-    if (this.hauntingFigurePosition === 1) {
-      // TODO: Haunting tile, here??? or return bool isHaunt and calling function haunt???
+  moveHauntingFigureBackward() {
+    this.hauntingFigurePosition = 0;
+  }
+
+  /**
+   * Progress haunting figure
+   *
+   * @memberof Ghost
+   */
+  progressHauntingFigure(ghostPosition, villagers) {
+    this.hauntingFigurePosition++;
+
+    if (this.hauntingFigurePosition === 2) {
+      this.hauntTile(ghostPosition, villagers);
       this.hauntingFigurePosition = 0;
-    } else {
-      this.hauntingFigurePosition++;
     }
   }
 
-  moveHauntingFigureBackward() {
-    this.hauntingFigurePosition = 0;
+  hauntTile(ghostPosition, villagers) {
+    const tilePositionToHaunt = this.getVillagerToHaunt(ghostPosition, villagers);
+    villagers.getVillager(tilePositionToHaunt).setHaunted(true);
+  }
+
+  getVillagerToHaunt(ghostPosition, villagers, step = 0) {
+    let villagerPosition = -1;
+
+    switch (ghostPosition.boardIndex) {
+      case 0:
+        villagerPosition = ghostPosition.fieldIndex + (3 * step);
+        break;
+      case 1:
+        villagerPosition = (3 * ghostPosition.fieldIndex) + (2 - step);
+        break;
+      case 2:
+        villagerPosition = (6 + ghostPosition.fieldIndex) - (3 * step);
+        break;
+      case 3:
+        villagerPosition = (3 * ghostPosition.fieldIndex) + step;
+        break;
+      default:
+        break;
+    }
+
+    if (villagers.getVillager(villagerPosition).isHaunted()) {
+      this.getVillagerToHaunt(ghostPosition, villagers, ++step); // eslint-disable-line no-param-reassign
+    }
+
+    return villagerPosition;
   }
 }
 

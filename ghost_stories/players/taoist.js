@@ -31,6 +31,10 @@ class Taoist {
     return this.color;
   }
 
+  getColorKey() {
+    return this.color.key;
+  }
+
   gainQi(amount = 1) {
     this.qiTokens += amount;
   }

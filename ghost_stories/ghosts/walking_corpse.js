@@ -10,8 +10,9 @@ class WalkingCorpse extends Ghost {
     //
   }
 
-  yinPhaseEffect() {
-    super.haunter();
+  yinPhaseEffect(socket, board, players, ghostPosition, bank) { /* eslint-disable-line no-unused-vars */
+    const villagers = board.getVillagers();
+    super.haunter(ghostPosition, villagers);
   }
 
   afterWinningEffect() {
