@@ -266,6 +266,10 @@ document.addEventListener('DOMContentLoaded', () => {
     updatePlayers(players);
   });
 
+  socket.on('ghost refresh villagers', (villagers) => {
+    console.log('ghost refresh villagers', villagers);
+  });
+
   socket.on('ghost lay ghost card on picked field', (pickedField, card) => {
     console.log('ghost lay ghost card on picked field', pickedField.playerBoardIndex);
     document.querySelector(`.player-board[data-board-index="${pickedField.playerBoardIndex}"]` +
