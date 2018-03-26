@@ -18,6 +18,10 @@ function validatePickedVillagerTile(availableVillagerTiles, pickedVillagerTilePo
   return availableVillagerTiles.indexOf(pickedVillagerTilePosition) !== -1;
 }
 
+function validatePickedPlayerBoard(availablePlayerBoardIndexes, pickedPlayerBoardIndex) {
+  return availablePlayerBoardIndexes.indexOf(pickedPlayerBoardIndex) !== -1;
+}
+
 /**
  *
  * @param {Socket} socket
@@ -55,6 +59,7 @@ module.exports.ask = async (socket, mainQuestion, answersArray, additionalText =
 
 /**
  * Returns picked field
+ *
  * @param {Socket} socket
  * @param {Object[]} availableFields
  * @param {number} availableFields.fieldIndex
@@ -96,11 +101,11 @@ module.exports.pickPlayer = async (socket, availablePlayers) =>
   });
 
 /**
-   *
-   * @param {Socket} socket
-   * @param {number[]} availableVillagerTiles
-   * @returns {number} Picked villager tile position
-   */
+ *
+ * @param {Socket} socket
+ * @param {number[]} availableVillagerTiles
+ * @returns {number} Picked villager tile position
+ */
 module.exports.pickVillagerTile = async (socket, availableVillagerTiles) =>
   new Promise((resolve, reject) => {
     console.log('ghost pick villager tile availableVillagerTiles: ', availableVillagerTiles);
@@ -108,6 +113,26 @@ module.exports.pickVillagerTile = async (socket, availableVillagerTiles) =>
       console.log('ghost pick villager tile pickedVillagerTilePosition: ', pickedVillagerTilePosition);
       if (validatePickedVillagerTile(availableVillagerTiles, pickedVillagerTilePosition)) {
         resolve(pickedVillagerTilePosition);
+      } else {
+        reject();
+      }
+    });
+  });
+
+/**
+ *  Pickinkg player board
+ *
+ * @param {Socket} socket
+ * @param {number[]} availablePlayerBoardIndexes Indexes of players boards
+ * @returns {number} Picked player board index
+ */
+module.exports.pickPlayerBoard = async (socket, availablePlayerBoardIndexes) =>
+  new Promise((resolve, reject) => {
+    console.log('ghost pick player board availablePlayerBoardIndexes: ', availablePlayerBoardIndexes);
+    socket.emit('ghost pick player board', availablePlayerBoardIndexes, (pickedPlayerBoardIndex) => {
+      console.log('ghost pick player board pickedPlayerBoardIndex: ', pickedPlayerBoardIndex);
+      if (validatePickedPlayerBoard(availablePlayerBoardIndexes, pickedPlayerBoardIndex)) {
+        resolve(pickedPlayerBoardIndex);
       } else {
         reject();
       }

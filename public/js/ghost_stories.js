@@ -71,6 +71,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function getGhost(ghost) {
+    return `<div class="ghost">
+      <div class="haunting-figures">
+        <div class="haunting-figure${ghost.hauntingFigurePosition === 0 ? ' haunting-figure-active' : ''}"></div>
+        <div class="haunting-figure${ghost.hauntingFigurePosition === 1 ? ' haunting-figure-active' : ''}"></div>
+        <div class="haunting-figure${ghost.hauntingFigurePosition === 2 ? ' haunting-figure-active' : ''}"></div>
+      </div>
+      <div>${ghost.name}</div>
+      <div>(${ghost.color}: ${ghost.resistance})</div>
+    </div>`;
+    // const ghostDiv = document.createElement('div');
+    // ghostDiv.className = 'ghost';
+    // const ghostName = document.createElement('div');
+    // ghostName.innerText = card.name;
+    // ghostDiv.appendChild(ghostName);
+    // const ghostStats = document.createElement('div');
+    // ghostStats.innerText = `(${card.color}: ${card.resistance})`;
+    // ghostDiv.appendChild(ghostStats);
+    // clickedField.appendChild(ghostDiv);
+  }
+
   socket.emit('ghost start');
 
   socket.on('ghost init board', (playersBoards, villagers, players, bank) => {
@@ -146,7 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /**
-   * Picking player
+   * Pick player
+   *
    * @param {Taoist[]} availablePlayers
    * @param {function} fn Callback function
    * @returns {String} Player color
@@ -169,7 +191,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /**
-   * Picking villager tile position
+   * Pick villager tile position
+   *
    * @param {number[]} availableVillagerTiles
    * @param {function} fn Callback function
    * @returns {number} Villager position
@@ -192,7 +215,33 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /**
+   * Pick player board
+   *
+   * @param {number[]} availablePlayerBoardIndexes
+   * @param {function} fn Callback function
+   * @returns {number} Picked player board
+   */
+  socket.on('ghost pick player board', (availablePlayerBoardIndexes, fn) => {
+    console.log('ghost pick player board availablePlayerBoardIndexes', availablePlayerBoardIndexes);
+    availablePlayerBoardIndexes.forEach((playerBoardIndex) => {
+      [...document.querySelectorAll(`.player-board[data-board-index="${playerBoardIndex}"]`)].forEach((playerBoard) => {
+        playerBoard.classList.add('active');
+        playerBoard.addEventListener('click', function pickPlayerBoard(e) {
+          const pickedPlayerBoardIndex = Number(e.currentTarget.dataset.boardIndex);
+          [...document.getElementsByClassName('player-board')].forEach((removePickPlayerBoard) => {
+            removePickPlayerBoard.classList.remove('active');
+            removePickPlayerBoard.removeEventListener('click', pickPlayerBoard);
+          });
+          console.log('ghost pick player board pickedPlayerBoardIndex', pickedPlayerBoardIndex);
+          fn(pickedPlayerBoardIndex);
+        });
+      });
+    });
+  });
+
+  /**
    * Remove all ghost from player boards and place them all over again
+   *
    * @param {Array} playersBoards Array of players boards
    */
   socket.on('ghost refresh player boards', (playersBoards) => {
@@ -206,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
       playerBoard.fields.forEach((field, fieldIndex) => {
         if (field !== null) {
           document.querySelector(`.player-board[data-board-index="${playerBoardIndex}"][data-field-index="${fieldIndex}"]`)
-            .innerHTML = `<div class="ghost"><div>${field.name}</div><div>(${field.color}: ${field.resistance})</div></div>`;
+            .innerHTML = getGhost(field);
         }
       });
     });
@@ -219,19 +268,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   socket.on('ghost lay ghost card on picked field', (pickedField, card) => {
     console.log('ghost lay ghost card on picked field', pickedField.playerBoardIndex);
-    [...document.getElementsByClassName('player-board')]
-      .find(field => (Number(field.dataset.boardIndex) === pickedField.playerBoardIndex)
-        && (Number(field.dataset.fieldIndex) === pickedField.fieldIndex))
-      .innerHTML = `<div class="ghost"><div>${card.name}</div><div>(${card.color}: ${card.resistance})</div></div>`;
-    // const ghostDiv = document.createElement('div');
-    // ghostDiv.className = 'ghost';
-    // const ghostName = document.createElement('div');
-    // ghostName.innerText = card.name;
-    // ghostDiv.appendChild(ghostName);
-    // const ghostStats = document.createElement('div');
-    // ghostStats.innerText = `(${card.color}: ${card.resistance})`;
-    // ghostDiv.appendChild(ghostStats);
-    // clickedField.appendChild(ghostDiv);
+    document.querySelector(`.player-board[data-board-index="${pickedField.playerBoardIndex}"]` +
+        `[data-field-index="${pickedField.fieldIndex}"]`)
+      .innerHTML = getGhost(card);
   });
 
   socket.on('ghost remove ghost from field', (color, fieldIndex) => {

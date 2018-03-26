@@ -1,5 +1,7 @@
 const Villager = require('./villager');
 
+const questions = require('../utils/questionsUI');
+
 // Move all the Haunting figures on one board backward on the card.
 class NightWatchmansBeat extends Villager {
   constructor() {
@@ -11,13 +13,31 @@ class NightWatchmansBeat extends Villager {
     if (!super.validateHelp()) {
       return false;
     }
-    // Check if there are any ghosts or different players
-    const isAnyGhost = board.getPlayersBoards().getGhosts().length > 0;
-    const isDifferentPlayerAlive = players.getAlivePlayers().length > 1;
-    return isAnyGhost || isDifferentPlayerAlive;
+    // Check if there are any ghosts and haunting figure position is not 0
+    const ghosts = board.getPlayersBoards().getGhosts();
+    const isAnyGhost = ghosts.length > 0;
+    const isHauntingFigureToGoBack = ghosts.findIndex(ghost => ghost.ghost.getHauntingFigurePosition() > 0) !== -1;
+
+    return isAnyGhost || isHauntingFigureToGoBack;
   }
 
-  async action(socket, board, players, bank) {
+  async action(socket, board, players, bank) { /* eslint-disable-line no-unused-vars */
+    const ghosts = board.getPlayersBoards().getGhosts();
+    // Get available boards
+    let availablePlayerBoardIndexes = ghosts
+      .filter(ghost => ghost.ghost.getHauntingFigurePosition() > 0)
+      .map(ghost => ghost.playerBoardIndex);
+    // Remove duplicates (more ghosts on one player board)
+    availablePlayerBoardIndexes = [...new Set(availablePlayerBoardIndexes)];
+    // Pick player board
+    const pickedPlayerBoard = await questions.pickPlayerBoard(socket, availablePlayerBoardIndexes);
+    // Move haunting figures backward
+    ghosts.filter(ghost => (ghost.playerBoardIndex === pickedPlayerBoard) && (ghost.ghost.getHauntingFigurePosition() > 0))
+      .forEach((ghost) => {
+        ghost.ghost.moveHauntingFigureBackward();
+      });
+    // Refresh UI
+    socket.emit('ghost refresh player boards', board.getAllPlayersBoards());
   }
 }
 

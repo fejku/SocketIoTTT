@@ -49,6 +49,10 @@ class Ghost {
     return this.resistance;
   }
 
+  getHauntingFigurePosition() {
+    return this.hauntingFigurePosition;
+  }
+
   isWuFeng() {
     return this.wuFeng;
   }
@@ -60,6 +64,10 @@ class Ghost {
     } else {
       this.hauntingFigurePosition++;
     }
+  }
+
+  moveHauntingFigureBackward() {
+    this.hauntingFigurePosition = 0;
   }
 }
 

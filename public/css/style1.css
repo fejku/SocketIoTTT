@@ -80,6 +80,23 @@ body {
     border: 1px solid #000000;
 }
 
+.haunting-figures {
+    display: flex;
+}
+
+.haunting-figure {
+    box-sizing: border-box;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    background: #FFFFFF;
+    border: 1px solid #000000;
+}
+
+.haunting-figure-active {
+    background: #000000;
+}
+
 .border {
     border: 1px solid #000000;
 }

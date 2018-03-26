@@ -106,9 +106,22 @@ class PlayersBoards {
         })));
     });
 
-    return ghosts; // Result (array[playerBoardIndex, playerBoardColor, fieldIndex])
+    return ghosts;
   }
 
+  /**
+   * Replace ghost from one field to another
+   *
+   * @param {Object} pickedGhostField Actual field where ghost is
+   * @param {number} pickedGhostField.playerBoardIndex
+   * @param {string} pickedGhostField.playerBoardColor
+   * @param {number} pickedGhostField.fieldIndex
+   * @param {Object} pickedNewField Field where ghost will be moved
+   * @param {number} pickedNewField.playerBoardIndex
+   * @param {string} pickedNewField.playerBoardColor
+   * @param {number} pickedNewField.fieldIndex
+   * @memberof PlayersBoards
+   */
   moveGhost(pickedGhostField, pickedNewField) {
     const ghost = this.playersBoards[pickedGhostField.playerBoardIndex].fields[pickedGhostField.fieldIndex];
     // Remove ghost from old field
