@@ -94,10 +94,6 @@ class Taoist {
   }
 
   getAmountActiveBuddhaFigures() {
-    // TEST
-    this.buddhaFigures.push({ status: 'active' });
-    // TEST
-    this.buddhaFigures.push({ status: 'active' });
     return this.buddhaFigures.filter(buddha => buddha.status === 'active').length;
   }
 

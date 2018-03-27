@@ -5,8 +5,22 @@ const Villagers = require('./villagers/villagers');
 const PlayerBoards = require('./players_boards/players_boards');
 
 const BuddhistTemple = require('./villagers/buddhist_temple');
-const Ghoul = require('./ghosts/ghoul');
-const WalkingCorpse = require('./ghosts/walking_corpse');
+
+// Ghosts
+// Yellow
+const Ghoul = require('./ghosts/color/yellow//ghoul');
+const WalkingCorpse = require('./ghosts/color/yellow/walking_corpse');
+const CoffinBreakers = require('./ghosts/color/yellow/coffin_breakers');
+const RestlessDead = require('./ghosts/color/yellow/restless_dead');
+const Zombie = require('./ghosts/color/yellow/zombie');
+const HoppingVampire = require('./ghosts/color/yellow/hopping_vampire');
+const YellowPlague = require('./ghosts/color/yellow/yellow_plague');
+// Blue
+const DrowendMaiden = require('./ghosts/color/blue/drowned_maiden');
+// Green
+const CreepingOne = require('./ghosts/color/green/creeping_one');
+// Red
+const Skinner = require('./ghosts/color/red/skinner');
 
 const questions = require('./utils/questionsUI');
 
@@ -20,18 +34,24 @@ class Board {
   }
 
   initGhostCards() {
-    // TEST
-    return arrayShuffle([new Ghoul(),
-      new Ghoul(),
-      new Ghoul(),
-      new Ghoul(),
-      new Ghoul(),
-      new Ghoul(),
-      new Ghoul(),
-      new Ghoul(),
-      new Ghoul(),
+    return arrayShuffle([
+      // Yellow
       new Ghoul(),
       new WalkingCorpse(),
+      new CoffinBreakers(true),
+      new CoffinBreakers(false),
+      new RestlessDead(),
+      new Zombie(),
+      new Zombie(),
+      new HoppingVampire(),
+      new HoppingVampire(),
+      new YellowPlague(),
+      // Blue
+      new DrowendMaiden(),
+      // Green
+      new CreepingOne(),
+      // Red
+      new Skinner(),
     ]);
   }
 
@@ -94,7 +114,7 @@ class Board {
         emptyFields = this.getPlayersBoards().getEmptyFields(this.getPlayerBoardByColor(card.color.key));
       }
       // Pick field for card
-      const pickedField = await questions.pickPlayerBoardField(socket, emptyFields);// this.pickFieldForCard(socket, emptyFields, card);
+      const pickedField = await questions.pickPlayerBoardField(socket, emptyFields);
 
       if (this.getPlayerBoardById(pickedField.playerBoardIndex).isBuddhaOnField(pickedField.fieldIndex)) {
         // Remove buddha from field
@@ -110,7 +130,7 @@ class Board {
         }
       } else {
         this.layCardOnField(socket, pickedField, card);
-        card.immediateEffect();
+        card.immediateEffect(socket, this, players, bank, circleOfPrayer);
       }
     }
   }

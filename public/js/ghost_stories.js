@@ -4,17 +4,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Bank
   function updateBank(bank) {
     // Qi tokens
-    document.getElementById('bank-qi-tokens').innerText = bank.qiTokens;
+    document.getElementById('bank-qi-tokens').textContent = bank.qiTokens;
     // Jin jang tokens
     for (const jinJangColor in bank.jinJangTokens) {
       if ({}.hasOwnProperty.call(bank.jinJangTokens, jinJangColor)) {
-        document.getElementById(`bank-${jinJangColor.toLowerCase()}-jin-jang-token`).innerText = bank.jinJangTokens[jinJangColor];
+        document.getElementById(`bank-${jinJangColor.toLowerCase()}-jin-jang-token`).textContent = bank.jinJangTokens[jinJangColor];
       }
     }
     // Tao tokens
     for (const taoColor in bank.taoTokens) {
       if ({}.hasOwnProperty.call(bank.taoTokens, taoColor)) {
-        document.getElementById(`bank-${taoColor.toLowerCase()}-tao-token`).innerText = bank.taoTokens[taoColor];
+        document.getElementById(`bank-${taoColor.toLowerCase()}-tao-token`).textContent = bank.taoTokens[taoColor];
       }
     }
   }
@@ -24,25 +24,25 @@ document.addEventListener('DOMContentLoaded', () => {
     players.taoists.forEach((player, i) => {
       // Color
       const color = document.getElementById(`player${i}-stats-color`);
-      color.innerText = player.color;
+      color.textContent = player.color;
 
       // Qi tokens
       const qiTokens = document.getElementById(`player${i}-stats-qi-tokens`);
-      qiTokens.innerText = player.qiTokens;
+      qiTokens.textContent = player.qiTokens;
 
       // Tao tokens
       Object.entries(player.taoTokens).forEach(([taoColor, taoAmount]) => {
         const statsTaoToken = document.getElementById(`player${i}-stats-${taoColor.toLowerCase()}-tao-token`);
-        statsTaoToken.innerText = taoAmount;
+        statsTaoToken.textContent = taoAmount;
       });
 
       // JinJang tokens
       const jinJangToken = document.getElementById(`player${i}-stats-jin-jang-token`);
-      jinJangToken.innerText = player.jinJangToken;
+      jinJangToken.textContent = player.jinJangToken;
 
       // Buddha figures
       const buddhaPigures = document.getElementById(`player${i}-stats-buddha-figures`);
-      buddhaPigures.innerText = player.buddhaFigures.length;
+      buddhaPigures.textContent = player.buddhaFigures.length;
     });
 
     // Remove border from all players stats and add into actual player
@@ -84,10 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // const ghostDiv = document.createElement('div');
     // ghostDiv.className = 'ghost';
     // const ghostName = document.createElement('div');
-    // ghostName.innerText = card.name;
+    // ghostName.textContent = card.name;
     // ghostDiv.appendChild(ghostName);
     // const ghostStats = document.createElement('div');
-    // ghostStats.innerText = `(${card.color}: ${card.resistance})`;
+    // ghostStats.textContent = `(${card.color}: ${card.resistance})`;
     // ghostDiv.appendChild(ghostStats);
     // clickedField.appendChild(ghostDiv);
   }
@@ -266,8 +266,21 @@ document.addEventListener('DOMContentLoaded', () => {
     updatePlayers(players);
   });
 
+  /**
+   * For now only refreshing haunting on villager
+   *
+   * @param {Villager[]} villagers Array of villagers
+   */
   socket.on('ghost refresh villagers', (villagers) => {
     console.log('ghost refresh villagers', villagers);
+    villagers.forEach((villager, villagerIndex) => {
+      const villagerTile = document.querySelector(`.villager[data-villager-index="${villagerIndex}"]`);
+      villagerTile.dataset.haunted = villager.haunted;
+      const isHaunted = villagerTile.classList.contains('haunted');
+      if (isHaunted !== villager.haunted) {
+        villagerTile.classList.toggle('haunted');
+      }
+    });
   });
 
   socket.on('ghost lay ghost card on picked field', (pickedField, card) => {

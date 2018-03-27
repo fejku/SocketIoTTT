@@ -51,9 +51,8 @@ class Game {
     // Step 1 - Ghosts’ actions
     this.board.getPlayerBoardByColor(actualPlayer.getColorKey()).getGhosts().forEach(({ fieldIndex, ghost }) => {
       const ghostPosition = { boardIndex: this.players.getActualPlayerId(), fieldIndex };
-      ghost.yinPhaseEffect(socket, this.board, this.players, ghostPosition, this.bank);
+      ghost.yinPhaseEffect(socket, this.board, this.players, this.bank, ghostPosition);
     });
-    socket.emit('ghost refresh player boards', this.board.getAllPlayersBoards());
     // Step 2 - Check board overrun
     if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
       actualPlayer.loseQi();
@@ -122,7 +121,7 @@ class Game {
               if (ghost.getResistance() <= resultAfterModifications) {
                 console.log('Ghost defeated');
                 // Ghost action after winning
-                ghost.afterWinningEffect();
+                ghost.afterWinningEffect(socket, this.board, this.players, this.bank, ghostsInRange[0], circleOfPrayer);
                 // Remove ghost from field
                 this.board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
                   .removeGhostFromField(socket, ghostsInRange[0].fieldIndex);
@@ -132,6 +131,7 @@ class Game {
                 this.bank.updateTokens(socket, taoists, circleOfPrayer);
               }
             } else {
+              // TODO
               // If player is on corner and result is big enough pick which ghost to exorcism
             }
           }

@@ -48,6 +48,8 @@ function hauntTile(playerPosition, ghostPosition, villagers, isCemeteryCall) {
 
 function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryCall) {
   const throwResult = Math.floor(Math.random() * 6);
+  console.log('throwCurseDice throwResult: ', throwResult);
+
   switch (throwResult) {
     // (0-1) No effect.
     // The first active village tile in front of the ghost becomes haunted.

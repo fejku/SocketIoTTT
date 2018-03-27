@@ -97,6 +97,10 @@ body {
     background: #000000;
 }
 
+.haunted {
+    background-color: #ffb8b8;
+}
+
 .border {
     border: 1px solid #000000;
 }
