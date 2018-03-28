@@ -35,7 +35,46 @@ class Bank {
     return jinJangTokens;
   }
 
-  getQiTokens(taoists) {
+  getQiTokens() {
+    return this.qiTokens;
+  }
+
+  getTaoTokens() {
+    return this.taoTokens;
+  }
+
+  getJinJangTokens() {
+    return this.jinJangTokens;
+  }
+
+  isQiTokenLeft() {
+    return this.qiTokens > 0;
+  }
+
+  isTaoTokenLeft() {
+    return Object
+      .values(this.getTaoTokens())
+      .some(tokens => tokens > 0);
+  }
+
+  isTaoTokenColorLeft(color) {
+    return Object
+      .entries(this.getTaoTokens())
+      .find(([colorKey, colorValue]) => colorKey === color && colorValue > 0) !== undefined;
+  }
+
+  getAvailableTaoTokensColors() {
+    return Object
+      .entries(this.getTaoTokens())
+      .filter(([colorKey, colorValue]) => colorValue > 0) /* eslint-disable-line no-unused-vars */
+      .map(([colorKey]) => colorKey);
+  }
+
+  updateUI(socket) {
+    socket.emit('ghost update bank', this);
+  }
+
+  refreshQiTokens(taoists) {
     let qiTokens = QI_TOKENS_AMOUNT;
     for (const taoist of taoists) {
       qiTokens -= taoist.qiTokens;
@@ -43,7 +82,7 @@ class Bank {
     return qiTokens;
   }
 
-  getTaoTokens(taoists, circleOfPrayer) {
+  refreshTaoTokens(taoists, circleOfPrayer) {
     const taoTokens = {};
     for (const color of FiveColors.enums) {
       taoTokens[color] = TAO_TOKENS_AMOUNT;
@@ -56,7 +95,7 @@ class Bank {
     return taoTokens;
   }
 
-  getJinJangTokens(taoists) {
+  refreshJinJangTokens(taoists) {
     const jinJangTokens = [];
     for (const taoist of taoists) {
       if (taoist.jinJangToken === 0) {
@@ -69,27 +108,10 @@ class Bank {
     return jinJangTokens;
   }
 
-  isTaoTokenLeft(taoists, circleOfPrayer) {
-    return Object
-      .values(this.getTaoTokens(taoists, circleOfPrayer))
-      .some(tokens => tokens > 0);
-  }
-
-  getAvailableTaoTokensColors(taoists, circleOfPrayer) {
-    return Object
-      .entries(this.getTaoTokens(taoists, circleOfPrayer))
-      .filter(([colorKey, colorValue]) => colorValue > 0) /* eslint-disable-line no-unused-vars */
-      .map(([colorKey]) => colorKey);
-  }
-
-  updateUI(socket) {
-    socket.emit('ghost update bank', this);
-  }
-
   updateTokens(socket, taoists, circleOfPrayer) {
-    this.qiTokens = this.getQiTokens(taoists);
-    this.taoTokens = this.getTaoTokens(taoists, circleOfPrayer);
-    this.jinJangToken = this.getJinJangTokens(taoists);
+    this.qiTokens = this.refreshQiTokens(taoists);
+    this.taoTokens = this.refreshTaoTokens(taoists, circleOfPrayer);
+    this.jinJangToken = this.refreshJinJangTokens(taoists);
 
     if (socket !== null) {
       // Update Bank UI

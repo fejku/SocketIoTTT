@@ -12,10 +12,8 @@ class TeaHouse extends Villager {
     if (!super.validateHelp()) {
       return false;
     }
-    const taoists = players.getTaoists();
     // If there are tao and qi tokens
-    return bank.isTaoTokenLeft(taoists, board.getVillagerByClass(CircleOfPrayer))
-      || (bank.getQiTokens(taoists) > 0);
+    return bank.isTaoTokenLeft() || (bank.isQiTokenLeft());
   }
 
   async action(socket, board, players, bank) {
@@ -23,9 +21,9 @@ class TeaHouse extends Villager {
     const taoists = players.getTaoists();
 
     // If there is tao token in bank
-    if (bank.isTaoTokenLeft(taoists, circleOfPrayer)) {
+    if (bank.isTaoTokenLeft()) {
       // Get available tao tokens
-      const availableTaoTokensColors = bank.getAvailableTaoTokensColors(taoists, circleOfPrayer);
+      const availableTaoTokensColors = bank.getAvailableTaoTokensColors();
       console.log('availableTaoTokensColors: ', availableTaoTokensColors);
       // Pick tao token
       const pickedColor = await this.pickColor(socket, 'Pick tao token color', availableTaoTokensColors);

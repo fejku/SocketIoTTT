@@ -16,10 +16,7 @@ class HerbalistShop extends Villager {
       return false;
     }
     // Check if tao tokens left
-    return bank.isTaoTokenLeft(
-      players.getTaoists(),
-      board.getVillagerByClass(CircleOfPrayer),
-    );
+    return bank.isTaoTokenLeft();
   }
 
   async action(socket, board, players, bank) {
@@ -39,11 +36,8 @@ class HerbalistShop extends Villager {
     for (const [resultKey, resultValue] of Object.entries(dicesThrowResult)) {
       if ((resultKey === SixColors.WHITE.key) && (resultValue > 0)) {
         for (let i = 0; i < resultValue; i++) {
-          if (bank.isTaoTokenLeft(players.getTaoists(), board.getVillagerByClass(CircleOfPrayer))) {
-            const availableTaoTokensColors = bank.getAvailableTaoTokensColors(
-              players.getTaoists(),
-              board.getVillagerByClass(CircleOfPrayer),
-            );
+          if (bank.isTaoTokenLeft()) {
+            const availableTaoTokensColors = bank.getAvailableTaoTokensColors();
             console.log('availableTaoTokensColors: ', availableTaoTokensColors);
             const pickedColor = await this.pickColor(socket, 'Pick tao token color', availableTaoTokensColors); /* eslint-disable-line no-await-in-loop, max-len */
             console.log('pickedColor: ', pickedColor);

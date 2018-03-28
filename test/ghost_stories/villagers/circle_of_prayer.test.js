@@ -45,35 +45,6 @@ describe('Circle of prayer', () => {
     });
   });
 
-  describe('getAvailableColors', () => {
-    it('should return array with all colors', () => {
-      const allColorsArray = FiveColors.enums.map(color => color.key);
-      const availableColors = circleOfPrayer.getAvailableColors(bank.getTaoTokens(players.getTaoists(), circleOfPrayer));
-
-      assert.deepEqual(allColorsArray, availableColors);
-    });
-
-    it('should return empty array', () => {
-      removeAllTaoTokensFromBank(players, bank, circleOfPrayer);
-      const availableColors = circleOfPrayer.getAvailableColors(bank.getTaoTokens(players.getTaoists(), circleOfPrayer));
-
-      assert.deepEqual(availableColors, []);
-    });
-
-    it('should return array with red and black', () => {
-      FiveColors.enums.forEach((color) => {
-        if (color.key !== 'RED') {
-          players.getActualPlayer().gainTaoToken(color.key, 3);
-        }
-      });
-      bank.updateTokens(null, players.getTaoists(), circleOfPrayer);
-
-      const availableColors = circleOfPrayer.getAvailableColors(bank.getTaoTokens(players.getTaoists(), circleOfPrayer));
-
-      assert.deepEqual(availableColors, ['RED', 'BLACK']);
-    });
-  });
-
   describe('validateHelp', () => {
     it('should be available when there is any tao token left in bank', () => {
       assert.strictEqual(circleOfPrayer.validateHelp(board, players, bank), true);

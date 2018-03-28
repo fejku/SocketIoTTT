@@ -34,18 +34,7 @@ class CircleOfPrayer extends Villager {
       return false;
     }
     // If exist tao token in bank
-    return bank.isTaoTokenLeft(players.getTaoists(), board.getVillagerByClass(CircleOfPrayer));
-  }
-
-  getAvailableColors(bankTaoTokens) {
-    const availableColors = [];
-    for (const color of FiveColors.enums) {
-      if (bankTaoTokens[color] > 0) {
-        availableColors.push(color.key);
-      }
-    }
-
-    return availableColors;
+    return bank.isTaoTokenLeft();
   }
 
   changeToken(pickedColor) {
@@ -57,7 +46,7 @@ class CircleOfPrayer extends Villager {
 
   async action(socket, board, players, bank) {
     // Get available in bank tao tokens
-    const availableColors = this.getAvailableColors(bank.getTaoTokens(players.getTaoists(), this));
+    const availableColors = bank.getAvailableTaoTokensColors();
     // Pick which color token to put on tile
     const pickedColor = await this.pickColor(socket, 'Pick tao token color', availableColors);
     // Remove old token and place new one

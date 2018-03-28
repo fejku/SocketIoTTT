@@ -14,8 +14,8 @@ class Cemetery extends Villager {
     if (!super.validateHelp()) {
       return false;
     }
-    // Check if there are enough Qi tokens in bank
-    if (bank.getQiTokens(players.getTaoists()) < 2) {
+    // Check if there is any Qi tokens in bank
+    if (!bank.isQiTokenLeft()) {
       return false;
     }
 

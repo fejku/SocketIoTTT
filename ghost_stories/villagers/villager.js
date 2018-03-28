@@ -43,7 +43,7 @@ class Villager {
   givePlayerTaoToken(socket, board, players, bank, color) {
     const circleOfPrayer = board.getVillagers().getVillagerByName('Circle of prayer');
 
-    if (bank.getTaoTokens(players.getTaoists(), circleOfPrayer)[color] > 0) {
+    if (bank.isTaoTokenColorLeft(color)) {
       players.getActualPlayer().gainTaoToken(color);
       bank.updateTokens(socket, players.getTaoists(), circleOfPrayer);
     }
@@ -52,7 +52,7 @@ class Villager {
   givePlayerQiToken(socket, board, taoists, bank, player) {
     const circleOfPrayer = board.getVillagers().getVillagerByName('Circle of prayer');
 
-    if (bank.getQiTokens(taoists) > 0) {
+    if (bank.isQiTokenLeft()) {
       player.gainQi();
       bank.updateTokens(socket, taoists, circleOfPrayer);
     }
