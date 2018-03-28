@@ -92,7 +92,7 @@ function removeAllTaoTokensFromBank(playersParam, bankParam, circleOfPrayerParam
   // Remove all tao tokens from bank
   FiveColors.enums.forEach((color) => {
     const colorsAmount = (color.key === 'BLACK') ? 4 : 3;
-    playersParam.getActualPlayer().gainTaoToken(color.key, colorsAmount);
+    playersParam.getActualPlayer().gainTaoToken(bankParam, color.key, colorsAmount);
   });
 
   bankParam.updateTokens(null, playersParam.getTaoists(), circleOfPrayerParam);

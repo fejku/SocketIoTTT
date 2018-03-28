@@ -3,9 +3,9 @@ const { FiveColors } = require('../../../enums/color');
 const dice = require('../../../actions/curse_dice');
 const questions = require('../../../utils/questionsUI');
 
-class Lich extends Ghost {
+class RagingOne extends Ghost {
   constructor() {
-    super('Lich', FiveColors.YELLOW, 4);
+    super('Raging One', FiveColors.RED, 4);
   }
 
   async yinPhaseEffect(socket, board, players, bank, ghostPosition) {
@@ -37,4 +37,4 @@ class Lich extends Ghost {
   }
 }
 
-module.exports = Lich;
+module.exports = RagingOne;

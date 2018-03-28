@@ -84,6 +84,22 @@ class Bank {
     this.qiTokens -= amount;
   }
 
+  gainTaoToken(color) {
+    this.taoTokens[color] += 1;
+  }
+
+  loseTaoToken(color) {
+    this.taoTokens[color] -= 1;
+  }
+
+  gainJinJangToken(color) {
+    this.jinJangTokens[color] += 1;
+  }
+
+  loseJinJangToken(color) {
+    this.jinJangTokens[color] -= 1;
+  }
+
   updateUI(socket) {
     socket.emit('ghost update bank', this);
   }

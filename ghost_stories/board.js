@@ -15,12 +15,16 @@ const RestlessDead = require('./ghosts/color/yellow/restless_dead');
 const Zombie = require('./ghosts/color/yellow/zombie');
 const HoppingVampire = require('./ghosts/color/yellow/hopping_vampire');
 const YellowPlague = require('./ghosts/color/yellow/yellow_plague');
+const Lich = require('./ghosts/color/yellow/lich');
 // Blue
 const DrowendMaiden = require('./ghosts/color/blue/drowned_maiden');
+const FuryOfDepth = require('./ghosts/color/blue/fury_of_depth');
 // Green
 const CreepingOne = require('./ghosts/color/green/creeping_one');
+const GreatPutrid = require('./ghosts/color/green/great_putrid');
 // Red
 const Skinner = require('./ghosts/color/red/skinner');
+const RagingOne = require('./ghosts/color/red/raging_one');
 
 const questions = require('./utils/questionsUI');
 
@@ -46,12 +50,16 @@ class Board {
       new HoppingVampire(),
       new HoppingVampire(),
       new YellowPlague(),
+      new Lich(),
       // Blue
       new DrowendMaiden(),
+      new FuryOfDepth(),
       // Green
       new CreepingOne(),
+      new GreatPutrid(),
       // Red
       new Skinner(),
+      new RagingOne(),
     ]);
   }
 

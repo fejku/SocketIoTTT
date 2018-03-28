@@ -55,12 +55,34 @@ class Taoist {
     }
   }
 
-  gainTaoToken(color, amount = 1) {
-    this.taoTokens[color] += amount;
+  gainTaoToken(bank, color, amount = 1) {
+    if (bank.isTaoTokenColorLeft(color)) {
+      bank.loseTaoToken(color);
+      this.taoTokens[color] += amount;
+    }
   }
 
-  loseTaoToken(color, amount = 1) {
-    this.taoTokens[color] -= amount;
+  loseTaoToken(bank, color, amount = 1) {
+    if (this.taoTokens[color] > 0) {
+      this.taoTokens[color] -= amount;
+      bank.gainTaoToken(color);
+    }
+  }
+
+  gainJinJangToken(bank) {
+    const color = this.color.key;
+    if (bank.isJinJangTokenAvailable(color)) {
+      bank.loseJinJangToken(color);
+      this.jinJangTokens[color] += 1;
+    }
+  }
+
+  loseJinJangToken(bank) {
+    const color = this.color.key;
+    if (this.jinJangTokens[color] > 0) {
+      this.jinJangTokens[color] -= 1;
+      bank.gainJinJangToken(color);
+    }
   }
 
   getPosition() {
@@ -101,15 +123,6 @@ class Taoist {
 
   getAmountActiveBuddhaFigures() {
     return this.buddhaFigures.filter(buddha => buddha.status === 'active').length;
-  }
-
-  askIfPlaceBuddha(socket) {
-    // TODO: dodać reject
-    return new Promise((resolve, reject) => {
-      socket.emit('ghost ask if place buddha', (choice) => {
-        resolve(choice);
-      });
-    });
   }
 
   isPlayerInCornerField() {
