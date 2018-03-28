@@ -27,19 +27,6 @@ class Villager {
       .find(item => item === pickedColor) !== undefined;
   }
 
-  pickColor(socket, question, availableColors) {
-    return new Promise((resolve, reject) => {
-      socket.emit('ghost question', question, availableColors, null, (pickedColor) => {
-        // Validate if picked color was available in colors array
-        if (this.validatePickedColor(availableColors, pickedColor)) {
-          resolve(pickedColor);
-        } else {
-          reject();
-        }
-      });
-    });
-  }
-
   givePlayerTaoToken(socket, board, players, bank, color) {
     const circleOfPrayer = board.getVillagers().getVillagerByName('Circle of prayer');
 

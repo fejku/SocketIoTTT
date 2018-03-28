@@ -7,7 +7,7 @@ class Zombie extends Ghost {
     super('Zombie', FiveColors.YELLOW, 2);
   }
 
-  async afterWinningEffect(socket, board, players, bank, ghostPosition, circleOfPrayer) { /* eslint-disable-line no-unused-vars */
+  async afterWinningEffect(socket, board, players, bank, ghostPosition) {
     // Throw curse die
     dice.throwCurseDice(socket, board, ghostPosition, players, bank);
   }

@@ -18,7 +18,7 @@ class Ghost {
     console.log('yinPhaseEffect abstract');
   }
 
-  async afterWinningEffect(socket, board, players, bank, ghostPosition, circleOfPrayer) { /* eslint-disable-line no-unused-vars */
+  async afterWinningEffect(socket, board, players, bank, ghostPosition) { /* eslint-disable-line no-unused-vars */
     //
     console.log('afterWinningEffect abstract');
     // throw new Error('afterWinningEffect is Abstract');

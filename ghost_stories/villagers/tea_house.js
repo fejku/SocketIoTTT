@@ -1,6 +1,8 @@
 const Villager = require('./villager');
 const CircleOfPrayer = require('./circle_of_prayer');
 
+const questions = require('../utils/questionsUI');
+
 // Take a Tao token of whatever color you wish from the supply, and gain 1 Qi point. Then, bring a ghost into play.
 class TeaHouse extends Villager {
   constructor() {
@@ -26,7 +28,7 @@ class TeaHouse extends Villager {
       const availableTaoTokensColors = bank.getAvailableTaoTokensColors();
       console.log('availableTaoTokensColors: ', availableTaoTokensColors);
       // Pick tao token
-      const pickedColor = await this.pickColor(socket, 'Pick tao token color', availableTaoTokensColors);
+      const pickedColor = await questions.ask(socket, 'Pick tao token color', availableTaoTokensColors);
       console.log('pickedColor: ', pickedColor);
       // Give player tao token
       this.givePlayerTaoToken(socket, board, players, bank, pickedColor);

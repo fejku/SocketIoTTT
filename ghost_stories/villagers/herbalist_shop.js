@@ -1,7 +1,8 @@
 const { SixColors } = require('../enums/color');
 const Villager = require('./villager');
 const ColorDice = require('../actions/color_dice');
-const CircleOfPrayer = require('./circle_of_prayer');
+
+const questions = require('../utils/questionsUI');
 
 // Roll 2 Tao dice and take Tao tokens of the corresponding colors from the supply (limited by the supply).
 // Each white face rolled allows you to choose the color of Tao token to take.
@@ -39,7 +40,7 @@ class HerbalistShop extends Villager {
           if (bank.isTaoTokenLeft()) {
             const availableTaoTokensColors = bank.getAvailableTaoTokensColors();
             console.log('availableTaoTokensColors: ', availableTaoTokensColors);
-            const pickedColor = await this.pickColor(socket, 'Pick tao token color', availableTaoTokensColors); /* eslint-disable-line no-await-in-loop, max-len */
+            const pickedColor = await questions.ask(socket, 'Pick tao token color', availableTaoTokensColors); /* eslint-disable-line no-await-in-loop, max-len */
             console.log('pickedColor: ', pickedColor);
             this.givePlayerTaoToken(socket, board, players, bank, pickedColor);
           }

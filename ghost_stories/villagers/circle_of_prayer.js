@@ -2,6 +2,8 @@ const { FiveColors } = require('../enums/color');
 
 const Villager = require('./villager');
 
+const questions = require('../utils/questionsUI');
+
 // Place a Tao token from the supply on this tile, or change the one that is already present.
 // All the ghosts of the color of the Tao token on this tile have their resistance reduced
 // by 1 during an exorcism. This works for all the Taoists.
@@ -48,7 +50,7 @@ class CircleOfPrayer extends Villager {
     // Get available in bank tao tokens
     const availableColors = bank.getAvailableTaoTokensColors();
     // Pick which color token to put on tile
-    const pickedColor = await this.pickColor(socket, 'Pick tao token color', availableColors);
+    const pickedColor = await questions.ask(socket, 'Pick tao token color', availableColors);
     // Remove old token and place new one
     this.changeToken(pickedColor);
     // Update bank

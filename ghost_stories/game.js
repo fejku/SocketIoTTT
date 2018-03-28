@@ -121,7 +121,7 @@ class Game {
               if (ghost.getResistance() <= resultAfterModifications) {
                 console.log('Ghost defeated');
                 // Ghost action after winning
-                await ghost.afterWinningEffect(socket, this.board, this.players, this.bank, ghostsInRange[0], circleOfPrayer);
+                await ghost.afterWinningEffect(socket, this.board, this.players, this.bank, ghostsInRange[0]);
                 // Remove ghost from field
                 this.board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
                   .removeGhostFromField(socket, ghostsInRange[0].fieldIndex);
