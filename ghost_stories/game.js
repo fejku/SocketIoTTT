@@ -44,7 +44,6 @@ class Game {
   async turn(io, socket) {
     const actualPlayer = this.players.getActualPlayer();
     const circleOfPrayer = this.board.getVillagerByClass(CircleOfPrayer);
-    const taoists = this.players.getTaoists();
 
     socket.emit('ghost update players stats', this.players);
     // Ghost phase

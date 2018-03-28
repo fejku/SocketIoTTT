@@ -18,12 +18,27 @@ const YellowPlague = require('./ghosts/color/yellow/yellow_plague');
 const Lich = require('./ghosts/color/yellow/lich');
 // Blue
 const DrowendMaiden = require('./ghosts/color/blue/drowned_maiden');
+const HoundOfDepth = require('./ghosts/color/blue/hound_of_depth');
+const StickyFeet = require('./ghosts/color/blue/sticky_feet');
+const Abysmal = require('./ghosts/color/blue/abysmal');
+const OozeDevil = require('./ghosts/color/blue/ooze_devil');
+const LiquidHorror = require('./ghosts/color/blue/liquid_horror');
 const FuryOfDepth = require('./ghosts/color/blue/fury_of_depth');
 // Green
 const CreepingOne = require('./ghosts/color/green/creeping_one');
+const FungusThing = require('./ghosts/color/green/fungus_thing');
+const RestlessSpirit = require('./ghosts/color/green/restless_spirit');
+const RottenSoul = require('./ghosts/color/green/rotten_soul');
+const WickedOne = require('./ghosts/color/green/wicked_one');
+const GreenAbomination = require('./ghosts/color/green/green_abomination');
 const GreatPutrid = require('./ghosts/color/green/great_putrid');
 // Red
 const Skinner = require('./ghosts/color/red/skinner');
+const Reaper = require('./ghosts/color/red/reaper');
+const BleedingEyes = require('./ghosts/color/red/bleeding_eyes');
+const BloodDrinker = require('./ghosts/color/red/blood_drinker');
+const ScarletEvildoer = require('./ghosts/color/red/scarlet_evildoer');
+const FleshDevourer = require('./ghosts/color/red/flesh_devourer');
 const RagingOne = require('./ghosts/color/red/raging_one');
 
 const questions = require('./utils/questionsUI');
@@ -53,12 +68,33 @@ class Board {
       new Lich(),
       // Blue
       new DrowendMaiden(),
+      new HoundOfDepth(),
+      new StickyFeet(),
+      new Abysmal(),
+      new Abysmal(),
+      new OozeDevil(),
+      new OozeDevil(),
+      new LiquidHorror(),
       new FuryOfDepth(),
       // Green
       new CreepingOne(),
+      new FungusThing(),
+      new RestlessSpirit(),
+      new RottenSoul(),
+      new RottenSoul(),
+      new WickedOne(),
+      new WickedOne(),
+      new GreenAbomination(),
       new GreatPutrid(),
       // Red
       new Skinner(),
+      new Reaper(),
+      new BleedingEyes(),
+      new BloodDrinker(),
+      new BloodDrinker(),
+      new ScarletEvildoer(),
+      new ScarletEvildoer(),
+      new FleshDevourer(),
       new RagingOne(),
     ]);
   }

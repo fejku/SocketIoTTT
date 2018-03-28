@@ -2,9 +2,9 @@ const Ghost = require('../../ghost');
 const { FiveColors } = require('../../../enums/color');
 const questions = require('../../../utils/questionsUI');
 
-class YellowPlague extends Ghost {
+class FleshDevourer extends Ghost {
   constructor() {
-    super('Yellow Plague', FiveColors.YELLOW, 4);
+    super('Flesh Devourer', FiveColors.RED, 4);
   }
 
   async afterWinningEffect(socket, board, players, bank, ghostPosition) { /* eslint-disable-line no-unused-vars */
@@ -22,4 +22,4 @@ class YellowPlague extends Ghost {
   }
 }
 
-module.exports = YellowPlague;
+module.exports = FleshDevourer;
