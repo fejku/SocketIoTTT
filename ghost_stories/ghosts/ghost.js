@@ -13,7 +13,7 @@ class Ghost {
     console.log('immediateEffect abstract');
   }
 
-  yinPhaseEffect(socket, board, players, bank, ghostPosition) { /* eslint-disable-line no-unused-vars */
+  async yinPhaseEffect(socket, board, players, bank, ghostPosition) { /* eslint-disable-line no-unused-vars */
     //
     console.log('yinPhaseEffect abstract');
   }

@@ -11,7 +11,7 @@ class Haunter extends Ghost {
     return this.hauntingFigurePosition;
   }
 
-  yinPhaseEffect(socket, board, players, bank, ghostPosition) { /* eslint-disable-line no-unused-vars */
+  async yinPhaseEffect(socket, board, players, bank, ghostPosition) { /* eslint-disable-line no-unused-vars */
     const villagers = board.getVillagers();
     this.progressHauntingFigure(ghostPosition, villagers);
     // Set ghost haunting figures

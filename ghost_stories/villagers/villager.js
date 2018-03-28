@@ -35,15 +35,6 @@ class Villager {
       bank.updateTokens(socket, players.getTaoists(), circleOfPrayer);
     }
   }
-
-  givePlayerQiToken(socket, board, taoists, bank, player) {
-    const circleOfPrayer = board.getVillagers().getVillagerByName('Circle of prayer');
-
-    if (bank.isQiTokenLeft()) {
-      player.gainQi();
-      bank.updateTokens(socket, taoists, circleOfPrayer);
-    }
-  }
 }
 
 module.exports = Villager;

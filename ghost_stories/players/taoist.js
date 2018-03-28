@@ -35,12 +35,18 @@ class Taoist {
     return this.color.key;
   }
 
-  gainQi(amount = 1) {
-    this.qiTokens += amount;
+  gainQi(bank, amount = 1) {
+    if (bank.isQiTokenLeft(amount)) {
+      bank.loseQi(amount);
+      this.qiTokens += amount;
+    }
   }
 
-  loseQi(amount = 1) {
-    this.qiTokens -= amount;
+  loseQi(bank, amount = 1) {
+    if (this.qiTokens >= amount) {
+      this.qiTokens -= amount;
+      bank.gainQi(amount);
+    }
   }
 
   loseAllTaoTokens() {

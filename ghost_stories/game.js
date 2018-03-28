@@ -49,14 +49,15 @@ class Game {
     socket.emit('ghost update players stats', this.players);
     // Ghost phase
     // Step 1 - Ghosts’ actions
-    this.board.getPlayerBoardByColor(actualPlayer.getColorKey()).getGhosts().forEach(({ fieldIndex, ghost }) => {
+    const ghosts = this.board.getPlayerBoardByColor(actualPlayer.getColorKey()).getGhosts();
+    for (const { fieldIndex, ghost } of ghosts) {
       const ghostPosition = { boardIndex: this.players.getActualPlayerId(), fieldIndex };
-      ghost.yinPhaseEffect(socket, this.board, this.players, this.bank, ghostPosition);
-    });
+      await ghost.yinPhaseEffect(socket, this.board, this.players, this.bank, ghostPosition); /* eslint-disable-line no-await-in-loop */
+    }
     // Step 2 - Check board overrun
     if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
-      actualPlayer.loseQi();
-      this.bank.updateTokens(socket, taoists, circleOfPrayer);
+      actualPlayer.loseQi(this.bank);
+      this.bank.updateUI(socket);
     } else {
       // Step 3 - Ghost arrival
       await this.board.ghostArrival(socket, this.players, this.bank, circleOfPrayer);
@@ -127,8 +128,8 @@ class Game {
                   .removeGhostFromField(socket, ghostsInRange[0].fieldIndex);
                 console.log('board: ', this.board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
               } else {
-                actualPlayer.loseQi();
-                this.bank.updateTokens(socket, taoists, circleOfPrayer);
+                actualPlayer.loseQi(this.bank);
+                this.bank.updateUI(socket);
               }
             } else {
               // TODO

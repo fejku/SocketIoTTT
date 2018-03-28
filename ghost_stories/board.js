@@ -98,8 +98,8 @@ class Board {
 
   async ghostArrival(socket, players, bank, circleOfPrayer) {
     if (this.getPlayersBoards().isAllBoardsFull()) {
-      players.getActualPlayer().loseQi();
-      bank.updateTokens(socket, players.getTaoists(), circleOfPrayer);
+      players.getActualPlayer().loseQi(bank);
+      bank.updateUI(socket);
     } else {
       // Draw ghost card
       const card = this.drawCard();

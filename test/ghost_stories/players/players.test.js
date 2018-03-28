@@ -7,7 +7,7 @@ const players = new Players();
 describe('Players', () => {
   describe('nextMove', () => {
     it('should set only alive players as active', () => {
-      players.getTaoist(1).loseQi(4);
+      players.getTaoist(1).qiTokens = 0;
       players.nextPlayer();
 
       assert.equal(players.getActualPlayerId(), 2);

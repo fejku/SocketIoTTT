@@ -56,8 +56,14 @@ class Cemetery extends Villager {
 
   async action(socket, board, players, bank) {
     const player = await this.pickPlayerToReview(socket, players);
-    player.gainQi(2);
-    bank.updateTokens(socket, players.getTaoists(), board.getVillagerByClass(CircleOfPrayer));
+
+    if (bank.isQiTokenLeft(2)) {
+      player.gainQi(bank, 2);
+    } else {
+      player.gainQi(bank, 1);
+    }
+    bank.updateUI(socket);
+
     dice.throwCurseDiceCemetry(socket, board, players, bank);
   }
 }

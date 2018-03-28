@@ -35,7 +35,8 @@ class TeaHouse extends Villager {
     }
 
     // Get qi token
-    this.givePlayerQiToken(socket, board, taoists, bank, players.getActualPlayer());
+    players.getActualPlayer().gainQi(bank);
+    bank.updateUI(socket);
 
     // Bring ghost into play
     await board.ghostArrival(socket, players, bank, circleOfPrayer);

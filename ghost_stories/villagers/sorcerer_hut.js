@@ -58,9 +58,9 @@ class SorcererHut extends Villager {
     // Remove ghost from board (don't trigger afterWinningEffect)
     this.removeGhostFromBoard(socket, board, pickedGhost);
     // Player lose Qi
-    players.getActualPlayer().loseQi();
+    players.getActualPlayer().loseQi(bank);
     // Update bank
-    bank.updateTokens(socket, players.getTaoists(), board.getVillagerByClass(CircleOfPrayer));
+    bank.updateUI(socket);
   }
 }
 

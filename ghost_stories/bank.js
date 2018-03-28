@@ -47,8 +47,8 @@ class Bank {
     return this.jinJangTokens;
   }
 
-  isQiTokenLeft() {
-    return this.qiTokens > 0;
+  isQiTokenLeft(amount = 1) {
+    return this.qiTokens >= amount;
   }
 
   isTaoTokenLeft() {
@@ -63,11 +63,25 @@ class Bank {
       .find(([colorKey, colorValue]) => colorKey === color && colorValue > 0) !== undefined;
   }
 
+  isJinJangTokenAvailable(color) {
+    return Object
+      .entries(this.getJinJangTokens())
+      .find(([colorKey, colorValue]) => colorKey === color && colorValue > 0) !== undefined;
+  }
+
   getAvailableTaoTokensColors() {
     return Object
       .entries(this.getTaoTokens())
       .filter(([colorKey, colorValue]) => colorValue > 0) /* eslint-disable-line no-unused-vars */
       .map(([colorKey]) => colorKey);
+  }
+
+  gainQi(amount = 1) {
+    this.qiTokens += amount;
+  }
+
+  loseQi(amount = 1) {
+    this.qiTokens -= amount;
   }
 
   updateUI(socket) {

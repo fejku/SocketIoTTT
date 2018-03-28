@@ -1,8 +1,8 @@
 const CircleOfPrayer = require('../villagers/circle_of_prayer');
 
-function loseQi(socket, players, bank, circleOfPrayer) {
-  players.getActualPlayer().loseQi();
-  bank.updateTokens(socket, players.getTaoists(), circleOfPrayer);
+function loseQi(socket, players, bank) {
+  players.getActualPlayer().loseQi(bank);
+  bank.updateUI(socket);
 }
 
 function loseAllTaoTokens(socket, players, bank, circleOfPrayer) {
@@ -72,7 +72,7 @@ function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryC
       break;
     // The Taoist loses one Qi token.
     case 5:
-      loseQi(socket, players, bank, board.getVillagerByClass(CircleOfPrayer));
+      loseQi(socket, players, bank);
       break;
     default:
       break;
