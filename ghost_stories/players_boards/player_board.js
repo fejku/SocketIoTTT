@@ -3,6 +3,13 @@ class PlayerBoard {
     this.color = null;
     this.fields = [null, null, null];
     this.buddhaFields = [false, false, false];
+
+    this.powerName = this.initBoardPower();
+  }
+
+  initBoardPower() {
+    const randPower = Math.floor(Math.random() * 2);
+    return this.getPowersNames()[randPower];
   }
 
   isBoardFull() {

@@ -64,6 +64,25 @@ class Game {
     socket.emit('ghost update players stats', this.players);
 
     // Player phase
+
+    playerBoard.action('Before move');
+    // Yellow player power Bottomless Pockets
+    // const pickedColor = await questions.pickTaoTokenColor(socket, this.bank);
+    // this.players.getActualPlayer().gainTaoToken(this.bank, pickedColor);
+    // this.bank.updateUI(socket);
+    // socket.emit('ghost update players stats', this.players);
+
+    // Yellow player power Enfeeblement Mantra
+
+    // 1. Dance of the Spires
+    // During your move, you can fly to any village tile.
+    // 2. Dance of the Twin Winds
+    // Before your move, you can move 1 other Taoist 1 space.
+    const pickedPlayer = questions.pickPlayer(socket, this.players.getAlivePlayers(true));
+    const availableFields = pickedPlayer.getNearFields();
+    const pickedVillagerTile = questions.pickVillagerTile(socket, availableFields);
+
+
     // Step 1 - Player move
     const availableMoves = this.players
       .getAvailableMoves(actualPlayer.getPosition());
