@@ -26,17 +26,23 @@ class YellowBoard extends PlayerBoard {
   // color of the Mantra may be chosen after the dice roll. When the targeted ghost is removed from the game, take
   // back the token; you may use it again on your next turn. If you lose your power, remove the Enfeeblement Mantra
   // token from the game.
-  enfeeblementMantraPower() {
-
+  async enfeeblementMantraPower(socket, board) {
+    this.enfeeblementMantraTokenPosition = await questions.pickPlayerBoardField(socket, board.getPlayersBoards().getGhosts());
   }
 
   async boardPower(socket, board, players, bank, situationName) {
+    if (!this.validatePowerBoard()) {
+      return;
+    }
+
     if (this.powerName === 'Bottomless Pockets') {
       if (situationName === 'Before move') {
         await this.bottomlessPocketsPower(socket, players, bank);
       }
     } else if (this.powerName === 'Enfeeblement Mantra') {
-      this.enfeeblementMantraPower(); // TODO
+      if (situationName === 'Before move') {
+        await this.enfeeblementMantraPower(socket, board);
+      }
     }
   }
 }

@@ -32,6 +32,10 @@ class RedBoard extends PlayerBoard {
   }
 
   async boardPower(socket, board, players, bank, situationName) {
+    if (!this.validatePowerBoard()) {
+      return;
+    }
+
     if (this.powerName === 'Dance of the Spires') {
       if (situationName === 'Before move') {
         this.danceOfTheSpires(players);

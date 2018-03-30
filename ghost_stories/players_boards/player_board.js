@@ -108,6 +108,10 @@ class PlayerBoard {
   async boardPower(socket, board, players, bank, situationName) { /* eslint-disable-line no-unused-vars */
     console.log('abstract boardPower');
   }
+
+  validatePowerBoard() {
+    return this.powerActive;
+  }
 }
 
 module.exports = PlayerBoard;

@@ -15,6 +15,12 @@ class BlueBoard extends PlayerBoard {
   getPowersNames() {
     return ['Heavenly Gust', 'Second Wind'];
   }
+
+  async boardPower(socket, board, players, bank, situationName) {
+    if (!this.validatePowerBoard()) {
+      
+    }
+  }
 }
 
 module.exports = BlueBoard;
