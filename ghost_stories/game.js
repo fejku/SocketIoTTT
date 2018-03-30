@@ -31,7 +31,7 @@ class Game {
       );
       // validate is player alive, are 3 villagers haunted, are still ghost cards in deck
       while (!this.validateGameEnd()) {
-        await this.turn(io, socket); /* eslint-disable-line no-await-in-loop */
+        await this.turn(io, socket);
         // Set active player buddha figure to active
         this.players.getActualPlayer().setBuddhaFiguresActive();
         this.players.nextPlayer();
@@ -51,7 +51,7 @@ class Game {
     const ghosts = this.board.getPlayerBoardByColor(actualPlayer.getColorKey()).getGhosts();
     for (const { fieldIndex, ghost } of ghosts) {
       const ghostPosition = { boardIndex: this.players.getActualPlayerId(), fieldIndex };
-      await ghost.yinPhaseEffect(socket, this.board, this.players, this.bank, ghostPosition); /* eslint-disable-line no-await-in-loop */
+      await ghost.yinPhaseEffect(socket, this.board, this.players, this.bank, ghostPosition);
     }
     // Step 2 - Check board overrun
     if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
@@ -90,11 +90,7 @@ class Game {
 
     console.log('availableDecisions', availableDecisions);
     if (availableDecisions.length > 0) {
-      const decision = await questions.ask(
-        socket,
-        'What to do?',
-        availableDecisions,
-      );
+      const decision = await questions.ask(socket, 'What to do?', availableDecisions);
       console.log('decision', decision);
       switch (decision) {
         // Help from villager
@@ -112,6 +108,18 @@ class Game {
               dicesAmount++;
             }
             const diceThrowResult = colorDice.throwDices(dicesAmount);
+            if (this.board.getPlayerBoardById(this.players.getActualPlayerId()).getPowerName() === 'The Gods’ Favorite') {
+              const isReroll = await questions.askYesNo(socket, 'Do you want to reroll?');
+              if (isReroll) {
+                console.log('Before reroll diceThrowResult', diceThrowResult);
+                for (const [index, color] of diceThrowResult.entries()) {
+                  const isRerollColor = await questions.askYesNo(socket, `Do you want to reroll ${color} dice?`);
+                  if (isRerollColor) {
+                    diceThrowResult[index] = colorDice.throwOneDice();
+                  }
+                }
+              }
+            }
             console.log('diceThrowResult', diceThrowResult);
             console.log('ghostsInRange', ghostsInRange);
             if (ghostsInRange.length === 1) {
@@ -120,11 +128,12 @@ class Game {
               console.log('ghost', ghost);
               // If result of throwed dices(taoist tao tokens,
               // circle of prayers) is greater then ghost resistance
-              const whiteDiceResult = diceThrowResult[SixColors.WHITE];
-              const resultAfterModifications = diceThrowResult[ghost.getColor()] +
-                  whiteDiceResult;
-                // + circleOfPrayer
-                // + taoTokens;
+              const whiteDiceResult = diceThrowResult.filter(result => result === SixColors.WHITE).reduce((p, c) => p + c, 0);
+              const ghostColorResult = diceThrowResult.filter(result => result === ghost.getColor()).reduce((p, c) => p + c, 0);
+              const resultAfterModifications = ghostColorResult + whiteDiceResult;
+              // + circleOfPrayer
+              // + taoTokens
+              // + enfeeblementMantra
               if (ghost.getResistance() <= resultAfterModifications) {
                 console.log('Ghost defeated');
                 // Ghost action after winning

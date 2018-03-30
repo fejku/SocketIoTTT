@@ -19,15 +19,7 @@ module.exports.throwDices = (diceNumber) => {
     throwResults.push(getColorFromResult(Dice.getThrowResult()));
   }
 
-  const result = {};
-  for (const color of SixColors.enums) {
-    result[color.key] = 0;
-    for (const diceColor of throwResults) {
-      if (diceColor === color.key) {
-        result[color.key]++;
-      }
-    }
-  }
-
-  return result;
+  return throwResults;
 };
+
+module.exports.throwOneDice = () => getColorFromResult(Dice.getThrowResult());

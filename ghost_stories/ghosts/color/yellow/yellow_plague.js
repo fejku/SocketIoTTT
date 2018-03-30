@@ -14,7 +14,7 @@ class YellowPlague extends Ghost {
         // Get tao tokens available in bank
         const availableColors = bank.getAvailableTaoTokensColors();
         // Pick which color token to put on tile
-        const pickedColor = await questions.ask(socket, 'Pick tao token color', availableColors); /* eslint-disable-line no-await-in-loop */
+        const pickedColor = await questions.ask(socket, 'Pick tao token color', availableColors);
         players.getActualPlayer().gainTaoToken(bank, pickedColor);
         bank.updateUI(socket);
       }
