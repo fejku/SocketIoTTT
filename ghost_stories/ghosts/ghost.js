@@ -8,7 +8,7 @@ class Ghost {
     this.wuFeng = false;
   }
 
-  immediateEffect(socket, board, players, bank, circleOfPrayer) { /* eslint-disable-line no-unused-vars */
+  async immediateEffect(socket, board, players, bank, circleOfPrayer) { /* eslint-disable-line no-unused-vars */
     //
     console.log('immediateEffect abstract');
   }

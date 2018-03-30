@@ -5,6 +5,7 @@ class PlayerBoard {
     this.buddhaFields = [false, false, false];
 
     this.powerName = this.initBoardPower();
+    this.powerActive = true;
   }
 
   initBoardPower() {
@@ -98,6 +99,10 @@ class PlayerBoard {
 
   setBuddhaField(fieldIndex, state) {
     this.buddhaFields[fieldIndex] = state;
+  }
+
+  async boardPower(socket, board, players, bank, situationName) { /* eslint-disable-line no-unused-vars */
+    console.log('abstract boardPower');
   }
 }
 

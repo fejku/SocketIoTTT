@@ -15,9 +15,9 @@ class Haunter extends Ghost {
     const villagers = board.getVillagers();
     this.progressHauntingFigure(ghostPosition, villagers);
     // Set ghost haunting figures
-    socket.emit('ghost refresh player boards', this.board.getAllPlayersBoards());
+    socket.emit('ghost refresh player boards', board.getAllPlayersBoards());
     // Set haunted tiles
-    socket.emit('ghost refresh villagers', this.board.getAllVillagers());
+    socket.emit('ghost refresh villagers', board.getAllVillagers());
   }
 
   /**

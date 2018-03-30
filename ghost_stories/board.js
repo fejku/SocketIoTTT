@@ -174,7 +174,7 @@ class Board {
         }
       } else {
         this.layCardOnField(socket, pickedField, card);
-        card.immediateEffect(socket, this, players, bank, circleOfPrayer);
+        await card.immediateEffect(socket, this, players, bank, circleOfPrayer);
       }
     }
   }

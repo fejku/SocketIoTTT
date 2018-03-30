@@ -8,9 +8,9 @@ class CoffinBreakers extends Ghost {
     this.isDisablingTaoistPower = isDisablingTaoistPower;
   }
 
-  immediateEffect(socket, board, players, bank, circleOfPrayer) {
+  async immediateEffect(socket, board, players, bank, circleOfPrayer) {
     // Place new ghost
-    board.ghostArrival(socket, players, bank, circleOfPrayer);
+    await board.ghostArrival(socket, players, bank, circleOfPrayer);
     if (this.isDisablingTaoistPower) {
       // TODO: disable power on board where ghost is
     }
