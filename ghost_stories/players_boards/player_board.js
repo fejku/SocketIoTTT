@@ -13,6 +13,10 @@ class PlayerBoard {
     return this.getPowersNames()[randPower];
   }
 
+  getPowerName() {
+    return this.powerName;
+  }
+
   isBoardFull() {
     return this.fields.every(field => field !== null);
   }

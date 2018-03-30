@@ -50,6 +50,7 @@ class Board {
     // 0 - top, 1 - right, 2 - bottom, 3 - left
     this.playersBoards = new PlayerBoards(players);
     this.ghostCards = this.initGhostCards();
+    this.activeDices = 3;
   }
 
   initGhostCards() {
@@ -177,6 +178,10 @@ class Board {
         await card.immediateEffect(socket, this, players, bank, circleOfPrayer);
       }
     }
+  }
+
+  getActiveDices() {
+    return this.activeDices;
   }
 }
 

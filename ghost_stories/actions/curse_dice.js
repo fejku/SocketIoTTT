@@ -47,6 +47,10 @@ function hauntTile(playerPosition, ghostPosition, villagers, isCemeteryCall) {
 }
 
 function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryCall) {
+  if (board.getPlayerBoardById(players.getActualPlayerId()).getPowerName() === 'Strength of a Mountain') {
+    return;
+  }
+
   const throwResult = Math.floor(Math.random() * 6);
   console.log('throwCurseDice throwResult: ', throwResult);
 

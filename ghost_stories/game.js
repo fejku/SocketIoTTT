@@ -107,7 +107,11 @@ class Game {
           {
             const ghostsInRange = actualPlayer.getGhostsInRange(this.board.getAllPlayersBoards());
             // Throw dices
-            const diceThrowResult = colorDice.throwDices(3);
+            let dicesAmount = this.board.getActiveDices();
+            if (this.board.getPlayerBoardById(this.players.getActualPlayerId()).getPowerName() === 'Strength of a Mountain') {
+              dicesAmount++;
+            }
+            const diceThrowResult = colorDice.throwDices(dicesAmount);
             console.log('diceThrowResult', diceThrowResult);
             console.log('ghostsInRange', ghostsInRange);
             if (ghostsInRange.length === 1) {
