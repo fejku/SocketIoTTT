@@ -1,4 +1,7 @@
 const CircleOfPrayer = require('../villagers/circle_of_prayer');
+const Dice = require('./dice');
+
+const questions = require('../utils/questionsUI');
 
 function loseQi(socket, players, bank) {
   players.getActualPlayer().loseQi(bank);
@@ -46,13 +49,51 @@ function hauntTile(playerPosition, ghostPosition, villagers, isCemeteryCall) {
   }
 }
 
+function getThrowResultName(throwResult) {
+  switch (throwResult) {
+    case 0 - 1:
+      return 'No effect';
+    case 2:
+      return 'The first active village tile in front of the ghost becomes haunted.';
+    case 3:
+      return 'Bring a ghost into play according to the placement rules.';
+    case 4:
+      return 'Discard all your Tao tokens.';
+    case 5:
+      return 'Lose 1 Qi point.';
+    default:
+      return null;
+  }
+}
+
+function getThrowResult(socket, board, players) {
+  let throwResult = Dice.getThrowResult();
+  console.log('throwCurseDice throwResult: ', throwResult);
+
+  if (board.getPlayerBoardById(players.getActualPlayerId()).getPowerName() === 'The Gods’ Favorite') {
+    const isReroll = questions.askYesNo(socket, 'Do you want reroll?', `You rolled: ${getThrowResultName(throwResult)}`);
+    if (isReroll) {
+      throwResult = Dice.getThrowResult();
+      console.log('throwCurseDice throwResult: ', throwResult);
+    }
+  }
+  return throwResult;
+}
+
+function checkIfPlayerDontThrow(board, players, isCemeteryCall) {
+  if ((!isCemeteryCall) &&
+      (board.getPlayerBoardById(players.getActualPlayerId()).getPowerName() === 'Strength of a Mountain')) {
+    return true;
+  }
+  return false;
+}
+
 function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryCall) {
-  if (board.getPlayerBoardById(players.getActualPlayerId()).getPowerName() === 'Strength of a Mountain') {
+  if (checkIfPlayerDontThrow(board, players, isCemeteryCall)) {
     return;
   }
 
-  const throwResult = Math.floor(Math.random() * 6);
-  console.log('throwCurseDice throwResult: ', throwResult);
+  const throwResult = getThrowResult();
 
   switch (throwResult) {
     // (0-1) No effect.
