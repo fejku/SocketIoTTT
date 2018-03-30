@@ -6,7 +6,7 @@ const CircleOfPrayer = require('./villagers/circle_of_prayer');
 const Decision = require('./enums/decision');
 const { SixColors } = require('./enums/color');
 
-const colorDice = require('./actions/color_dice');
+const ColorDice = require('./actions/color_dice');
 const questions = require('./utils/questionsUI');
 
 class Game {
@@ -107,29 +107,20 @@ class Game {
             if (this.board.getPlayerBoardById(this.players.getActualPlayerId()).getPowerName() === 'Strength of a Mountain') {
               dicesAmount++;
             }
-            const diceThrowResult = colorDice.throwDices(dicesAmount);
-            if (this.board.getPlayerBoardById(this.players.getActualPlayerId()).getPowerName() === 'The Gods’ Favorite') {
-              const isReroll = await questions.askYesNo(socket, 'Do you want to reroll?');
-              if (isReroll) {
-                console.log('Before reroll diceThrowResult', diceThrowResult);
-                for (const [index, color] of diceThrowResult.entries()) {
-                  const isRerollColor = await questions.askYesNo(socket, `Do you want to reroll ${color} dice?`);
-                  if (isRerollColor) {
-                    diceThrowResult[index] = colorDice.throwOneDice();
-                  }
-                }
-              }
-            }
-            console.log('diceThrowResult', diceThrowResult);
+            const isTheGodsFavorite = this.board.getPlayerBoardById(this.players.getActualPlayerId())
+              .getPowerName() === 'The Gods’ Favorite';
+            const diceThrowResult = await ColorDice.throwDices(socket, dicesAmount, isTheGodsFavorite);
+
             console.log('ghostsInRange', ghostsInRange);
             if (ghostsInRange.length === 1) {
               const ghost = this.board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
                 .getField(ghostsInRange[0].fieldIndex);
               console.log('ghost', ghost);
+              const ghostColor = ghost.getColor();
               // If result of throwed dices(taoist tao tokens,
               // circle of prayers) is greater then ghost resistance
-              const whiteDiceResult = diceThrowResult.filter(result => result === SixColors.WHITE).reduce((p, c) => p + c, 0);
-              const ghostColorResult = diceThrowResult.filter(result => result === ghost.getColor()).reduce((p, c) => p + c, 0);
+              const whiteDiceResult = diceThrowResult.filter(result => result === SixColors.WHITE).length;
+              const ghostColorResult = diceThrowResult.filter(result => result === ghostColor).length;
               const resultAfterModifications = ghostColorResult + whiteDiceResult;
               // + circleOfPrayer
               // + taoTokens
