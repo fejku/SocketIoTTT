@@ -22,9 +22,10 @@ class HerbalistShop extends Villager {
 
   async action(socket, board, players, bank) {
     // Throw two dices
-    const isTheGodsFavorite = this.board.getPlayerBoardById(this.players.getActualPlayerId())
-      .getPowerName() === 'The Gods’ Favorite';
-    const dicesThrowResult = await ColorDice.throwDices(socket, 2, isTheGodsFavorite);
+    const dicesThrowResult = ColorDice.throwDices(2);
+    // Allow reroll if green board
+    await board.getPlayerBoardById(players.getActualPlayerId())
+      .boardPower(socket, board, players, bank, 'After color dice throw', dicesThrowResult);
 
     // Give player tao token if there is one left and color isn't white
     dicesThrowResult

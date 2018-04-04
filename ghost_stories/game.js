@@ -103,13 +103,11 @@ class Game {
           {
             const ghostsInRange = actualPlayer.getGhostsInRange(this.board.getAllPlayersBoards());
             // Throw dices
-            let dicesAmount = this.board.getActiveDices();
-            if (this.board.getPlayerBoardById(this.players.getActualPlayerId()).getPowerName() === 'Strength of a Mountain') {
-              dicesAmount++;
-            }
-            const isTheGodsFavorite = this.board.getPlayerBoardById(this.players.getActualPlayerId())
-              .getPowerName() === 'The Gods’ Favorite';
-            const diceThrowResult = await ColorDice.throwDices(socket, dicesAmount, isTheGodsFavorite);
+            const dicesAmount = this.board.getActiveDices();
+            const diceThrowResult = ColorDice.throwDices(dicesAmount);
+            // Allow reroll or gray dice if green board
+            await this.board.getPlayerBoardById(this.players.getActualPlayerId())
+              .boardPower(socket, this.board, this.players, this.bank, 'After exorcism color dice throw', diceThrowResult);
 
             console.log('ghostsInRange', ghostsInRange);
             if (ghostsInRange.length === 1) {

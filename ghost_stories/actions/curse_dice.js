@@ -1,8 +1,6 @@
 const CircleOfPrayer = require('../villagers/circle_of_prayer');
 const Dice = require('./dice');
 
-const questions = require('../utils/questionsUI');
-
 function loseQi(socket, players, bank) {
   players.getActualPlayer().loseQi(bank);
   bank.updateUI(socket);
@@ -66,34 +64,19 @@ function getThrowResultName(throwResult) {
   }
 }
 
-function getThrowResult(socket, board, players) {
-  let throwResult = Dice.getThrowResult();
-  console.log('throwCurseDice throwResult: ', throwResult);
+async function getThrowResult(socket, board, players, bank, isCemeteryCall) {
+  const throwResult = { result: Dice.getThrowResult() };
+  console.log('throwCurseDice throwResult: ', throwResult.result);
 
-  if (board.getPlayerBoardById(players.getActualPlayerId()).getPowerName() === 'The Gods’ Favorite') {
-    const isReroll = questions.askYesNo(socket, 'Do you want reroll?', `You rolled: ${getThrowResultName(throwResult)}`);
-    if (isReroll) {
-      throwResult = Dice.getThrowResult();
-      console.log('throwCurseDice throwResult: ', throwResult);
-    }
-  }
-  return throwResult;
+  await this.board.getPlayerBoardById(players.getActualPlayerId())
+    .boardPower(socket, board, players, bank, 'After curse dice throw', throwResult, isCemeteryCall);
+  console.log('after rethrow throwResult: ', throwResult.result);
+
+  return throwResult.result;
 }
 
-function checkIfPlayerDontThrow(board, players, isCemeteryCall) {
-  if ((!isCemeteryCall) &&
-      (board.getPlayerBoardById(players.getActualPlayerId()).getPowerName() === 'Strength of a Mountain')) {
-    return true;
-  }
-  return false;
-}
-
-function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryCall) {
-  if (checkIfPlayerDontThrow(board, players, isCemeteryCall)) {
-    return;
-  }
-
-  const throwResult = getThrowResult();
+async function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryCall) {
+  const throwResult = await getThrowResult(socket, board, players, bank);
 
   switch (throwResult) {
     // (0-1) No effect.
@@ -129,3 +112,5 @@ module.exports.throwCurseDice = (socket, board, ghostPosition, players, bank) =>
 
 module.exports.throwCurseDiceCemetry = (socket, board, players, bank) =>
   throwCurseDice(socket, board, players, null, bank, true);
+
+module.exports.getThrowResultName = throwResult => getThrowResultName(throwResult);
