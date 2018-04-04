@@ -1,20 +1,49 @@
 const { FourColors } = require('../enums/color');
 const PlayerBoard = require('./player_board');
+const questions = require('../utils/questionsUI');
 
-// 1. Bezdenne Kieszenie
-// Żółtemu Taoiście nigdy nie brakuje mistycznych komponentów.
-// Przed ruchem bierze on znacznik Tao dowolnego koloru spośród znaczników dostępnych w banku.
-// 2. Mantra Osłabiająca
-// Żółty taoista może magicznie osłabić duchy. Przed ruchem umieszcza on lub przemieszcza znacznik
-// Mantry Osłabiającej na dowolnego ducha w grze. Duch objęty tym czarem zmniejsza swa odporność
-// na egzorcyzmy o 1 (duch o odporności 3 ma odporność 2), niezależnie od tego, który Taoista dokonuje egzorcyzmu.
-// Gdy duch będący celem Mantry Osłabiającej zostaje usunięty z gry, należy zwrócić znacznik mantry
-// żółtemu Taoiście, który będzie mógł ponownie z niego skorzystać w swojej następnej turze. Jeżeli mnich straci moc,
-// należy usunąć z gry znacznik Mantry Osłabiającej.
 class YellowBoard extends PlayerBoard {
   constructor() {
     super();
     this.color = FourColors.YELLOW;
+    this.enfeeblementMantraTokenPosition = null;
+  }
+
+  getPowersNames() {
+    return ['Bottomless Pockets', 'Enfeeblement Mantra'];
+  }
+
+  // Before your move, take a Tao token of whatever color you choose from among those available.
+  async bottomlessPocketsPower(socket, players, bank) {
+    const pickedColor = await questions.pickTaoTokenColor(socket, bank);
+    players.getActualPlayer().gainTaoToken(bank, pickedColor);
+    bank.updateUI(socket);
+    socket.emit('ghost update players stats', players);
+  }
+
+  // Before your move, place the Enfeeblement Mantra token onto any ghost in the game. The ghost’s exorcism
+  // resistance is reduced by 1, whoever performs the exorcism. Note that when fighting multicolored incarnations, the
+  // color of the Mantra may be chosen after the dice roll. When the targeted ghost is removed from the game, take
+  // back the token; you may use it again on your next turn. If you lose your power, remove the Enfeeblement Mantra
+  // token from the game.
+  async enfeeblementMantraPower(socket, board) {
+    this.enfeeblementMantraTokenPosition = await questions.pickPlayerBoardField(socket, board.getPlayersBoards().getGhosts());
+  }
+
+  async boardPower(socket, board, players, bank, situationName) {
+    if (!this.validatePowerBoard()) {
+      return;
+    }
+
+    if (this.powerName === 'Bottomless Pockets') {
+      if (situationName === 'Before move') {
+        await this.bottomlessPocketsPower(socket, players, bank);
+      }
+    } else if (this.powerName === 'Enfeeblement Mantra') {
+      if (situationName === 'Before move') {
+        await this.enfeeblementMantraPower(socket, board);
+      }
+    }
   }
 }
 

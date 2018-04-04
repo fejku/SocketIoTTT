@@ -23,27 +23,26 @@ class HerbalistShop extends Villager {
   async action(socket, board, players, bank) {
     // Throw two dices
     const dicesThrowResult = ColorDice.throwDices(2);
+    // Allow reroll if green board
+    await board.getPlayerBoardById(players.getActualPlayerId())
+      .boardPower(socket, board, players, bank, 'After color dice throw', dicesThrowResult);
 
     // Give player tao token if there is one left and color isn't white
-    for (const [resultKey, resultValue] of Object.entries(dicesThrowResult)) {
-      if ((resultKey !== SixColors.WHITE.key) && (resultValue > 0)) {
-        for (let i = 0; i < resultValue; i++) {
-          this.givePlayerTaoToken(socket, board, players, bank, resultKey, resultValue);
-        }
-      }
-    }
+    dicesThrowResult
+      .filter(color => color !== SixColors.WHITE.key)
+      .forEach((color) => {
+        this.givePlayerTaoToken(socket, board, players, bank, color);
+      });
 
     // If white result, pick one on tao tokens that left
-    for (const [resultKey, resultValue] of Object.entries(dicesThrowResult)) {
-      if ((resultKey === SixColors.WHITE.key) && (resultValue > 0)) {
-        for (let i = 0; i < resultValue; i++) {
-          if (bank.isTaoTokenLeft()) {
-            const availableTaoTokensColors = bank.getAvailableTaoTokensColors();
-            console.log('availableTaoTokensColors: ', availableTaoTokensColors);
-            const pickedColor = await questions.ask(socket, 'Pick tao token color', availableTaoTokensColors); /* eslint-disable-line no-await-in-loop, max-len */
-            console.log('pickedColor: ', pickedColor);
-            this.givePlayerTaoToken(socket, board, players, bank, pickedColor);
-          }
+    for (const color of dicesThrowResult) {
+      if (color === SixColors.WHITE.key) {
+        if (bank.isTaoTokenLeft()) {
+          const availableTaoTokensColors = bank.getAvailableTaoTokensColors();
+          console.log('availableTaoTokensColors: ', availableTaoTokensColors);
+          const pickedColor = await questions.ask(socket, 'Pick tao token color', availableTaoTokensColors);
+          console.log('pickedColor: ', pickedColor);
+          this.givePlayerTaoToken(socket, board, players, bank, pickedColor);
         }
       }
     }

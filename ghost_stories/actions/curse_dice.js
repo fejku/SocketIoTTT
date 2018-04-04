@@ -1,4 +1,5 @@
 const CircleOfPrayer = require('../villagers/circle_of_prayer');
+const Dice = require('./dice');
 
 function loseQi(socket, players, bank) {
   players.getActualPlayer().loseQi(bank);
@@ -46,9 +47,36 @@ function hauntTile(playerPosition, ghostPosition, villagers, isCemeteryCall) {
   }
 }
 
-function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryCall) {
-  const throwResult = Math.floor(Math.random() * 6);
-  console.log('throwCurseDice throwResult: ', throwResult);
+function getThrowResultName(throwResult) {
+  switch (throwResult) {
+    case 0 - 1:
+      return 'No effect';
+    case 2:
+      return 'The first active village tile in front of the ghost becomes haunted.';
+    case 3:
+      return 'Bring a ghost into play according to the placement rules.';
+    case 4:
+      return 'Discard all your Tao tokens.';
+    case 5:
+      return 'Lose 1 Qi point.';
+    default:
+      return null;
+  }
+}
+
+async function getThrowResult(socket, board, players, bank, isCemeteryCall) {
+  const throwResult = { result: Dice.getThrowResult() };
+  console.log('throwCurseDice throwResult: ', throwResult.result);
+
+  await this.board.getPlayerBoardById(players.getActualPlayerId())
+    .boardPower(socket, board, players, bank, 'After curse dice throw', throwResult, isCemeteryCall);
+  console.log('after rethrow throwResult: ', throwResult.result);
+
+  return throwResult.result;
+}
+
+async function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryCall) {
+  const throwResult = await getThrowResult(socket, board, players, bank);
 
   switch (throwResult) {
     // (0-1) No effect.
@@ -64,7 +92,7 @@ function throwCurseDice(socket, board, players, ghostPosition, bank, isCemeteryC
       break;
     // The player must bring a ghost into play according to the placement rules.
     case 3:
-      board.ghostArrival(socket, players, bank, board.getVillagerByClass(CircleOfPrayer));
+      board.ghostArrival(socket, players, bank);
       break;
     // The player must discard all his Tao tokens.
     case 4:
@@ -84,3 +112,5 @@ module.exports.throwCurseDice = (socket, board, ghostPosition, players, bank) =>
 
 module.exports.throwCurseDiceCemetry = (socket, board, players, bank) =>
   throwCurseDice(socket, board, players, null, bank, true);
+
+module.exports.getThrowResultName = throwResult => getThrowResultName(throwResult);

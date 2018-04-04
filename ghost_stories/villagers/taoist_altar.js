@@ -1,5 +1,4 @@
 const Villager = require('./villager');
-const CircleOfPrayer = require('./circle_of_prayer');
 
 // Nullify the haunting of one Village tile by turning its active side face-up, and then bring a ghost into play.
 class TaoistAltar extends Villager {
@@ -52,7 +51,7 @@ class TaoistAltar extends Villager {
     // Cancel haunting
     board.getVillagers().getVillagerByName(villagerName).setHaunted(false);
     // Get new ghost into play
-    await board.ghostArrival(socket, players, bank, board.getVillagerByClass(CircleOfPrayer));
+    await board.ghostArrival(socket, players, bank);
   }
 }
 

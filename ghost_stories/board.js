@@ -50,6 +50,7 @@ class Board {
     // 0 - top, 1 - right, 2 - bottom, 3 - left
     this.playersBoards = new PlayerBoards(players);
     this.ghostCards = this.initGhostCards();
+    this.activeDices = 3;
   }
 
   initGhostCards() {
@@ -140,7 +141,7 @@ class Board {
     socket.emit('ghost lay ghost card on picked field', pickedField, card);
   }
 
-  async ghostArrival(socket, players, bank, circleOfPrayer) {
+  async ghostArrival(socket, players, bank) {
     if (this.getPlayersBoards().isAllBoardsFull()) {
       players.getActualPlayer().loseQi(bank);
       bank.updateUI(socket);
@@ -174,9 +175,14 @@ class Board {
         }
       } else {
         this.layCardOnField(socket, pickedField, card);
-        card.immediateEffect(socket, this, players, bank, circleOfPrayer);
+        card.setPosition(pickedField);
+        await card.immediateEffect(socket, this, players, bank);
       }
     }
+  }
+
+  getActiveDices() {
+    return this.activeDices;
   }
 }
 

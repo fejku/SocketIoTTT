@@ -1,12 +1,9 @@
 const Board = require('./board');
 const Players = require('./players/players');
 const Bank = require('./bank');
-const CircleOfPrayer = require('./villagers/circle_of_prayer');
 
 const Decision = require('./enums/decision');
-const { SixColors } = require('./enums/color');
 
-const colorDice = require('./actions/color_dice');
 const questions = require('./utils/questionsUI');
 
 class Game {
@@ -31,7 +28,7 @@ class Game {
       );
       // validate is player alive, are 3 villagers haunted, are still ghost cards in deck
       while (!this.validateGameEnd()) {
-        await this.turn(io, socket); /* eslint-disable-line no-await-in-loop */
+        await this.turn(io, socket);
         // Set active player buddha figure to active
         this.players.getActualPlayer().setBuddhaFiguresActive();
         this.players.nextPlayer();
@@ -43,7 +40,6 @@ class Game {
 
   async turn(io, socket) {
     const actualPlayer = this.players.getActualPlayer();
-    const circleOfPrayer = this.board.getVillagerByClass(CircleOfPrayer);
 
     socket.emit('ghost update players stats', this.players);
     // Ghost phase
@@ -51,7 +47,7 @@ class Game {
     const ghosts = this.board.getPlayerBoardByColor(actualPlayer.getColorKey()).getGhosts();
     for (const { fieldIndex, ghost } of ghosts) {
       const ghostPosition = { boardIndex: this.players.getActualPlayerId(), fieldIndex };
-      await ghost.yinPhaseEffect(socket, this.board, this.players, this.bank, ghostPosition); /* eslint-disable-line no-await-in-loop */
+      await ghost.yinPhaseEffect(socket, this.board, this.players, this.bank, ghostPosition);
     }
     // Step 2 - Check board overrun
     if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
@@ -59,11 +55,14 @@ class Game {
       this.bank.updateUI(socket);
     } else {
       // Step 3 - Ghost arrival
-      await this.board.ghostArrival(socket, this.players, this.bank, circleOfPrayer);
+      await this.board.ghostArrival(socket, this.players, this.bank);
     }
     socket.emit('ghost update players stats', this.players);
 
     // Player phase
+    // Before player move board power
+    await this.board.getPlayerBoardById(this.players.getActualPlayerId())
+      .boardPower(socket, this.board, this.players, this.bank, 'Before move');
     // Step 1 - Player move
     const availableMoves = this.players
       .getAvailableMoves(actualPlayer.getPosition());
@@ -87,11 +86,7 @@ class Game {
 
     console.log('availableDecisions', availableDecisions);
     if (availableDecisions.length > 0) {
-      const decision = await questions.ask(
-        socket,
-        'What to do?',
-        availableDecisions,
-      );
+      const decision = await questions.ask(socket, 'What to do?', availableDecisions);
       console.log('decision', decision);
       switch (decision) {
         // Help from villager
@@ -101,44 +96,13 @@ class Game {
           break;
           // Attempt an exorcism
         case Decision.EXORCISM.key:
-          {
-            const ghostsInRange = actualPlayer.getGhostsInRange(this.board.getAllPlayersBoards());
-            // Throw dices
-            const diceThrowResult = colorDice.throwDices(3);
-            console.log('diceThrowResult', diceThrowResult);
-            console.log('ghostsInRange', ghostsInRange);
-            if (ghostsInRange.length === 1) {
-              const ghost = this.board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
-                .getField(ghostsInRange[0].fieldIndex);
-              console.log('ghost', ghost);
-              // If result of throwed dices(taoist tao tokens,
-              // circle of prayers) is greater then ghost resistance
-              const whiteDiceResult = diceThrowResult[SixColors.WHITE];
-              const resultAfterModifications = diceThrowResult[ghost.getColor()] +
-                  whiteDiceResult;
-                // + circleOfPrayer
-                // + taoTokens;
-              if (ghost.getResistance() <= resultAfterModifications) {
-                console.log('Ghost defeated');
-                // Ghost action after winning
-                await ghost.afterWinningEffect(socket, this.board, this.players, this.bank, ghostsInRange[0]);
-                // Remove ghost from field
-                this.board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
-                  .removeGhostFromField(socket, ghostsInRange[0].fieldIndex);
-                console.log('board: ', this.board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
-              } else {
-                actualPlayer.loseQi(this.bank);
-                this.bank.updateUI(socket);
-              }
-            } else {
-              // TODO
-              // If player is on corner and result is big enough pick which ghost to exorcism
-            }
-          }
+          await actualPlayer.exorcism(socket, this.board, this.players, this.bank);
           break;
         default:
           break;
       }
+      await this.board.getPlayerBoardById(this.players.getActualPlayerId())
+        .boardPower(socket, this.board, this.players, this.bank, 'After exorcism villager help', decision);
     }
     socket.emit('ghost update players stats', this.players);
 

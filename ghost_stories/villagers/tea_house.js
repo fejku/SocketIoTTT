@@ -1,5 +1,4 @@
 const Villager = require('./villager');
-const CircleOfPrayer = require('./circle_of_prayer');
 
 const questions = require('../utils/questionsUI');
 
@@ -19,9 +18,6 @@ class TeaHouse extends Villager {
   }
 
   async action(socket, board, players, bank) {
-    const circleOfPrayer = board.getVillagerByClass(CircleOfPrayer);
-    const taoists = players.getTaoists();
-
     // If there is tao token in bank
     if (bank.isTaoTokenLeft()) {
       // Get available tao tokens
@@ -39,7 +35,7 @@ class TeaHouse extends Villager {
     bank.updateUI(socket);
 
     // Bring ghost into play
-    await board.ghostArrival(socket, players, bank, circleOfPrayer);
+    await board.ghostArrival(socket, players, bank);
   }
 }
 

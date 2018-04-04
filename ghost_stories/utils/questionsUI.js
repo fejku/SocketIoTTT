@@ -138,3 +138,13 @@ module.exports.pickPlayerBoard = async (socket, availablePlayerBoardIndexes) =>
       }
     });
   });
+
+module.exports.pickTaoTokenColor = async (socket, bank) => {
+  if (bank.isTaoTokenLeft()) {
+    const availableColors = bank.getAvailableTaoTokensColors();
+    const pickedColor = await this.ask(socket, 'Pick tao token color', availableColors);
+    return pickedColor;
+  }
+  return null;
+};
+

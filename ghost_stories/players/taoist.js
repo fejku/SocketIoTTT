@@ -1,6 +1,8 @@
-const { FiveColors } = require('../enums/color');
+const { FiveColors, SixColors } = require('../enums/color');
 const playersUtils = require('./players_utils');
 const questions = require('../utils/questionsUI');
+const ColorDice = require('../actions/color_dice');
+
 
 const BuddhistTemple = require('../villagers/buddhist_temple');
 
@@ -201,6 +203,46 @@ class Taoist {
       playersBoards.getPlayerBoardById(pickedField.playerBoardIndex).setBuddhaField(pickedField.fieldIndex, true);
     }
     buddhistTemple.refreshBuddhaFiguresUI(socket, playersBoards.getPlayersBoards());
+  }
+
+  async exorcism(socket, board, players, bank) {
+    const ghostsInRange = this.getGhostsInRange(board.getAllPlayersBoards());
+    // Throw dices
+    const dicesAmount = board.getActiveDices();
+    const diceThrowResult = ColorDice.throwDices(dicesAmount);
+    // Allow reroll or gray dice if green board
+    await board.getPlayerBoardById(players.getActualPlayerId())
+      .boardPower(socket, board, players, bank, 'After exorcism color dice throw', diceThrowResult);
+
+    console.log('ghostsInRange', ghostsInRange);
+    if (ghostsInRange.length === 1) {
+      const ghost = board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
+        .getField(ghostsInRange[0].fieldIndex);
+      console.log('ghost', ghost);
+      const ghostColor = ghost.getColor();
+      // If result of throwed dices(taoist tao tokens, circle of prayers) is greater then ghost resistance
+      const whiteDiceResult = diceThrowResult.filter(result => result === SixColors.WHITE).length;
+      const ghostColorResult = diceThrowResult.filter(result => result === ghostColor).length;
+      const resultAfterModifications = ghostColorResult + whiteDiceResult;
+      // + circleOfPrayer
+      // + taoTokens
+      // + enfeeblementMantra
+      if (ghost.getResistance() <= resultAfterModifications) {
+        console.log('Ghost defeated');
+        // Ghost action after winning
+        await ghost.afterWinningEffect(socket, board, players, bank, ghostsInRange[0]);
+        // Remove ghost from field
+        board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
+          .removeGhostFromField(socket, ghostsInRange[0].fieldIndex);
+        console.log('board: ', board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
+      } else {
+        this.loseQi(bank);
+        bank.updateUI(socket);
+      }
+    } else {
+      // TODO
+      // If player is on corner and result is big enough pick which ghost to exorcism
+    }
   }
 }
 

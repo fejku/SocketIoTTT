@@ -3,6 +3,19 @@ class PlayerBoard {
     this.color = null;
     this.fields = [null, null, null];
     this.buddhaFields = [false, false, false];
+
+    this.powerName = this.initBoardPower();
+    this.powerActive = true;
+    this.wasDead = false;
+  }
+
+  initBoardPower() {
+    const randPower = Math.floor(Math.random() * 2);
+    return this.getPowersNames()[randPower];
+  }
+
+  getPowerName() {
+    return this.powerName;
   }
 
   isBoardFull() {
@@ -75,6 +88,10 @@ class PlayerBoard {
   }
 
   removeGhostFromField(socket, fieldIndex) {
+    // Get all ghosts and check if any block board power
+    if (this.getFields().findIndex(ghost => ghost.isDisablingTaoistPower()) !== -1) {
+      this.powerActive = true;
+    }
     // Send information to UI that ghost sohuld be removed from field
     this.removeGhostFromFieldUI(socket, fieldIndex);
     // Remove ghost from field
@@ -91,6 +108,18 @@ class PlayerBoard {
 
   setBuddhaField(fieldIndex, state) {
     this.buddhaFields[fieldIndex] = state;
+  }
+
+  async boardPower(socket, board, players, bank, situationName) { /* eslint-disable-line no-unused-vars */
+    console.log('abstract boardPower');
+  }
+
+  validatePowerBoard() {
+    return (this.wasDead === false) && this.powerActive;
+  }
+
+  setPowerActive(status) {
+    this.powerActive = status;
   }
 }
 
