@@ -45,7 +45,7 @@ class SorcererHut extends Villager {
   removeGhostFromBoard(socket, board, pickedGhost) {
     board.getPlayerBoardByColor(pickedGhost.color).setField(pickedGhost.field, null);
     // Update UI
-    socket.emit('ghost sorcerer hut remove ghost from board', pickedGhost);
+    socket.emit('ghost refresh player boards', board.getAllPlayersBoards());
   }
 
   async action(socket, board, players, bank) {

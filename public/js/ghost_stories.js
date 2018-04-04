@@ -334,35 +334,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  socket.on('ghost sorcerer hut remove ghost from board', (pickedGhost) => {
-    // TODO: Use refresh ghosts method??
-    console.log('ghost sorcerer hut remove ghost from board', pickedGhost);
-    const ghostField = document.querySelector(`.player-board[data-board-color="${pickedGhost.color}"]`
-        + `[data-field-index="${pickedGhost.field}"] .ghost`);
-    ghostField.remove();
-  });
-
   socket.on('ghost update buddha figures', (buddhaFiguresAmount, playersBoards) => {
-    // TODO: Remove all buddha figures and place all??? (prevent missing pigures after refreshing page)
     console.log('ghost update buddha figures', buddhaFiguresAmount, playersBoards);
     // Update buddha temple
     document.getElementById('buddha-figures-amount').innerHTML = buddhaFiguresAmount;
-    // Remove non existing buddha figures from players boards
+    // Remove all buddha figures from players boards
     [...document.querySelectorAll('.player-board .buddha')].forEach((playerBoardElement) => {
-      if (playersBoards[playerBoardElement.parentNode.dataset.boardIndex]
-        .buddhaFields[playerBoardElement.parentNode.dataset.fieldIndex] === false) {
-        playerBoardElement.remove();
-      }
+      playerBoardElement.remove();
     });
-    // Place new buddha figures on players boards
+    // Place buddha figures on players boards
     playersBoards.forEach((playerBoard, playerBoardIndex) => {
       playerBoard.buddhaFields.forEach((buddhaField, buddhaFieldIndex) => {
         if (buddhaField) {
-          if (document.querySelector(`.player-board[data-board-index="${playerBoardIndex}"]` +
-              `[data-field-index="${buddhaFieldIndex}"] .buddha`) === null) {
-            document.querySelector(`.player-board[data-board-index="${playerBoardIndex}"]`
+          document.querySelector(`.player-board[data-board-index="${playerBoardIndex}"]`
               + `[data-field-index="${buddhaFieldIndex}"]`).innerHTML += '<div class="buddha">*B*</div>';
-          }
         }
       });
     });

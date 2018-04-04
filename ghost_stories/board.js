@@ -169,9 +169,9 @@ class Board {
         buddhistTemple.addBuddhaFigure();
         buddhistTemple.refreshBuddhaFiguresUI(socket, this.getAllPlayersBoards());
         if (card.isWuFeng()) {
-          // TODO
-          // place card
-          // immediateEffect
+          this.layCardOnField(socket, pickedField, card);
+          card.setPosition(pickedField);
+          await card.immediateEffect(socket, this, players, bank);
         }
       } else {
         this.layCardOnField(socket, pickedField, card);
