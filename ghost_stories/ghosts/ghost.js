@@ -4,11 +4,15 @@ class Ghost {
     this.color = color;
     this.resistance = resistance;
 
+    // {playerBoardIndex, playerBoardColor, fieldIndex}
+    this.position = null;
+
+    this.disablingTaoistPower = false;
     this.taoDiceHaveEffect = true;
     this.wuFeng = false;
   }
 
-  async immediateEffect(socket, board, players, bank, circleOfPrayer) { /* eslint-disable-line no-unused-vars */
+  async immediateEffect(socket, board, players, bank) { /* eslint-disable-line no-unused-vars */
     //
     console.log('immediateEffect abstract');
   }
@@ -50,6 +54,18 @@ class Ghost {
 
   isWuFeng() {
     return this.wuFeng;
+  }
+
+  getPosition() {
+    return this.position;
+  }
+
+  setPosition(position) {
+    this.position = position;
+  }
+
+  isDisablingTaoistPower() {
+    return this.disablingTaoistPower;
   }
 }
 

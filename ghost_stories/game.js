@@ -1,7 +1,6 @@
 const Board = require('./board');
 const Players = require('./players/players');
 const Bank = require('./bank');
-const CircleOfPrayer = require('./villagers/circle_of_prayer');
 
 const Decision = require('./enums/decision');
 
@@ -41,7 +40,6 @@ class Game {
 
   async turn(io, socket) {
     const actualPlayer = this.players.getActualPlayer();
-    const circleOfPrayer = this.board.getVillagerByClass(CircleOfPrayer);
 
     socket.emit('ghost update players stats', this.players);
     // Ghost phase
@@ -57,7 +55,7 @@ class Game {
       this.bank.updateUI(socket);
     } else {
       // Step 3 - Ghost arrival
-      await this.board.ghostArrival(socket, this.players, this.bank, circleOfPrayer);
+      await this.board.ghostArrival(socket, this.players, this.bank);
     }
     socket.emit('ghost update players stats', this.players);
 

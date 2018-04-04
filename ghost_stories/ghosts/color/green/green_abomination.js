@@ -8,7 +8,6 @@ class GreenAbomination extends Ghost {
   }
 
   async afterWinningEffect(socket, board, players, bank, ghostPosition) { /* eslint-disable-line no-unused-vars */
-    // TODO: +2 Tao Tokens
     for (let i = 0; i < 2; i++) {
       if (bank.isTaoTokenLeft()) {
         // Get tao tokens available in bank

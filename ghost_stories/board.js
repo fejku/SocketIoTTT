@@ -141,7 +141,7 @@ class Board {
     socket.emit('ghost lay ghost card on picked field', pickedField, card);
   }
 
-  async ghostArrival(socket, players, bank, circleOfPrayer) {
+  async ghostArrival(socket, players, bank) {
     if (this.getPlayersBoards().isAllBoardsFull()) {
       players.getActualPlayer().loseQi(bank);
       bank.updateUI(socket);
@@ -175,7 +175,8 @@ class Board {
         }
       } else {
         this.layCardOnField(socket, pickedField, card);
-        await card.immediateEffect(socket, this, players, bank, circleOfPrayer);
+        card.setPosition(pickedField);
+        await card.immediateEffect(socket, this, players, bank);
       }
     }
   }

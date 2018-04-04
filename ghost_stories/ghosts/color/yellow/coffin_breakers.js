@@ -2,17 +2,17 @@ const Ghost = require('../../ghost');
 const { FiveColors } = require('../../../enums/color');
 
 class CoffinBreakers extends Ghost {
-  constructor(isDisablingTaoistPower) {
+  constructor(disablingTaoistPower) {
     super('Coffin Breakers', FiveColors.YELLOW, 1);
 
-    this.isDisablingTaoistPower = isDisablingTaoistPower;
+    this.disablingTaoistPower = disablingTaoistPower;
   }
 
-  async immediateEffect(socket, board, players, bank, circleOfPrayer) {
+  async immediateEffect(socket, board, players, bank) {
     // Place new ghost
-    await board.ghostArrival(socket, players, bank, circleOfPrayer);
-    if (this.isDisablingTaoistPower) {
-      // TODO: disable power on board where ghost is
+    await board.ghostArrival(socket, players, bank);
+    if (this.isDisablingTaoistPower()) {
+      board.getPlayerBoardById(this.position.playerBoardIndex).setPowerActive(false);
     }
   }
 }

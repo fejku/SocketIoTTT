@@ -6,6 +6,7 @@ class PlayerBoard {
 
     this.powerName = this.initBoardPower();
     this.powerActive = true;
+    this.wasDead = false;
   }
 
   initBoardPower() {
@@ -87,6 +88,10 @@ class PlayerBoard {
   }
 
   removeGhostFromField(socket, fieldIndex) {
+    // Get all ghosts and check if any block board power
+    if (this.getFields().findIndex(ghost => ghost.isDisablingTaoistPower()) !== -1) {
+      this.powerActive = true;
+    }
     // Send information to UI that ghost sohuld be removed from field
     this.removeGhostFromFieldUI(socket, fieldIndex);
     // Remove ghost from field
@@ -110,7 +115,11 @@ class PlayerBoard {
   }
 
   validatePowerBoard() {
-    return this.powerActive;
+    return (this.wasDead === false) && this.powerActive;
+  }
+
+  setPowerActive(status) {
+    this.powerActive = status;
   }
 }
 
