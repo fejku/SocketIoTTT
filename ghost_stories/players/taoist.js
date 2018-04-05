@@ -225,6 +225,7 @@ class Taoist {
       const whiteDiceResult = diceThrowResult.filter(result => result === SixColors.WHITE).length;
       const ghostColorResult = diceThrowResult.filter(result => result === ghostColor).length;
       const resultAfterModifications = ghostColorResult + whiteDiceResult;
+      // TODO: make formula
       // + circleOfPrayer
       // + taoTokens
       // + enfeeblementMantra
@@ -241,7 +242,7 @@ class Taoist {
         bank.updateUI(socket);
       }
     } else {
-      // TODO
+      // TODO:
       // If player is on corner and result is big enough pick which ghost to exorcism
     }
   }

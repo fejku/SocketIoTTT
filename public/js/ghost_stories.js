@@ -302,14 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  socket.on('ghost lay ghost card on picked field', (pickedField, card) => {
-    // TODO: change to general refresh player boards
-    console.log('ghost lay ghost card on picked field', pickedField.playerBoardIndex);
-    document.querySelector(`.player-board[data-board-index="${pickedField.playerBoardIndex}"]` +
-        `[data-field-index="${pickedField.fieldIndex}"]`)
-      .innerHTML = getGhost(card);
-  });
-
   socket.on('ghost circle of prayer update token color', (pickedColor) => {
     console.log('ghost circle of prayer update token color', pickedColor);
     document.getElementById('circle-tao-token').style.background = pickedColor;

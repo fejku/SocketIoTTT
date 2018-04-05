@@ -137,9 +137,10 @@ class Board {
     return this.ghostCards.pop();
   }
 
-  layCardOnField(socket, pickedField, card) {
+  layCardOnField(socket, pickedField, card, playersBoards) {
     this.getPlayerBoardByColor(pickedField.playerBoardColor).fields[pickedField.fieldIndex] = card;
-    socket.emit('ghost lay ghost card on picked field', pickedField, card);
+    card.setPosition(pickedField);
+    UI.refreshPlayersBoards(socket, playersBoards);
   }
 
   async ghostArrival(socket, players, bank) {
@@ -170,13 +171,11 @@ class Board {
         buddhistTemple.addBuddhaFigure();
         UI.refreshBuddhaFigures(socket, buddhistTemple.getBuddhaFiguresAmount(), this.getAllPlayersBoards());
         if (card.isWuFeng()) {
-          this.layCardOnField(socket, pickedField, card);
-          card.setPosition(pickedField);
+          this.layCardOnField(socket, pickedField, card, this.getAllPlayersBoards());
           await card.immediateEffect(socket, this, players, bank);
         }
       } else {
-        this.layCardOnField(socket, pickedField, card);
-        card.setPosition(pickedField);
+        this.layCardOnField(socket, pickedField, card, this.getAllPlayersBoards());
         await card.immediateEffect(socket, this, players, bank);
       }
     }
