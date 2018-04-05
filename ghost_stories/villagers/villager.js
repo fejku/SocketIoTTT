@@ -32,7 +32,7 @@ class Villager {
   givePlayerTaoToken(socket, board, players, bank, color) {
     players.getActualPlayer().gainTaoToken(bank, color);
     UI.refreshBank(socket, bank);
-    socket.emit('ghost update players stats', players);
+    UI.refreshPlayersStats(socket, players);
   }
 }
 

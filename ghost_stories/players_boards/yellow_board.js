@@ -19,7 +19,7 @@ class YellowBoard extends PlayerBoard {
     const pickedColor = await questions.pickTaoTokenColor(socket, bank);
     players.getActualPlayer().gainTaoToken(bank, pickedColor);
     UI.refreshBank(socket, bank);
-    socket.emit('ghost update players stats', players);
+    UI.refreshPlayersStats(socket, players);
   }
 
   // Before your move, place the Enfeeblement Mantra token onto any ghost in the game. The ghost’s exorcism

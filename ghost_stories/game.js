@@ -42,7 +42,7 @@ class Game {
   async turn(io, socket) {
     const actualPlayer = this.players.getActualPlayer();
 
-    socket.emit('ghost update players stats', this.players);
+    UI.refreshPlayersStats(socket, this.players);
     // Ghost phase
     // Step 1 - Ghosts’ actions
     const ghosts = this.board.getPlayerBoardByColor(actualPlayer.getColorKey()).getGhosts();
@@ -58,7 +58,7 @@ class Game {
       // Step 3 - Ghost arrival
       await this.board.ghostArrival(socket, this.players, this.bank);
     }
-    socket.emit('ghost update players stats', this.players);
+    UI.refreshPlayersStats(socket, this.players);
 
     // Player phase
     // Before player move board power
@@ -71,7 +71,7 @@ class Game {
     console.log('availableMoves', availableMoves);
     console.log('pickedMove', pickedMove);
     actualPlayer.move(pickedMove);
-    socket.emit('ghost refresh players tokens', this.players);
+    UI.refreshPlayersTokens(socket, this.players);
     // Step 2 - Help from villager or exorcism
     const availableDecisions = [];
     // Check if villager help is possible
@@ -105,7 +105,7 @@ class Game {
       await this.board.getPlayerBoardById(this.players.getActualPlayerId())
         .boardPower(socket, this.board, this.players, this.bank, 'After exorcism villager help', decision);
     }
-    socket.emit('ghost update players stats', this.players);
+    UI.refreshPlayersStats(socket, this.players);
 
     // Step 3 Place a Buddha (optional)
     // You may place a Buddha figure on the Buddha symbol of an empty ghost space you are facing

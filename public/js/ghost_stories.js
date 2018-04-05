@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Players stats
-  function updatePlayersStats(players) {
+  function refreshPlayersStats(players) {
     players.taoists.forEach((player, i) => {
       // Color
       const color = document.getElementById(`player${i}-stats-color`);
@@ -124,12 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
       .innerHTML += `<div id="buddha-figures-amount">${buddhistTemple}</div>`;
 
     refreshBank(bank);
-    updatePlayersStats(players);
+    refreshPlayersStats(players);
     updatePlayers(players);
-  });
-
-  socket.on('ghost update players stats', (players) => {
-    updatePlayersStats(players);
   });
 
   socket.on('ghost pick player board field', (availableFields, fn) => {
@@ -235,6 +231,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  socket.on('ghost refresh players stats', (players) => {
+    refreshPlayersStats(players);
+  });
+
   socket.on('ghost refresh bank', (bank) => {
     refreshBank(bank);
   });
@@ -276,9 +276,16 @@ document.addEventListener('DOMContentLoaded', () => {
     villagers.forEach((villager, villagerIndex) => {
       const villagerTile = document.querySelector(`.villager[data-villager-index="${villagerIndex}"]`);
       villagerTile.dataset.haunted = villager.haunted;
-      const isHaunted = villagerTile.classList.contains('haunted');
-      if (isHaunted !== villager.haunted) {
-        villagerTile.classList.toggle('haunted');
+      if (villager.isHaunted) {
+        villagerTile.classList.add('haunted');
+      } else {
+        villagerTile.classList.remove('haunted');
+      }
+      // Circle of prayer and Buddhist Templer
+      if (villager.name === 'Circle of prayer') {
+        document.getElementById('circle-tao-token').style.background = villager.taoTokenColor;
+      } else if (villager.name === 'Buddhist Temple') {
+        document.getElementById('buddha-figures-amount').innerHTML = villager.buddhaFigure;
       }
     });
   });
@@ -300,11 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     });
-  });
-
-  socket.on('ghost circle of prayer update token color', (pickedColor) => {
-    console.log('ghost circle of prayer update token color', pickedColor);
-    document.getElementById('circle-tao-token').style.background = pickedColor;
   });
 
   socket.on('ghost sorcerer hut pick ghost', (availableGhosts, fn) => {

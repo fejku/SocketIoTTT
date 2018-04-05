@@ -116,7 +116,9 @@ class Bank {
       for (const taoist of taoists) {
         taoTokens[color] -= taoist.taoTokens[color];
       }
-      taoTokens[color] -= circleOfPrayer.taoTokens[color];
+      if (color === circleOfPrayer.getTaoTokenColor()) {
+        taoTokens[color]--;
+      }
     }
 
     return taoTokens;

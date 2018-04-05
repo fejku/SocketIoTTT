@@ -17,3 +17,7 @@ module.exports.refreshBuddhaFigures = (socket, buddhaFiguresAmount, playersBoard
 module.exports.refreshBank = (socket, bank) => {
   socket.emit('ghost refresh bank', bank);
 };
+
+module.exports.refreshPlayersStats = (socket, players) => {
+  socket.emit('ghost refresh players stats', players);
+};
