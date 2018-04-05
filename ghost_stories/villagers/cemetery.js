@@ -1,6 +1,7 @@
 const Villager = require('./villager');
-const CircleOfPrayer = require('./circle_of_prayer');
+
 const dice = require('../actions/curse_dice');
+const questions = require('../utils/questionsUI');
 
 // Return a dead Taoist to the game. Give him 2 Qi, then roll the Curse die.
 // The Haunting face haunts the Cemetery tile.
@@ -28,30 +29,12 @@ class Cemetery extends Villager {
     return false;
   }
 
-  validatePickedPlayer(deadPlayers, pickedPlayer) {
-    return deadPlayers.indexOf(pickedPlayer) !== -1;
-  }
-
   async pickPlayerToReview(socket, players) {
-    return new Promise((resolve, reject) => {
-      const deadPlayers = players.getDeadPlayers().map(deadPlayer => deadPlayer.color.key);
-      console.log('pickPlayerToReview', deadPlayers);
-      socket.emit(
-        'ghost question',
-        'Pick a color which player you want to review',
-        deadPlayers,
-        null,
-        (pickedPlayer) => {
-          console.log('pickPlayerToReview picked player', pickedPlayer);
-          if (this.validatePickedPlayer(deadPlayers, pickedPlayer)) {
-            const player = players.getPlayerByColor(pickedPlayer);
-            resolve(player);
-          } else {
-            reject();
-          }
-        },
-      );
-    });
+    const deadPlayers = players.getDeadPlayers().map(deadPlayer => deadPlayer.color.key);
+
+    const pickedPlayer = await questions.ask(socket, 'Pick a color which player you want to review', deadPlayers);
+
+    return players.getPlayerByColor(pickedPlayer);
   }
 
   async action(socket, board, players, bank) {

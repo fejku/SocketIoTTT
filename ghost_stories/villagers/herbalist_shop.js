@@ -37,13 +37,8 @@ class HerbalistShop extends Villager {
     // If white result, pick one on tao tokens that left
     for (const color of dicesThrowResult) {
       if (color === SixColors.WHITE.key) {
-        if (bank.isTaoTokenLeft()) {
-          const availableTaoTokensColors = bank.getAvailableTaoTokensColors();
-          console.log('availableTaoTokensColors: ', availableTaoTokensColors);
-          const pickedColor = await questions.ask(socket, 'Pick tao token color', availableTaoTokensColors);
-          console.log('pickedColor: ', pickedColor);
-          this.givePlayerTaoToken(socket, board, players, bank, pickedColor);
-        }
+        const pickedColor = await questions.pickTaoTokenColor(socket, bank);
+        this.givePlayerTaoToken(socket, board, players, bank, pickedColor);
       }
     }
   }
