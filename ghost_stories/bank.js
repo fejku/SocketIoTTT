@@ -1,4 +1,5 @@
 const { FourColors, FiveColors } = require('./enums/color');
+const UI = require('./utils/UI');
 
 const QI_TOKENS_AMOUNT = 20;
 const TAO_TOKENS_AMOUNT = 4;
@@ -100,10 +101,6 @@ class Bank {
     this.jinJangTokens[color] -= 1;
   }
 
-  updateUI(socket) {
-    socket.emit('ghost update bank', this);
-  }
-
   refreshQiTokens(taoists) {
     let qiTokens = QI_TOKENS_AMOUNT;
     for (const taoist of taoists) {
@@ -145,7 +142,7 @@ class Bank {
 
     if (socket !== null) {
       // Update Bank UI
-      this.updateUI(socket);
+      UI.refreshBank(socket, this);
     }
   }
 }

@@ -1,5 +1,6 @@
 const { FourColors } = require('../enums/color');
 const PlayerBoard = require('./player_board');
+const UI = require('../utils/UI');
 const questions = require('../utils/questionsUI');
 
 class YellowBoard extends PlayerBoard {
@@ -17,7 +18,7 @@ class YellowBoard extends PlayerBoard {
   async bottomlessPocketsPower(socket, players, bank) {
     const pickedColor = await questions.pickTaoTokenColor(socket, bank);
     players.getActualPlayer().gainTaoToken(bank, pickedColor);
-    bank.updateUI(socket);
+    UI.refreshBank(socket, bank);
     socket.emit('ghost update players stats', players);
   }
 

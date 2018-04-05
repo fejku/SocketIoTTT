@@ -1,6 +1,7 @@
 const Ghost = require('../../ghost');
 const { FiveColors } = require('../../../enums/color');
 const dice = require('../../../actions/curse_dice');
+const UI = require('../../../utils/UI');
 const questions = require('../../../utils/questionsUI');
 
 class FuryOfDepth extends Ghost {
@@ -28,11 +29,11 @@ class FuryOfDepth extends Ghost {
     const pickedAnswer = questions.ask(socket, 'Pick reward', availableOptions);
     if (pickedAnswer === 'Qi token') {
       actualPlayer.gainQi(bank);
-      bank.updateUI(socket);
+      UI.refreshBank(socket, bank);
     }
     if (pickedAnswer === 'Jin Jang token') {
       actualPlayer.gainJinJangToken(bank);
-      bank.updateUI(socket);
+      UI.refreshBank(socket, bank);
     }
   }
 }

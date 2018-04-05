@@ -4,6 +4,7 @@ const Bank = require('./bank');
 
 const Decision = require('./enums/decision');
 
+const UI = require('./utils/UI');
 const questions = require('./utils/questionsUI');
 
 class Game {
@@ -52,7 +53,7 @@ class Game {
     // Step 2 - Check board overrun
     if (this.board.getPlayerBoardByColor(this.players.getActualPlayerColor()).isBoardFull()) {
       actualPlayer.loseQi(this.bank);
-      this.bank.updateUI(socket);
+      UI.refreshBank(socket, this.bank);
     } else {
       // Step 3 - Ghost arrival
       await this.board.ghostArrival(socket, this.players, this.bank);

@@ -61,7 +61,7 @@ class SorcererHut extends Villager {
     // Player lose Qi
     players.getActualPlayer().loseQi(bank);
     // Update bank
-    bank.updateUI(socket);
+    UI.refreshBank(socket, bank);
   }
 }
 

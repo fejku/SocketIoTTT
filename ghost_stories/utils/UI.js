@@ -13,3 +13,7 @@ module.exports.refreshPlayersTokens = (socket, players) => {
 module.exports.refreshBuddhaFigures = (socket, buddhaFiguresAmount, playersBoards) => {
   socket.emit('ghost refresh buddha figures', buddhaFiguresAmount, playersBoards);
 };
+
+module.exports.refreshBank = (socket, bank) => {
+  socket.emit('ghost refresh bank', bank);
+};

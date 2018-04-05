@@ -1,3 +1,5 @@
+const UI = require('../utils/UI');
+
 class Villager {
   constructor() {
     this.haunted = false;
@@ -29,7 +31,7 @@ class Villager {
 
   givePlayerTaoToken(socket, board, players, bank, color) {
     players.getActualPlayer().gainTaoToken(bank, color);
-    bank.updateUI(socket);
+    UI.refreshBank(socket, bank);
     socket.emit('ghost update players stats', players);
   }
 }

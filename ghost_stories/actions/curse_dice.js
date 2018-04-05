@@ -1,9 +1,10 @@
 const CircleOfPrayer = require('../villagers/circle_of_prayer');
 const Dice = require('./dice');
+const UI = require('../utils/UI');
 
 function loseQi(socket, players, bank) {
   players.getActualPlayer().loseQi(bank);
-  bank.updateUI(socket);
+  UI.refreshBank(socket, bank);
 }
 
 function loseAllTaoTokens(socket, players, bank, circleOfPrayer) {

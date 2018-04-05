@@ -239,7 +239,7 @@ class Taoist {
         console.log('board: ', board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
       } else {
         this.loseQi(bank);
-        bank.updateUI(socket);
+        UI.refreshBank(socket, bank);
       }
     } else {
       // TODO:

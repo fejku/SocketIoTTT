@@ -146,7 +146,7 @@ class Board {
   async ghostArrival(socket, players, bank) {
     if (this.getPlayersBoards().isAllBoardsFull()) {
       players.getActualPlayer().loseQi(bank);
-      bank.updateUI(socket);
+      UI.refreshBank(socket, bank);
     } else {
       // Draw ghost card
       const card = this.drawCard();

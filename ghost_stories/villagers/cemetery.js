@@ -1,6 +1,7 @@
 const Villager = require('./villager');
 
 const dice = require('../actions/curse_dice');
+const UI = require('../utils/UI');
 const questions = require('../utils/questionsUI');
 
 // Return a dead Taoist to the game. Give him 2 Qi, then roll the Curse die.
@@ -45,7 +46,7 @@ class Cemetery extends Villager {
     } else {
       player.gainQi(bank, 1);
     }
-    bank.updateUI(socket);
+    UI.refreshBank(socket, bank);
 
     dice.throwCurseDiceCemetry(socket, board, players, bank);
   }

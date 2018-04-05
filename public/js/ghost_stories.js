@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const socket = io();
 
   // Bank
-  function updateBank(bank) {
+  function refreshBank(bank) {
     // Qi tokens
     document.getElementById('bank-qi-tokens').textContent = bank.qiTokens;
     // Jin jang tokens
@@ -123,13 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
       .find(villager => villager.dataset.name === 'Buddhist Temple')
       .innerHTML += `<div id="buddha-figures-amount">${buddhistTemple}</div>`;
 
-    updateBank(bank);
+    refreshBank(bank);
     updatePlayersStats(players);
     updatePlayers(players);
-  });
-
-  socket.on('ghost update bank', (bank) => {
-    updateBank(bank);
   });
 
   socket.on('ghost update players stats', (players) => {
@@ -237,6 +233,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
     });
+  });
+
+  socket.on('ghost refresh bank', (bank) => {
+    refreshBank(bank);
   });
 
   /**

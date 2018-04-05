@@ -1,5 +1,6 @@
 const Ghost = require('../../ghost');
 const { FiveColors } = require('../../../enums/color');
+const UI = require('../../../utils/UI');
 const questions = require('../../../utils/questionsUI');
 
 class YellowPlague extends Ghost {
@@ -15,7 +16,7 @@ class YellowPlague extends Ghost {
         // Pick which color token to put on tile
         const pickedColor = await questions.ask(socket, 'Pick tao token color', availableColors);
         players.getActualPlayer().gainTaoToken(bank, pickedColor);
-        bank.updateUI(socket);
+        UI.refreshBank(socket, bank);
       }
     }
   }

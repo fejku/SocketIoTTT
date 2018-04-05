@@ -1,5 +1,6 @@
 const Villager = require('./villager');
 
+const UI = require('../utils/UI');
 const questions = require('../utils/questionsUI');
 
 // Take a Tao token of whatever color you wish from the supply, and gain 1 Qi point. Then, bring a ghost into play.
@@ -32,7 +33,7 @@ class TeaHouse extends Villager {
 
     // Get qi token
     players.getActualPlayer().gainQi(bank);
-    bank.updateUI(socket);
+    UI.refreshBank(socket, bank);
 
     // Bring ghost into play
     await board.ghostArrival(socket, players, bank);
