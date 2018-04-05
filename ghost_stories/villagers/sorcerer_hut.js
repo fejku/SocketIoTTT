@@ -1,5 +1,6 @@
 const Villager = require('./villager');
-const CircleOfPrayer = require('./circle_of_prayer');
+
+const UI = require('../utils/UI');
 
 // Discard any ghost in play, without activating its ability or reward. Lose 1 Qi point.
 class SorcererHut extends Villager {
@@ -45,7 +46,7 @@ class SorcererHut extends Villager {
   removeGhostFromBoard(socket, board, pickedGhost) {
     board.getPlayerBoardByColor(pickedGhost.color).setField(pickedGhost.field, null);
     // Update UI
-    socket.emit('ghost refresh player boards', board.getAllPlayersBoards());
+    UI.refreshPlayersBoards(socket, board.getAllPlayersBoards());
   }
 
   async action(socket, board, players, bank) {

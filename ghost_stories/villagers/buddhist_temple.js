@@ -1,5 +1,7 @@
 const Villager = require('./villager');
 
+const UI = require('../utils/UI');
+
 // Take a Buddha figure, which you can place next turn at the end of the Yang phase.
 class BuddhistTemple extends Villager {
   constructor() {
@@ -12,8 +14,8 @@ class BuddhistTemple extends Villager {
     this.buddhaFigure += amount;
   }
 
-  refreshBuddhaFiguresUI(socket, playersBoards) {
-    socket.emit('ghost update buddha figures', this.buddhaFigure, playersBoards);
+  getBuddhaFiguresAmount() {
+    return this.buddhaFigure;
   }
 
   validateHelp(board, players, bank) { /* eslint-disable-line no-unused-vars */
@@ -29,7 +31,7 @@ class BuddhistTemple extends Villager {
     players.getActualPlayer().gainBuddhaFigure();
     // Remove figure from tile
     this.buddhaFigure--;
-    this.refreshBuddhaFiguresUI(socket, board.getAllPlayersBoards());
+    UI.refreshBuddhaFigures(socket, this.buddhaFigure, board.getAllPlayersBoards());
   }
 }
 

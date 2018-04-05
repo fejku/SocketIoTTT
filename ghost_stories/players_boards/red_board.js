@@ -1,5 +1,6 @@
 const { FourColors } = require('../enums/color');
 const PlayerBoard = require('./player_board');
+const UI = require('../utils/UI');
 const questions = require('../utils/questionsUI');
 const playersUtils = require('../players/players_utils');
 
@@ -27,7 +28,7 @@ class RedBoard extends PlayerBoard {
       const availableMoves = playersUtils.getAvailableMoves(pickedTaoist.getPosition());
       const pickedMove = await questions.pickVillagerTile(socket, availableMoves);
       pickedTaoist.move(pickedMove);
-      socket.emit('ghost refresh players tokens', players);
+      UI.refreshPlayersTokens(socket, players);
     }
   }
 

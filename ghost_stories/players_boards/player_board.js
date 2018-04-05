@@ -1,3 +1,5 @@
+const UI = require('../utils/UI');
+
 class PlayerBoard {
   constructor() {
     this.color = null;
@@ -87,19 +89,15 @@ class PlayerBoard {
     this.fields[index] = value;
   }
 
-  removeGhostFromField(socket, fieldIndex) {
+  removeGhostFromField(socket, playersBoards, ghostCard) {
     // Get all ghosts and check if any block board power
     if (this.getFields().findIndex(ghost => ghost.isDisablingTaoistPower()) !== -1) {
       this.powerActive = true;
     }
-    // Send information to UI that ghost sohuld be removed from field
-    this.removeGhostFromFieldUI(socket, fieldIndex);
     // Remove ghost from field
-    this.setField(fieldIndex, null);
-  }
-
-  removeGhostFromFieldUI(socket, fieldIndex) {
-    socket.emit('ghost remove ghost from field', this.getColor(), fieldIndex);
+    this.setField(ghostCard.position.fieldIndex, null);
+    // Refresh ghosts on UI
+    UI.refreshPlayersBoards(socket, playersBoards);
   }
 
   isBuddhaOnField(fieldIndex) {

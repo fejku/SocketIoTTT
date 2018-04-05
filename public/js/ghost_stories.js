@@ -244,8 +244,8 @@ document.addEventListener('DOMContentLoaded', () => {
    *
    * @param {Array} playersBoards Array of players boards
    */
-  socket.on('ghost refresh player boards', (playersBoards) => {
-    console.log('ghost refresh player boards', playersBoards);
+  socket.on('ghost refresh players boards', (playersBoards) => {
+    console.log('ghost refresh players boards', playersBoards);
     // Remove all ghosts
     [...document.getElementsByClassName('ghost')].forEach((ghost) => {
       ghost.remove();
@@ -283,24 +283,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  socket.on('ghost refresh buddha figures', (buddhaFiguresAmount, playersBoards) => {
+    console.log('ghost refresh buddha figures', buddhaFiguresAmount, playersBoards);
+    // Update buddha temple
+    document.getElementById('buddha-figures-amount').innerHTML = buddhaFiguresAmount;
+    // Remove all buddha figures from players boards
+    [...document.querySelectorAll('.player-board .buddha')].forEach((playerBoardElement) => {
+      playerBoardElement.remove();
+    });
+    // Place buddha figures on players boards
+    playersBoards.forEach((playerBoard, playerBoardIndex) => {
+      playerBoard.buddhaFields.forEach((buddhaField, buddhaFieldIndex) => {
+        if (buddhaField) {
+          document.querySelector(`.player-board[data-board-index="${playerBoardIndex}"]`
+              + `[data-field-index="${buddhaFieldIndex}"]`).innerHTML += '<div class="buddha">*B*</div>';
+        }
+      });
+    });
+  });
+
   socket.on('ghost lay ghost card on picked field', (pickedField, card) => {
+    // TODO: change to general refresh player boards
     console.log('ghost lay ghost card on picked field', pickedField.playerBoardIndex);
     document.querySelector(`.player-board[data-board-index="${pickedField.playerBoardIndex}"]` +
         `[data-field-index="${pickedField.fieldIndex}"]`)
       .innerHTML = getGhost(card);
-  });
-
-  socket.on('ghost remove ghost from field', (color, fieldIndex) => {
-    // TODO: refactor or remove and always use refresh function
-    console.log('ghost remove ghost from field', color, fieldIndex);
-    [...document.getElementsByClassName('player-board')]
-      .filter(ghostField => (ghostField.dataset.boardColor === color)
-        && (Number(ghostField.dataset.fieldIndex) === fieldIndex))
-      .forEach((ghostField) => {
-        while (ghostField.hasChildNodes()) {
-          ghostField.removeChild(ghostField.lastChild);
-        }
-      });
   });
 
   socket.on('ghost circle of prayer update token color', (pickedColor) => {
@@ -309,6 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('ghost sorcerer hut pick ghost', (availableGhosts, fn) => {
+    // TODO: change to general pick ghost function
     console.log('ghost sorcerer hut pick ghost availableGhosts', availableGhosts);
     // { color: 'YELLOW', fields: [ 0, 1 ] }
     availableGhosts.forEach((ghost) => {
@@ -331,25 +339,6 @@ document.addEventListener('DOMContentLoaded', () => {
             fn(result);
           });
         });
-    });
-  });
-
-  socket.on('ghost update buddha figures', (buddhaFiguresAmount, playersBoards) => {
-    console.log('ghost update buddha figures', buddhaFiguresAmount, playersBoards);
-    // Update buddha temple
-    document.getElementById('buddha-figures-amount').innerHTML = buddhaFiguresAmount;
-    // Remove all buddha figures from players boards
-    [...document.querySelectorAll('.player-board .buddha')].forEach((playerBoardElement) => {
-      playerBoardElement.remove();
-    });
-    // Place buddha figures on players boards
-    playersBoards.forEach((playerBoard, playerBoardIndex) => {
-      playerBoard.buddhaFields.forEach((buddhaField, buddhaFieldIndex) => {
-        if (buddhaField) {
-          document.querySelector(`.player-board[data-board-index="${playerBoardIndex}"]`
-              + `[data-field-index="${buddhaFieldIndex}"]`).innerHTML += '<div class="buddha">*B*</div>';
-        }
-      });
     });
   });
 

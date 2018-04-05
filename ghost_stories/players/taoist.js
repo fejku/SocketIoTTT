@@ -1,5 +1,6 @@
 const { FiveColors, SixColors } = require('../enums/color');
 const playersUtils = require('./players_utils');
+const UI = require('../utils/UI');
 const questions = require('../utils/questionsUI');
 const ColorDice = require('../actions/color_dice');
 
@@ -202,7 +203,7 @@ class Taoist {
     } else {
       playersBoards.getPlayerBoardById(pickedField.playerBoardIndex).setBuddhaField(pickedField.fieldIndex, true);
     }
-    buddhistTemple.refreshBuddhaFiguresUI(socket, playersBoards.getPlayersBoards());
+    UI.refreshBuddhaFigures(socket, buddhistTemple.getBuddhaFiguresAmount(), playersBoards.getPlayersBoards());
   }
 
   async exorcism(socket, board, players, bank) {
@@ -233,7 +234,7 @@ class Taoist {
         await ghost.afterWinningEffect(socket, board, players, bank, ghostsInRange[0]);
         // Remove ghost from field
         board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex)
-          .removeGhostFromField(socket, ghostsInRange[0].fieldIndex);
+          .removeGhostFromField(socket, board.getAllPlayersBoards(), ghost);
         console.log('board: ', board.getPlayersBoards().getPlayerBoardById(ghostsInRange[0].playerBoardIndex));
       } else {
         this.loseQi(bank);

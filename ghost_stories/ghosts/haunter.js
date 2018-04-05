@@ -1,5 +1,7 @@
 const Ghost = require('./ghost');
 
+const UI = require('../utils/UI');
+
 class Haunter extends Ghost {
   constructor(name, color, resistance) {
     super(name, color, resistance);
@@ -15,9 +17,9 @@ class Haunter extends Ghost {
     const villagers = board.getVillagers();
     this.progressHauntingFigure(ghostPosition, villagers);
     // Set ghost haunting figures
-    socket.emit('ghost refresh player boards', board.getAllPlayersBoards());
+    UI.refreshPlayersBoards(socket, board.getAllPlayersBoards());
     // Set haunted tiles
-    socket.emit('ghost refresh villagers', board.getAllVillagers());
+    UI.refreshVillagers(socket, board.getAllVillagers());
   }
 
   /**

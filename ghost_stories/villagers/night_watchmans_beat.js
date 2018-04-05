@@ -1,5 +1,6 @@
 const Villager = require('./villager');
 
+const UI = require('../utils/UI');
 const questions = require('../utils/questionsUI');
 
 // Move all the Haunting figures on one board backward on the card.
@@ -37,7 +38,7 @@ class NightWatchmansBeat extends Villager {
         ghost.ghost.moveHauntingFigureBackward();
       });
     // Refresh UI
-    socket.emit('ghost refresh player boards', board.getAllPlayersBoards());
+    UI.refreshPlayersBoards(socket, board.getAllPlayersBoards());
   }
 }
 

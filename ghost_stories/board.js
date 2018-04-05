@@ -41,6 +41,7 @@ const ScarletEvildoer = require('./ghosts/color/red/scarlet_evildoer');
 const FleshDevourer = require('./ghosts/color/red/flesh_devourer');
 const RagingOne = require('./ghosts/color/red/raging_one');
 
+const UI = require('./utils/UI');
 const questions = require('./utils/questionsUI');
 
 class Board {
@@ -167,7 +168,7 @@ class Board {
         const buddhistTemple = this.villagers.getVillagerByClass(BuddhistTemple);
         // Back buddha into temple
         buddhistTemple.addBuddhaFigure();
-        buddhistTemple.refreshBuddhaFiguresUI(socket, this.getAllPlayersBoards());
+        UI.refreshBuddhaFigures(socket, buddhistTemple.getBuddhaFiguresAmount(), this.getAllPlayersBoards());
         if (card.isWuFeng()) {
           this.layCardOnField(socket, pickedField, card);
           card.setPosition(pickedField);

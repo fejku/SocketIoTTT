@@ -1,5 +1,6 @@
 const Villager = require('./villager');
 
+const UI = require('../utils/UI');
 const questions = require('../utils/questionsUI');
 const playersUtils = require('../players/players_utils');
 
@@ -40,7 +41,7 @@ class PavilionOfTheHeavenlyWinds extends Villager {
         // Move ghost
         board.getPlayersBoards().moveGhost(pickedGhostField, pickedNewField);
         // Refresh UI
-        socket.emit('ghost refresh player boards', board.getAllPlayersBoards());
+        UI.refreshPlayersBoards(socket, board.getAllPlayersBoards());
       }
     }
     // Is any other player to move (player can`t move himself)
@@ -58,7 +59,7 @@ class PavilionOfTheHeavenlyWinds extends Villager {
         // Move player
         pickedPlayer.move(pickedField);
         // Refresh UI
-        socket.emit('ghost refresh players tokens', players);
+        UI.refreshPlayersTokens(socket, players);
       }
     }
   }
