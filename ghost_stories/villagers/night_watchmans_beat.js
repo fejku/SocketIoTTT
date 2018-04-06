@@ -1,4 +1,5 @@
 const Villager = require('./villager');
+const Haunter = require('../ghosts/haunter');
 
 const UI = require('../utils/UI');
 const questions = require('../utils/questionsUI');
@@ -16,10 +17,13 @@ class NightWatchmansBeat extends Villager {
     }
     // Check if there are any ghosts and haunting figure position is not 0
     const ghosts = board.getPlayersBoards().getGhosts();
-    const isAnyGhost = ghosts.length > 0;
-    const isHauntingFigureToGoBack = ghosts.findIndex(ghost => ghost.ghost.getHauntingFigurePosition() > 0) !== -1;
+    const isHauntingFigureToGoBack = ghosts
+      .map(ghost => ghost.ghost)
+      // Check if ghost is Haunter
+      .filter(ghost => Object.isPrototypeOf.call(Haunter.prototype, ghost))
+      .findIndex(ghost => ghost.getHauntingFigurePosition() > 0) !== -1;
 
-    return isAnyGhost || isHauntingFigureToGoBack;
+    return isHauntingFigureToGoBack;
   }
 
   async action(socket, board, players, bank) { /* eslint-disable-line no-unused-vars */
