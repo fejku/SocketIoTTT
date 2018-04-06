@@ -117,6 +117,10 @@ class Board {
     return this.villagers.getVillagerByClass(villagerClass);
   }
 
+  getVillagerByName(villagerName) {
+    return this.villagers.getVillagerByName(villagerName);
+  }
+
   getPlayersBoards() {
     return this.playersBoards;
   }

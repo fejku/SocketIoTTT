@@ -222,14 +222,17 @@ class Taoist {
       console.log('ghost', ghost);
       const ghostColor = ghost.getColor();
       // If result of throwed dices(taoist tao tokens, circle of prayers) is greater then ghost resistance
-      const whiteDiceResult = diceThrowResult.filter(result => result === SixColors.WHITE).length;
+      const whiteDiceResult = diceThrowResult.filter(result => result === SixColors.WHITE.key).length;
       const ghostColorResult = diceThrowResult.filter(result => result === ghostColor).length;
       const resultAfterModifications = ghostColorResult + whiteDiceResult;
+      const circleOfPrayer = board.getVillagerByName('Circle of prayer').getTaoTokenColor() === ghostColor ? 1 : 0;
+      const enfeeblementMantra = { result: 0 };
+      board.getPlayerBoardById(players.getActualPlayerId())
+        .boardPower(socket, board, players, bank, 'Enfeeblement Mantra', enfeeblementMantra, ghost.getPosition());
+      const ghostResistance = ghost.getResistance() - circleOfPrayer - enfeeblementMantra.result;
       // TODO: make formula
-      // + circleOfPrayer
       // + taoTokens
-      // + enfeeblementMantra
-      if (ghost.getResistance() <= resultAfterModifications) {
+      if (ghostResistance <= resultAfterModifications) {
         console.log('Ghost defeated');
         // Ghost action after winning
         await ghost.afterWinningEffect(socket, board, players, bank, ghostsInRange[0]);

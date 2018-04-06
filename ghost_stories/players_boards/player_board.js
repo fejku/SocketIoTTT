@@ -90,12 +90,12 @@ class PlayerBoard {
   }
 
   removeGhostFromField(socket, playersBoards, ghostCard) {
-    // Get all ghosts and check if any block board power
-    if (this.getFields().findIndex(ghost => ghost.isDisablingTaoistPower()) !== -1) {
-      this.powerActive = true;
-    }
     // Remove ghost from field
     this.setField(ghostCard.position.fieldIndex, null);
+    // Set active power on true if there are no disabling board power ghosts on board
+    if (this.getFields().findIndex(ghost => ghost !== null && ghost.isDisablingTaoistPower()) === -1) {
+      this.powerActive = true;
+    }
     // Refresh ghosts on UI
     UI.refreshPlayersBoards(socket, playersBoards);
   }

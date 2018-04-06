@@ -31,7 +31,14 @@ class YellowBoard extends PlayerBoard {
     this.enfeeblementMantraTokenPosition = await questions.pickPlayerBoardField(socket, board.getPlayersBoards().getGhosts());
   }
 
-  async boardPower(socket, board, players, bank, situationName) {
+  enfeeblementMantraResult(enfeeblementMantra, ghostPosition) {
+    if ((ghostPosition.fieldIndex === this.enfeeblementMantraTokenPosition.fieldIndex)
+        && (ghostPosition.playerBoardIndex === this.enfeeblementMantraTokenPosition.playerBoardIndex)) {
+      enfeeblementMantra.result = 1;
+    }
+  }
+
+  async boardPower(socket, board, players, bank, situationName, enfeeblementMantra, ghostPosition) {
     if (!this.validatePowerBoard()) {
       return;
     }
@@ -43,6 +50,8 @@ class YellowBoard extends PlayerBoard {
     } else if (this.powerName === 'Enfeeblement Mantra') {
       if (situationName === 'Before move') {
         await this.enfeeblementMantraPower(socket, board);
+      } else if (situationName === 'Enfeeblement Mantra') {
+        this.enfeeblementMantraResult(enfeeblementMantra, ghostPosition);
       }
     }
   }
