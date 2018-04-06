@@ -28,7 +28,7 @@ class SorcererHut extends Villager {
   validatePickedGhost(availableGhosts, pickedGhost) {
     return availableGhosts
       .find(ghost => ghost.color === pickedGhost.color
-        && ghost.fields.indexOf(pickedGhost.field) !== -1) !== undefined;
+        && ghost.fields.includes(pickedGhost.field)) !== undefined;
   }
 
   pickGhost(socket, availableGhosts) {

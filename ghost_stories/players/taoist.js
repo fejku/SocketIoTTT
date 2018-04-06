@@ -52,6 +52,10 @@ class Taoist {
     }
   }
 
+  getTaoTokensColor(color) {
+    return this.taoTokens[color];
+  }
+
   loseAllTaoTokens() {
     for (const colorItem of FiveColors.enums) {
       this.taoTokens[colorItem.key] = 0;
@@ -230,6 +234,29 @@ class Taoist {
       board.getPlayerBoardById(players.getActualPlayerId())
         .boardPower(socket, board, players, bank, 'Enfeeblement Mantra', enfeeblementMantra, ghost.getPosition());
       const ghostResistance = ghost.getResistance() - circleOfPrayer - enfeeblementMantra.result;
+      // Check if its enough to defeat ghost
+      const isGhostDefeated = ghostResistance <= resultAfterModifications;
+      if (!isGhostDefeated) {
+        // Check if with own and other players tao tokens win is possible
+        const allTaoTokens = players.getTaoists()
+          .filter(taoist => taoist.getPosition() === this.position)
+          .reduce((result, curr) => result + curr.getTaoTokensColor(ghostColor));
+        // Is win possible
+        if (ghostResistance <= resultAfterModifications + allTaoTokens) {
+          // const othersTaoToken = players.getTaoists()
+          // .filter(taoist => taoist.getPosition() === this.position)
+          // .reduce((result, curr) => result + curr.getTaoTokensColor(ghostColor));
+        }
+        // this.taoTokens[ghostColor] +
+        // if player have own tokens
+        // add own tokens to array of answens
+        // if player stay on same tile as other players and they have tao tokens
+
+        // Check if with tao token win is possible
+        // resultAfterModifications;
+        // Ask if use tao token
+      }
+
       // TODO: make formula
       // + taoTokens
       if (ghostResistance <= resultAfterModifications) {

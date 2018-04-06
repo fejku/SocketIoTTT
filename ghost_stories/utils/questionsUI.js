@@ -15,11 +15,11 @@ function validatePickedPlayer(availablePlayers, pickedPlayerColor) {
 }
 
 function validatePickedVillagerTile(availableVillagerTiles, pickedVillagerTilePosition) {
-  return availableVillagerTiles.indexOf(pickedVillagerTilePosition) !== -1;
+  return availableVillagerTiles.includes(pickedVillagerTilePosition);
 }
 
 function validatePickedPlayerBoard(availablePlayerBoardIndexes, pickedPlayerBoardIndex) {
-  return availablePlayerBoardIndexes.indexOf(pickedPlayerBoardIndex) !== -1;
+  return availablePlayerBoardIndexes.includes(pickedPlayerBoardIndex);
 }
 
 /**
