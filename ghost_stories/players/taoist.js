@@ -236,30 +236,30 @@ class Taoist {
       const ghostResistance = ghost.getResistance() - circleOfPrayer - enfeeblementMantra.result;
       // Check if its enough to defeat ghost
       const isGhostDefeated = ghostResistance <= resultAfterModifications;
-      if (!isGhostDefeated) {
-        // Check if with own and other players tao tokens win is possible
-        const allTaoTokens = players.getTaoists()
-          .filter(taoist => taoist.getPosition() === this.position)
-          .reduce((result, curr) => result + curr.getTaoTokensColor(ghostColor));
+      // TODO: Usage of tao tokens
+      // if (!isGhostDefeated) {
+      const taoistsTaoTokens = players.getTaoists()
+        .filter(taoist => taoist.getPosition() === this.getPosition())
+        .reduce((result, curr) => result + curr.getTaoTokensColor(ghostColor), 0);
         // Is win possible
-        if (ghostResistance <= resultAfterModifications + allTaoTokens) {
-          // const othersTaoToken = players.getTaoists()
-          // .filter(taoist => taoist.getPosition() === this.position)
-          // .reduce((result, curr) => result + curr.getTaoTokensColor(ghostColor));
-        }
-        // this.taoTokens[ghostColor] +
-        // if player have own tokens
-        // add own tokens to array of answens
-        // if player stay on same tile as other players and they have tao tokens
+        // if (ghostResistance <= resultAfterModifications + taoistsTaoTokens) {
+      // Get colors of players that have tao tokens with required color and stay at same tile as actual player
+      const availablePlayersWithTokens = players.getTaoists()
+        .filter(taoist => (taoist.getPosition() === this.getPosition()))
+        .map(taoist => ({
+          taoistColor: taoist.getColor(),
+          tokens: taoist.taoTokens,
+        }));
 
-        // Check if with tao token win is possible
-        // resultAfterModifications;
-        // Ask if use tao token
-      }
+      questions.pickTaoTokens(
+        socket,
+        { color: ghostColor, amount: ghostResistance - resultAfterModifications },
+        availablePlayersWithTokens,
+      );
+      // }
+      // }
 
-      // TODO: make formula
-      // + taoTokens
-      if (ghostResistance <= resultAfterModifications) {
+      if (isGhostDefeated) {
         console.log('Ghost defeated');
         // Ghost action after winning
         await ghost.afterWinningEffect(socket, board, players, bank, ghostsInRange[0]);

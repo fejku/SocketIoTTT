@@ -148,3 +148,22 @@ module.exports.pickTaoTokenColor = async (socket, bank) => {
   return null;
 };
 
+/**
+ *  Pickinkg tao tokens
+ *
+ * @param {Socket} socket
+ * @param {Object} neededTokens
+ * @param {string} neededTokens.color
+ * @param {number} neededTokens.amount
+ * @param {Object[]} availablePlayersTaoTokens
+ * @param {string} availablePlayersTaoTokens.taoistColor
+ * @param {TaoTokens} availablePlayersTaoTokens.taoTokens
+  */
+module.exports.pickTaoTokens = async (socket, neededTokens, availablePlayersTaoTokens) =>
+  new Promise((resolve, reject) => {
+    console.log(`ghost pick tao tokens neededTokens: ${neededTokens} availablePlayersTaoTokens: ${availablePlayersTaoTokens}`);
+    socket.emit('ghost pick tao tokens', neededTokens, availablePlayersTaoTokens, (pickedTaoTokens) => {
+      console.log('ghost picked tao tokens: ', pickedTaoTokens);
+      // TODO
+    });
+  });

@@ -388,4 +388,36 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  socket.on('ghost pick tao tokens', (neededTokens, availablePlayersTaoTokens, fn) => {
+    console.log(`ghost pick tao tokens neededTokens: ${neededTokens} availablePlayersTaoTokens: ${availablePlayersTaoTokens}`);
+    const decisions = document.getElementById('decisions');
+
+    let html = '';
+    availablePlayersTaoTokens.forEach((playerTaoTokens) => {
+      if (playerTaoTokens.tokens[neededTokens.color] > 0) {
+        html = `${playerTaoTokens.taoistColor} <input id="taoist${playerTaoTokens.taoistColor}" class="pickTaoToken" data-color="${playerTaoTokens.taoistColor}" type="number" value="0" min="0" max="${playerTaoTokens.tokens[neededTokens.color]}">`;
+      }
+    });
+    html += '<button id="pickTaoTokenDecision">Done</button>';
+
+    decisions.innerHTML = `${html}`;
+
+    decisions.addEventListener('click', function pickTaoTokenDecision(e) {
+      if (e.target.id === 'pickTaoTokenDecision') {
+        const pickedTaoTokens = document.getElementsByClassName('pickTaoToken');
+        [...pickedTaoTokens].forEach((pickedTaoToken) => {
+          if (Number(pickedTaoToken.value) > 0)
+            {pickedTaoToken.dataset.color;}
+        });
+        const pickedDecision = e.target.dataset.answerValue;
+        while (decisions.hasChildNodes()) {
+          decisions.removeChild(decisions.lastChild);
+        }
+        decisions.removeEventListener('click', pickTaoTokenDecision);
+        console.log('ghost question picked value: ', pickedDecision);
+        fn(pickedDecision);
+      }
+    });
+  });
 });
