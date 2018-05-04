@@ -22,6 +22,11 @@ function validatePickedPlayerBoard(availablePlayerBoardIndexes, pickedPlayerBoar
   return availablePlayerBoardIndexes.includes(pickedPlayerBoardIndex);
 }
 
+function validatePickedTaoTokens(availableTaoists, pickedTaoTokens) {
+  // TODO
+  return true;
+}
+
 /**
  *
  * @param {Socket} socket
@@ -155,15 +160,17 @@ module.exports.pickTaoTokenColor = async (socket, bank) => {
  * @param {Object} neededTokens
  * @param {string} neededTokens.color
  * @param {number} neededTokens.amount
- * @param {Object[]} availablePlayersTaoTokens
- * @param {string} availablePlayersTaoTokens.taoistColor
- * @param {TaoTokens} availablePlayersTaoTokens.taoTokens
-  */
-module.exports.pickTaoTokens = async (socket, neededTokens, availablePlayersTaoTokens) =>
+ * @param {Taoist[]} availableTaoists
+   */
+module.exports.pickTaoTokens = async (socket, neededTokens, availableTaoists) =>
   new Promise((resolve, reject) => {
-    console.log(`ghost pick tao tokens neededTokens: ${neededTokens} availablePlayersTaoTokens: ${availablePlayersTaoTokens}`);
-    socket.emit('ghost pick tao tokens', neededTokens, availablePlayersTaoTokens, (pickedTaoTokens) => {
+    console.log('ghost pick tao tokens neededTokens: ', neededTokens, ', availableTaoists: ', availableTaoists);
+    socket.emit('ghost pick tao tokens', neededTokens, availableTaoists, (pickedTaoTokens) => {
       console.log('ghost picked tao tokens: ', pickedTaoTokens);
-      // TODO
+      if (validatePickedTaoTokens(availableTaoists, pickedTaoTokens)) {
+        resolve(pickedTaoTokens);
+      } else {
+        reject();
+      }
     });
   });

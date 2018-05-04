@@ -12,6 +12,7 @@ class Taoist {
     this.color = color;
     this.qiTokens = 4;
     this.jinJangToken = 1;
+    // {'YELLOW': amount, 'GREEN': amount, 'BLUE': amount, 'RED': amount, 'BLACK: amount}
     this.taoTokens = this.initTaoTokens();
     this.position = 4;
 
@@ -210,14 +211,29 @@ class Taoist {
     UI.refreshBuddhaFigures(socket, buddhistTemple.getBuddhaFiguresAmount(), playersBoards.getPlayersBoards());
   }
 
+  getDiceResult(dicesAfterThrow, ghostColor) {
+    const whiteDiceResult = dicesAfterThrow.filter(result => result === SixColors.WHITE.key).length;
+    const ghostColorResult = dicesAfterThrow.filter(result => result === ghostColor).length;
+
+    return whiteDiceResult + ghostColorResult;
+  }
+
+  getGhostResistance(socket, board, players, bank, ghost) {
+    const circleOfPrayer = board.getVillagerByName('Circle of prayer').getTaoTokenColor() === ghost.getColor() ? 1 : 0;
+    const enfeeblementMantra = { result: 0 };
+    board.getPlayerBoardById(players.getActualPlayerId())
+      .boardPower(socket, board, players, bank, 'Enfeeblement Mantra', enfeeblementMantra, ghost.getPosition());
+    return ghost.getResistance() - circleOfPrayer - enfeeblementMantra.result;
+  }
+
   async exorcism(socket, board, players, bank) {
     const ghostsInRange = this.getGhostsInRange(board.getAllPlayersBoards());
     // Throw dices
     const dicesAmount = board.getActiveDices();
-    const diceThrowResult = ColorDice.throwDices(dicesAmount);
+    const dicesAfterThrow = ColorDice.throwDices(dicesAmount);
     // Allow reroll or gray dice if green board
     await board.getPlayerBoardById(players.getActualPlayerId())
-      .boardPower(socket, board, players, bank, 'After exorcism color dice throw', diceThrowResult);
+      .boardPower(socket, board, players, bank, 'After exorcism color dice throw', dicesAfterThrow);
 
     console.log('ghostsInRange', ghostsInRange);
     if (ghostsInRange.length === 1) {
@@ -225,39 +241,32 @@ class Taoist {
         .getField(ghostsInRange[0].fieldIndex);
       console.log('ghost', ghost);
       const ghostColor = ghost.getColor();
-      // If result of throwed dices(taoist tao tokens, circle of prayers) is greater then ghost resistance
-      const whiteDiceResult = diceThrowResult.filter(result => result === SixColors.WHITE.key).length;
-      const ghostColorResult = diceThrowResult.filter(result => result === ghostColor).length;
-      const resultAfterModifications = ghostColorResult + whiteDiceResult;
-      const circleOfPrayer = board.getVillagerByName('Circle of prayer').getTaoTokenColor() === ghostColor ? 1 : 0;
-      const enfeeblementMantra = { result: 0 };
-      board.getPlayerBoardById(players.getActualPlayerId())
-        .boardPower(socket, board, players, bank, 'Enfeeblement Mantra', enfeeblementMantra, ghost.getPosition());
-      const ghostResistance = ghost.getResistance() - circleOfPrayer - enfeeblementMantra.result;
-      // Check if its enough to defeat ghost
-      const isGhostDefeated = ghostResistance <= resultAfterModifications;
-      // TODO: Usage of tao tokens
-      // if (!isGhostDefeated) {
-      const taoistsTaoTokens = players.getTaoists()
-        .filter(taoist => taoist.getPosition() === this.getPosition())
-        .reduce((result, curr) => result + curr.getTaoTokensColor(ghostColor), 0);
-        // Is win possible
-        // if (ghostResistance <= resultAfterModifications + taoistsTaoTokens) {
-      // Get colors of players that have tao tokens with required color and stay at same tile as actual player
-      const availablePlayersWithTokens = players.getTaoists()
-        .filter(taoist => (taoist.getPosition() === this.getPosition()))
-        .map(taoist => ({
-          taoistColor: taoist.getColor(),
-          tokens: taoist.taoTokens,
-        }));
 
-      questions.pickTaoTokens(
-        socket,
-        { color: ghostColor, amount: ghostResistance - resultAfterModifications },
-        availablePlayersWithTokens,
-      );
-      // }
-      // }
+      const diceResult = this.getDiceResult(dicesAfterThrow, ghostColor);
+      const ghostResistance = this.getGhostResistance(socket, board, players, bank, ghost);
+      // Check if its enough to defeat ghost
+      const isGhostDefeated = ghostResistance <= diceResult;
+
+      if (!isGhostDefeated) {
+        // Get all taoists that stay at same position and have tokens with needed color
+        const availableTaoists = players.getTaoists()
+          .filter(taoist => taoist.getPosition() === this.getPosition())
+          .filter(taoist => taoist.getTaoTokensColor(ghostColor) > 0);
+        // Get all available tokens
+        const allTaoistsTokensAmount = availableTaoists
+          .reduce((result, curr) => result + curr.getTaoTokensColor(ghostColor), 0);
+        // Is win possible
+        if (ghostResistance <= diceResult + allTaoistsTokensAmount) {
+          const isUseTokens = await questions.askYesNo(socket, 'Do you want to use tao tokens?');
+          if (isUseTokens) {
+            const pickedTaoTokens = await questions.pickTaoTokens(
+              socket,
+              [{ color: ghostColor, amount: ghostResistance - diceResult }],
+              availableTaoists,
+            );
+          }
+        }
+      }
 
       if (isGhostDefeated) {
         console.log('Ghost defeated');

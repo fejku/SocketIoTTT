@@ -389,34 +389,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  socket.on('ghost pick tao tokens', (neededTokens, availablePlayersTaoTokens, fn) => {
-    console.log(`ghost pick tao tokens neededTokens: ${neededTokens} availablePlayersTaoTokens: ${availablePlayersTaoTokens}`);
+  socket.on('ghost pick tao tokens', (neededTokens, availableTaoists, fn) => {
+    console.log('ghost pick tao tokens neededTokens: ', neededTokens, ', availableTaoists: ', availableTaoists);
     const decisions = document.getElementById('decisions');
 
     let html = '';
-    availablePlayersTaoTokens.forEach((playerTaoTokens) => {
-      if (playerTaoTokens.tokens[neededTokens.color] > 0) {
-        html = `${playerTaoTokens.taoistColor} <input id="taoist${playerTaoTokens.taoistColor}" class="pickTaoToken" data-color="${playerTaoTokens.taoistColor}" type="number" value="0" min="0" max="${playerTaoTokens.tokens[neededTokens.color]}">`;
-      }
+    availableTaoists.forEach((taoist, i) => {
+      neededTokens.forEach((token) => {
+        if (taoist.taoTokens[token.color] > 0) {
+          html = `<label for="pickTaoToken${i}">${taoist.color}</label>` +
+            `<input id="pickTaoToken${i}" ` +
+            'type="number" ' +
+            'class="pickTaoToken" ' +
+            `data-taoist-color="${taoist.color}" ` +
+            `data-token-color="${token.color}" ` +
+            'value="0" ' +
+            'min="0" ' +
+            `max="${taoist.taoTokens[token.color]}">`;
+        }
+      });
     });
     html += '<button id="pickTaoTokenDecision">Done</button>';
 
     decisions.innerHTML = `${html}`;
 
+    decisions.addEventListener('change');
+
     decisions.addEventListener('click', function pickTaoTokenDecision(e) {
       if (e.target.id === 'pickTaoTokenDecision') {
-        const pickedTaoTokens = document.getElementsByClassName('pickTaoToken');
-        [...pickedTaoTokens].forEach((pickedTaoToken) => {
-          if (Number(pickedTaoToken.value) > 0)
-            {pickedTaoToken.dataset.color;}
+        const inputsValues = document.getElementsByClassName('pickTaoToken');
+        const pickedTaoToken = [];
+        [...inputsValues].forEach((input) => {
+          if (Number(input.value) > 0) {
+            pickedTaoToken.push({
+              taoistColor: input.dataset.taoistColor,
+              tokens: { color: input.dataset.tokenColor, amount: Number(input.value) },
+            });
+          }
         });
-        const pickedDecision = e.target.dataset.answerValue;
+        // const pickedDecision = e.target.dataset.answerValue;
         while (decisions.hasChildNodes()) {
           decisions.removeChild(decisions.lastChild);
         }
         decisions.removeEventListener('click', pickTaoTokenDecision);
-        console.log('ghost question picked value: ', pickedDecision);
-        fn(pickedDecision);
+        console.log('ghost question picked value: ', pickedTaoToken);
+        fn(pickedTaoToken);
       }
     });
   });
